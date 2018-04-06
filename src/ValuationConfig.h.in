@@ -1,0 +1,2 @@
+#define Valuation_VERSION_MAJOR @Valuation_VERSION_MAJOR@
+#define Valuation_VERSION_MINOR @Valuation_VERSION_MINOR@
