@@ -1,3 +1,0 @@
-/home/julian/sys_risk/build/CMakeFiles/rebuild_cache.dir
-/home/julian/sys_risk/build/CMakeFiles/Valuation.dir
-/home/julian/sys_risk/build/CMakeFiles/edit_cache.dir

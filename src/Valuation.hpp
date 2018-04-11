@@ -5,6 +5,7 @@
 // Tina's Random Number Generator
 #include <trng/yarn2.hpp>
 #include <trng/uniform01_dist.hpp>
+#include <trng/lognormal_dist.hpp>
 
 #include <boost/mpi.hpp>
 #include <boost/serialization/vector.hpp>
@@ -19,5 +20,8 @@
 
 
 Eigen::MatrixXd run_valuation(Eigen::MatrixXd& vij, Eigen::MatrixXd& zij, Eigen::VectorXd& B, const unsigned int N, const unsigned int max_it, const unsigned int L);
+
+
+Eigen::MatrixXd run_modified(Eigen::MatrixXd& zij, Eigen::VectorXd& exo_assets, Eigen::VectorXd& debt, const unsigned int N, const unsigned int max_it);
 
 #endif

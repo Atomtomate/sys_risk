@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++14 -Wextra  -rdynamic CMakeFiles/Valuation.dir/src/Valuation.cpp.o CMakeFiles/Valuation.dir/src/easylogging++.cc.o CMakeFiles/Valuation.dir/src/main.cpp.o  -o Valuation -Wl,-rpath,/usr/lib/x86_64-linux-gnu/openmpi/lib /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi_cxx.so /usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so -lboost_mpi -lboost_serialization 

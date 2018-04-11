@@ -7,18 +7,46 @@ Eigen::MatrixXd run_valuation(Eigen::MatrixXd& vij, Eigen::MatrixXd& zij, Eigen:
     for(unsigned int li = 0; li < L; li++)
     {
         Eigen::VectorXd Zl(2*N);
-        Zl = Eigen::VectorXd::Zero(2*N);
+        Zl = Eigen::VectorXd::Random(2*N);
         Eigen::VectorXd V(N);
-        //V << 2.0, 0.5, 0.6, 0.6; // TODO: only for testing, generate random vector
         V = Eigen::VectorXd::Random(N);
+        double dist = 99;
         for(unsigned int r = 0; r < max_it; r++)
         {
             auto tmp = vij*V + zij*Zl;
+            auto distV = Zl;
             Zl.head(N) = (tmp-B).cwiseMax(0.);
             Zl.tail(N) = tmp.cwiseMin(B);
+            distV = distV - Zl; 
+            dist = distV.norm();
+            if(dist < 1.0e-06)
+            {
+                VLOG(4) << "converged with distance " << dist << " after " << r << " iterations.";
+                break;
+            }
         }
         Z += Zl;
     }
     Z = Z/L;
     return Z;
+}
+
+
+Eigen::MatrixXd run_modified(Eigen::MatrixXd& zij, Eigen::VectorXd& exo_assets, Eigen::VectorXd& debt, const unsigned int N, const unsigned int max_it)
+{
+    Eigen::VectorXd Zl(2*N);
+    Zl.setZero(2*N);
+    double dist = 99.;
+    for(unsigned int r = 0; r < max_it; r++)
+    {
+        auto tmp = exo_assets + zij*Zl;
+        auto distV = Zl;
+        Zl.head(N) = (tmp - debt).cwiseMax(0.);
+        Zl.tail(N) = tmp.cwiseMin(debt);
+        distV = distV - Zl; 
+        dist = distV.norm();
+        if(dist < 1.0e-08)
+            return Zl;
+    }
+    return Zl;
 }
