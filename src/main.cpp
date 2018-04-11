@@ -24,7 +24,7 @@ void test_eigenRCPP(RInside& R)
 {
     std::string cmd = "set.seed(1); matrix(rnorm(9),3,3)";
     Eigen::Map<Eigen::MatrixXd> M = Rcpp::as<Eigen::Map<Eigen::MatrixXd> >(R.parseEval(cmd));
-    Eigen::MaxtrixXd N = M.transpose()*M;
+    Eigen::MatrixXd N = M.transpose()*M;
     LOG(DEBUG) << M;
     LOG(DEBUG) << N;
 }
