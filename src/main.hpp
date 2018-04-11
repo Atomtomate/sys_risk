@@ -4,6 +4,7 @@
 #include "Valuation.hpp"
 #include "KarlFischerPaper.hpp"
 
+#include <string>
 
 #include <RInside.h>
 #include <Rcpp.h>

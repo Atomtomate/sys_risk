@@ -20,11 +20,21 @@ void test_section6(void)
     }
 }
 
+void test_eigenRCPP(RInside& R)
+{
+    std::string cmd = "set.seed(1); matrix(rnorm(9),3,3)";
+    Eigen::Map<Eigen::MatrixXd> M = Rcpp::as<Eigen::Map<Eigen::MatrixXd> >(R.parseEval(cmd));
+    Eigen::MaxtrixXd N = M.transpose()*M;
+    LOG(DEBUG) << M;
+    LOG(DEBUG) << N;
+}
+
 int main(int argc, char* argv[])
 {
     START_EASYLOGGINGPP(argc, argv);
-    RInside(argc, argv);
+    RInside R(argc, argv);
     
-    figure6();
+    test_eigenRCPP(R);
+    //figure6();
     return 0;
 }

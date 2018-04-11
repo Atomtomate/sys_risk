@@ -10,12 +10,12 @@ void figure6(void)
     Eigen::MatrixXd M(N, 2*N);
     Eigen::VectorXd V(N);                   // firm values                  -- 0.1, 0.2 ... 0.9
     Eigen::VectorXd debt(N);                // zero coupon debt
-    Md << 0., 0.95, 0.95, 0.;
-    Ms << 0., 0.95, 0.95, 0.;
-    Md = Eigen::MatrixXd::Identity(N,N);
+    Md << 0.9, 0.095, 0.095, 0.9;
+    Ms << 0.9, 0.095, 0.095, 0.9;
+    //Md = Eigen::MatrixXd::Identity(N,N);
     Ms = Eigen::MatrixXd::Identity(N,N);
     M << Md, Ms;
-    debt << 0.5*11.3, 0.5*11.3;                        // liabilities, 0.1 ... 3.0
+    debt << 0.05*11.3, 0.01*11.3;                        // liabilities, 0.1 ... 3.0
     // initial lognormal distribution parameters
     // coeff of var for A_i  --  0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.31, 1.5, 2.0, 2.5, 3.0, 5.0, 7.5, 10.0 
     // 0.00995, 0.08618, 0.03922, 0.22314, 0.44629, 0.69315, 1., 1.17865, 1.60944, 1.98100, 2.30259, 3.25810, 4.04742, 4.61512
