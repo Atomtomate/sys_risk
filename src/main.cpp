@@ -34,7 +34,6 @@ int main(int argc, char* argv[])
     START_EASYLOGGINGPP(argc, argv);
     RInside R(argc, argv);
     
-    test_eigenRCPP(R);
-    //figure6();
+    run_greeks();
     return 0;
 }

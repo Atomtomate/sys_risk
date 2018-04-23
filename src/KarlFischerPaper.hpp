@@ -2,6 +2,7 @@
 #define KFP_HPP_
 
 #include <iostream>
+#include <sstream>
 
 #include "Valuation.hpp"
 
