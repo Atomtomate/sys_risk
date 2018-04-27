@@ -9,3 +9,6 @@ Dependencies:
 
 optional:
 - GTest
+
+
+Install with: mkdir build && cd build && cmake .. && make
