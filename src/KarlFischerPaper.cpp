@@ -11,7 +11,7 @@ void figure6(void)
     Eigen::VectorXd V(N);                   // firm values                  -- 0.1, 0.2 ... 0.9
     Eigen::VectorXd debt(N);                // zero coupon debt
     Md << 0.00, 0.95, 0.95, 0.00;
-    Ms << 0.00, 0.0, 0.0, 0.00;
+    Ms << 0.00, 0.95, 0.95, 0.00;
     M << Ms, Md;
     debt << 11.3, 11.3;//0.05*11.3, 0.01*11.3;                        // liabilities, 0.1 ... 3.0
     // initial lognormal distribution parameters

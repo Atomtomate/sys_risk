@@ -111,17 +111,17 @@ ACase classify(Eigen::VectorXd& v, Eigen::VectorXd& debt)
 Eigen::MatrixXd jacobian_a(Eigen::VectorXi& solvent)
 {
     const unsigned int n = solvent.size();
-    auto zeroVec = Eigen::RowVectorXd::Zero(n);
-    Eigen::MatrixXd J = Eigen::MatrixXd::Ones(2*n,n); 
+    auto oneVec = Eigen::RowVectorXd::Ones(n);
+    Eigen::MatrixXd J = Eigen::MatrixXd::Zero(2*n,n); 
     for(unsigned int i = 0; i < n; i++)
     {
         if(solvent(i) > 0)
         {
-            J.row(n+i) = zeroVec;
+            J.row(i) = oneVec;
         }
         else
         {
-            J.row(i) = zeroVec;
+            J.row(n+i) = oneVec;
         }
     }
     return J;
@@ -176,57 +176,80 @@ void run_greeks(void)
     const unsigned N = 2;           // number of firms
     const unsigned nPoints = 5000;  // number of data points
     Eigen::MatrixXd eye = Eigen::MatrixXd::Identity(N,N);
-    Eigen::MatrixXd Md(N,N);
-    Eigen::MatrixXd Ms(N,N);
-    Eigen::MatrixXd M(N,2*N);
-    Eigen::VectorXd Vb(N);
-    Eigen::VectorXd V(N);
-    Eigen::VectorXd debt(N);
-    Eigen::VectorXd sigma(N);
+    Eigen::MatrixXd eye2(N,2*N);
+    Eigen::MatrixXd eye22 = Eigen::MatrixXd::Identity(2*N, 2*N);
+    eye2 << eye, eye;
+    Eigen::MatrixXd Md(N,N);                                // cross debt
+    Eigen::MatrixXd Ms(N,N);                                // cross holdings
+    Eigen::MatrixXd M(N,2*N);                               // Md, Ms
+    Eigen::VectorXd Vb(N);                                  // lognormal distr equity, without a_0
+    Eigen::VectorXd V(N);                                   // equity
+    Eigen::VectorXd V_out(N);                               // outside investors
+    Eigen::VectorXd debt(N);                                // debt
+    Eigen::MatrixXd sigma(N,N);                             
+    Eigen::MatrixXd itSigma(N,N);
     Eigen::VectorXd mu(N);
-    const double a = 1.0;           //
-    const double a0 = 1.0;
+    Eigen::ArrayXd a0(N);
+    Eigen::MatrixXd delta_pw = Eigen::MatrixXd::Zero(2*N,N);
+    Eigen::MatrixXd delta_lg = Eigen::MatrixXd::Zero(2*N,N);
+    std::stringstream ss;
+    // setting values
+    a0 << 1.0, 1.0;
     const double T = 0.45;          // maturity
     const double r = 0.0;           // interest
     Md << 0.00, 0.95, 0.95, 0.00;
     Ms << 0.00, 0.0, 0.0, 0.00;
     M << Ms, Md;
     debt << 11.3, 11.3;
-    // log -> -0.5
-    mu << 10.01*sigma(0)*sigma(0) + std::log(a), 10.01*sigma(1)*sigma(1) + std::log(a);
-    sigma << T, T;              //std::log(1.0*1.0 + 1.0), std::log(1.0*1.0 + 1.0);
-    double sig[N][N] = { { sigma(0), 0.0},{0., sigma(1)} };   // Variance
+    mu << 10.01*sigma(0,0)*sigma(0,0) , 10.01*sigma(1,1)*sigma(1,1);
+    sigma << T, 0., 0., T;              //std::log(1.0*1.0 + 1.0), std::log(1.0*1.0 + 1.0);
+    itSigma = (T*sigma).inverse();
+    double sig[N][N] = { { sigma(0,0), 0.0},{0., sigma(1,1)} };   // Variance
     trng::correlated_normal_dist<> Z(&sig[0][0], &sig[N-1][N-1]+1);
-    //trng::lognormal_dist<> v1(mu(0), sigma(0));
-    //trng::lognormal_dist<> v2(mu(1), sigma(1)); 
-    double delta = 0.;
-    std::stringstream ss;
+    trng::lognormal_dist<> v1(mu(0), sigma(0,0));
+    trng::lognormal_dist<> v2(mu(1), sigma(1,1)); 
+
+
+    // running simulation
     for(unsigned int i = 0; i < nPoints; i++)
     {
         //V << mu(0)*T-sigma(0)+Z(gen_v1), mu(1)*T-sigma(1)+Z(gen_v1);
-        Vb << (r - sigma(0)*sigma(0)/2.)*T + std::sqrt(T)*Z(gen_v1), (r - sigma(1)*sigma(1)/2.)*T + std::sqrt(T)*Z(gen_v1);
-        Vb = (r-sigma(0)*sigma(0)/2)*T*Eigen::VectorXd(N) + std::sqrt(T)*Vb;
-        V = a0*Vb.array().exp();
+        // --- setup
+        Vb << (r - sigma(0,0)*sigma(0,0)/2.)*T + std::sqrt(T)*Z(gen_v1), (r - sigma(1,1)*sigma(1,1)/2.)*T + std::sqrt(T)*Z(gen_v1);
+        Vb = Vb.array().exp();
+        V = a0*Vb.array();
         auto rs = run_modified(M, V, debt, N, 1000);
+
+        // --- run
         Eigen::VectorXi solvent = classify_solvent(V, debt);
-        auto Jrs_m1 = jacobian_rs(M, solvent);
-        auto Ja = jacobian_a(solvent);
-        LOG(INFO) << solvent;
-        LOG(INFO) << Jrs_m1;
+
+        // --- extract
+        Eigen::MatrixXd Jrs_m1 = eye22 - jacobian_rs(M, solvent);
+        Eigen::MatrixXd Ja = jacobian_a(solvent);
+        //LOG(INFO) << "solvent: \n" << solvent;
+        //LOG(INFO) << "Jrs: \n" << Jrs_m1;
         Jrs_m1 = Jrs_m1.inverse();
-        LOG(INFO) << Jrs_m1;
-        LOG(INFO) << Ja;
-        LOG(INFO) << Vb;
-        LOG(INFO) << std::exp(-r*T)*Jrs_m1*Ja*Vb;
-        exit(0);
-        //delta -= std::exp(-r*T)*Jrs_m1*Ja*Vb;
+        //LOG(INFO) << "Jrs_m1: \n" << Jrs_m1;
+        //LOG(INFO) << "Ja: \n" << Ja;
+        //LOG(INFO) << "Vb: \n" << test;
+        //LOG(INFO) << "Jrs_m1*Ja: \n" << Jrs_m1*Ja;
+        //LOG(INFO) << std::exp(-r*T)*(Jrs_m1*Ja)*Vb.asDiagonal();
+        delta_pw = delta_pw - std::exp(-r*T)*(Jrs_m1*Ja)*(Vb.asDiagonal());
+        LOG(INFO) << (V.array().log() - a0.log() - (r-sigma(0)*sigma(0)/2.)*T);
+        //delta_lg = delta_lg +  v *std::exp(r*T) * (itSigma * ((V.array().log() - a0.log() - (r-sigma(0)*sigma(0)/2.)*T)/a0).matrix());
+        // --- prepare output
         Eigen::VectorXd v_res(N);
+        V_out = (eye2 - M)*rs;
+        //exit(0);
         for(unsigned int j = 0; j < N; j++)
         {
             v_res(j) = rs(j) + rs(j+N);
             ss << v_res(j) << "\t";
         }
+        if(i == 5) exit(0);
         ss << static_cast<std::underlying_type<ACase>::type>(classify(v_res, debt)) << std::endl;
+        LOG(INFO) << delta_pw;
+        //LOG(INFO) << delta_lg;
     }
     std::cout << ss.str();
 }
