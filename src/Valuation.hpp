@@ -7,6 +7,7 @@
 #include <trng/uniform01_dist.hpp>
 #include <trng/lognormal_dist.hpp>
 #include <trng/correlated_normal_dist.hpp>
+#include <Eigen/Dense>
 
 #include <boost/mpi.hpp>
 #include <boost/serialization/vector.hpp>
@@ -19,7 +20,6 @@
 #include "ValuationConfig.h"
 #include "MCAcc.hpp"
 
-#include <Eigen/Dense>
 
 
 Eigen::MatrixXd run_valuation(Eigen::MatrixXd& vij, Eigen::MatrixXd& zij, Eigen::VectorXd& B, const unsigned int N, const unsigned int max_it, const unsigned int L);

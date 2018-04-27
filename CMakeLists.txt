@@ -124,7 +124,7 @@ endif()
 
 #SUNDIALS (reqired by stan math)
 find_package(SUNDIALS REQUIRED COMPONENTS sundials_idas sundials_cvodes)
-set(SUNDIALS_STATIC_LIBRARIES )
+set(SUNDIALS_STATIC_LIBRARIES)
 if (SUNDIALS_FOUND)
 	if (NOT WIN32)
 		# On Linux and Mac OS we can look for .a archive files
@@ -170,14 +170,18 @@ if (SUNDIALS_FOUND)
 	message("  Includes ${SUNDIALS_INCLUDE_DIRS}")
 	message("  Libs ${SUNDIALS_LIBRARIES}")
 	message("  Static libs ${SUNDIALS_STATIC_LIBRARIES}")
+    include_directories(${SUNDIALS_INCLUDE_DIRS})
 endif()
 
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 message("Found Eigen3")
 
+#add libs
+include_directories(${CMAKE_SOURCE_DIR}/libs)
 
 target_link_libraries(Valuation ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(Valuation ${SUNDIALS_LIBRARIES})
 target_link_libraries(Valuation Eigen3::Eigen)
 target_link_libraries(Valuation ${RLDFLAGS_l})
 target_link_libraries(Valuation ${BLAS_LIBS})
