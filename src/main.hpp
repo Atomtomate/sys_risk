@@ -3,9 +3,9 @@
 
 #include <string>
 
-//#include <RInside.h>
-//#include <Rcpp.h>
-//#include <RcppEigen.h>
+#include <RInside.h>
+#include <Rcpp.h>
+#include <RcppEigen.h>
 #include <Eigen/Dense>
 #include <stan/math.hpp>
 #include "easylogging++.h"
