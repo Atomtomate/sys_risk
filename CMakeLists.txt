@@ -106,6 +106,10 @@ execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
 FIND_LIBRARY(LAPACK_LIBRARY lapack)
 
 # Dependencies
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+# this is the old PRNG library, this could be retired in the future (use R and stan math)
 target_link_libraries(Valuation "trng4")
 
 find_package(MPI REQUIRED)
@@ -118,9 +122,63 @@ if (Boost_FOUND)
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 endif()
 
+#SUNDIALS (reqired by stan math)
+find_package(SUNDIALS REQUIRED COMPONENTS sundials_idas sundials_cvodes)
+set(SUNDIALS_STATIC_LIBRARIES )
+if (SUNDIALS_FOUND)
+	if (NOT WIN32)
+		# On Linux and Mac OS we can look for .a archive files
+		foreach(_LIB IN LISTS SUNDIALS_LIBRARIES)
+			get_filename_component(_LIBROOT ${_LIB} DIRECTORY)
+			get_filename_component(_LIBNAME ${_LIB} NAME_WE)
+			find_file(_LIBSTATIC "${_LIBNAME}.a" PATHS ${_LIBROOT} NO_DEFAULT_PATH)
+			if (_LIBSTATIC)
+				list(APPEND SUNDIALS_STATIC_LIBRARIES ${_LIBSTATIC})
+			endif()
+			unset(_LIBROOT CACHE)
+			unset(_LIBNAME CACHE)
+			unset(_LIBSTATIC CACHE)
+			unset(_LIB CACHE)
+			unset(_LIBROOT)
+			unset(_LIBNAME)
+			unset(_LIBSTATIC)
+			unset(_LIB)
+		endforeach()
+
+		# Fall back to dynamic libs if we haven't found static libs
+		if (NOT SUNDIALS_STATIC_LIBRARIES)
+			set(SUNDIALS_STATIC_LIBRARIES ${SUNDIALS_LIBRARIES})  
+		endif()
+	else()
+		# On Windows we have no way to distinguish .lib files that import dlls or represent static libs
+		set(SUNDIALS_STATIC_LIBRARIES ${SUNDIALS_LIBRARIES})  
+	endif()
+endif()
+
+# Determine SUNDIALS interface version
+if (SUNDIALS_FOUND)
+	if ("${SUNDIALS_VERSION}" VERSION_LESS "3.0.0")
+		add_definitions(-DCADET_SUNDIALS_IFACE_2)
+	elseif ("${SUNDIALS_VERSION}" VERSION_LESS "4.0.0")
+		add_definitions(-DCADET_SUNDIALS_IFACE_3)
+	endif()
+endif()
+
+message("Found SUNDIALS: ${SUNDIALS_FOUND}")
+if (SUNDIALS_FOUND)
+	message("  Version ${SUNDIALS_VERSION}")
+	message("  Includes ${SUNDIALS_INCLUDE_DIRS}")
+	message("  Libs ${SUNDIALS_LIBRARIES}")
+	message("  Static libs ${SUNDIALS_STATIC_LIBRARIES}")
+endif()
+
+
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 message("Found Eigen3")
-target_link_libraries (Valuation Eigen3::Eigen)
+
+
+target_link_libraries(Valuation ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(Valuation Eigen3::Eigen)
 target_link_libraries(Valuation ${RLDFLAGS_l})
 target_link_libraries(Valuation ${BLAS_LIBS})
 target_link_libraries(Valuation ${LAPACK_LIBS})
