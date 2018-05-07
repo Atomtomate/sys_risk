@@ -1,7 +1,7 @@
 #include "MultiVar_BlackScholes.hpp"
 
 MultiVar_BlackScholes::MultiVar_BlackScholes(Eigen::MatrixXd M, Eigen::VectorXd assets, Eigen::VectorXd deb, double T, double r):
-    M(M), assets(assets), debt(debt)
+    M(M), assets(assets), debt(debt), T(T), r(r)
     {
         if(M.cols() != 2*M.rows())
         {
@@ -68,10 +68,10 @@ void MultiVar_BlackScholes::set_M_ER(const double p, const double val, char whic
     auto N = assets.size();
     M = Eigen::MatrixXd::Zero(N, 2*N);
     trng::yarn2 gen_u;
-    trng::uniform_dist<> u_dist(0, 1);
+    trng::uniform01_dist<> u_dist;
     for(int i = 0; i < N;i++)
     {
-        for(int j = i+1; j < N; j++)
+    for(int j = i+1; j < N; j++)
         {
             if(which_to_set == 1 || which_to_set == 0)
             {
@@ -259,7 +259,7 @@ void run_greeks(void)
         S0 << 1.0, 1.0;
         const double T = 1.0;          // maturity
         const double r = 0.0;           // interest
-        Ms << 0.00, 0.0, 0.0, 0.00;
+        Ms << 0.00, 0.95, 0.50, 0.00;
         Md << 0.00, 0.95, 0.80, 0.00;
         M << Ms, Md;
         debt << 11.3, 11.3;
