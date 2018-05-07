@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "Valuation.hpp"
+#include "MultiVar_BlackScholes.hpp"
 
 void figure6(void);
 

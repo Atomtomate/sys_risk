@@ -24,7 +24,8 @@ using AccT = boost::accumulators::accumulator_set<T,
         boost::accumulators::tag::mean,
         boost::accumulators::tag::variance,
         boost::accumulators::tag::skewness,
-        boost::accumulators::tag::kurtosis> >;
+        boost::accumulators::tag::kurtosis
+      > >;
 public:
 
     enum class StatType : unsigned char {

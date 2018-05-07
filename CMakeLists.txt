@@ -106,7 +106,7 @@ execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
 FIND_LIBRARY(LAPACK_LIBRARY lapack)
 
 # Dependencies
-find_package(GTest OPTIONAL)
+find_package(GTest)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)

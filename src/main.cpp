@@ -2,7 +2,7 @@
 
 using namespace Eigen;
 
-void test_section6(void)
+/*void test_section6(void)
 {
     MatrixXd vij = MatrixXd::Identity(4,4);
     MatrixXd zij(4,8);
@@ -18,7 +18,7 @@ void test_section6(void)
         auto res = run_valuation(vij, zij, B, 4, 20, L);
         LOG(INFO) << "V_final: \n" << res;
     }
-}
+}*/
 
 /*void test_eigenRCPP(RInside& R)
 {
@@ -65,8 +65,7 @@ int main(int argc, char* argv[])
 {
     START_EASYLOGGINGPP(argc, argv);
     //RInside R(argc, argv);
-    
-    test_stan_math();
-    //run_greeks();
+    //test_stan_math();
+    run_greeks();
     return 0;
 }
