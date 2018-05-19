@@ -37,7 +37,7 @@ Eigen::Matrix<stan::math::var, Dynamic, 1> test_stan_math_f(Eigen::Matrix<stan::
     return res;
 }
 
-void test_stan_math(void) {
+void test_stan_math() {
     Eigen::VectorXd x(2);
     x << 1.0,2.0;
     Eigen::Matrix<stan::math::var, Dynamic, 1> x_var(x.size());
@@ -66,6 +66,10 @@ int main(int argc, char* argv[])
     START_EASYLOGGINGPP(argc, argv);
     //RInside R(argc, argv);
     //test_stan_math();
-    run_greeks();
+    //run_greeks();
+    N2_network n2nn;
+
+
+    n2nn.test_N2_valuation();
     return 0;
 }

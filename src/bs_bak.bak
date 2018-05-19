@@ -31,3 +31,110 @@ Eigen::MatrixXd run_valuation(Eigen::MatrixXd& vij, Eigen::MatrixXd& zij, Eigen:
     Z = Z/L;
     return Z;
 }
+
+
+        /*
+        LOG(INFO) << "====== DEBUG OUTPUT FOR ITERATION " << i << " ======";
+        LOG(INFO) << "St: \n" << St;
+        LOG(INFO) << "debt: \n" << debt;
+        LOG(INFO) << "Solvent: \n" << solvent;
+        LOG(INFO) << "Jrs_m1: \n" << Jrs_m1;
+        LOG(INFO) << "Ja: \n" << Ja;
+        LOG(INFO) << "S_w0: \n" << S_w0;
+        LOG(INFO) << "Jrs_m1*Ja: \n" << Jrs_m1*Ja;
+        LOG(INFO) << "Delta_J: \n" << (Jrs_m1*Ja)*(S_w0.asDiagonal());
+        LOG(INFO) << "(t Sigma)^{-1}: \n" << itSigma;
+        LOG(INFO) << "z: \n" << (z_v);
+        LOG(INFO) << "itSigma*z_v: \n" << itSigma*z_v;
+        LOG(INFO) << "rs: \n" << rs;
+        LOG(INFO) << "Delta_L: \n" << (ln_fac*(v_res.transpose())).transpose();
+        LOG(INFO) << "-----------------------------------------------------";
+        //LOG(DEBUG) << (itSigma*z_v).array();
+        //LOG(DEBUG) << S0.array();
+        //LOG(DEBUG) << (itSigma*z_v).array() / S0.array();
+        if(i > 2)
+            exit(0);
+       */
+/*
+
+ACase classify_paper(Eigen::MatrixXd& zij, Eigen::VectorXd& assets, Eigen::VectorXd& debt)
+{
+    ACase res = ACase::ERROR;
+    // ss
+    if(( assets(0) + zij(0,3)*assets(1) >= (1. - zij(0,3)*zij(1,0))*debt(0) + (zij(0,3) - zij(0,1))*debt(1)    ) && (
+    zij(1,2)*assets(0) + assets(1) >= (zij(1,2) - zij(1,0))*debt(0) + (1. - zij(1,2)*zij(0,1))*debt(1)))
+    {
+        res = ACase::SS;
+    }
+    else if((       //sd
+        assets(0) + zij(0,1)*assets(1) >= (1. - zij(0,1)*zij(1,0))*debt(0)
+        ) && (
+        zij(1,2)*assets(0) + assets(1) < (zij(1,2) - zij(1,0))*debt(0) + (1. - zij(1,2)*zij(0,1))*debt(1)))
+    {
+        res = ACase::SD;
+    }
+    else if((       // ds
+        assets(0) + zij(0,3)*assets(1) < (1. - zij(0,3)*zij(1,0))*debt(0) + (zij(0,3) - zij(0,1))*debt(1)
+        ) && (
+        zij(1,0)*assets(0) + assets(1) >= (1. - zij(1,0)*zij(0,1))*debt(1)))
+    {
+        res = ACase::DS;
+    }
+    else if((       // dd
+        assets(0) + zij(0,1)*assets(1) < (1. - zij(0,1)*zij(1,0))*debt(0)
+        ) && (
+        zij(1,0)*assets(0) + assets(1) < (1. - zij(1,0)*zij(0,1))*debt(1)))
+    {
+        res = ACase::DD;
+    }
+    else
+    {
+        LOG(ERROR) << "assets outside Suzuki regions, this is a bug.";
+    }
+    return res;
+}
+
+
+
+
+
+
+Eigen::MatrixXd jacobian_a(Eigen::VectorXi& solvent)
+{
+    const auto N = solvent.size();
+    Eigen::MatrixXd J = Eigen::MatrixXd::Zero(2*N, N);
+    J << solvent.asDiagonal(), solvent.asDiagonal();
+    return J;
+}
+
+/**
+ *  Md , Ms
+ */
+Eigen::MatrixXd jacobian_rs(Eigen::MatrixXd& M, Eigen::VectorXi& solvent)
+{
+    const auto n = solvent.size();
+    auto zeroVec = Eigen::RowVectorXd::Zero(2*n);
+    Eigen::MatrixXd J(2*n,2*n);
+    J << M, M;
+    for(unsigned int i = 0; i < n; i++)
+    {
+        if(solvent(i) > 0)
+        {
+            J.row(n+i) = zeroVec;
+        }
+        else
+        {
+            J.row(i) = zeroVec;
+        }
+    }
+    return J;
+}
+
+
+=== old lognormal generation:
+
+    Eigen::VectorXd mu(N);
+    mu << -0.5*sigma(0,0)*sigma(0,0) + std::log(S0(0)) , -0.5*sigma(1,1)*sigma(1,1) + std::log(S0(1));
+
+
+*/

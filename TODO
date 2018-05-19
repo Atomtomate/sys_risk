@@ -1,0 +1,23 @@
+= Full GTest/GMock functionality
+    - first test:
+        Eigen::MatrixXd M(2,4);
+        Eigen::VectorXi v(2);
+        M << 1,2,3,4,5,6,7,8;
+        v << 1,0;
+        LOG(INFO) << M;
+        LOG(INFO) << v;
+        Eigen::MatrixXd res(3,3);
+        res = M.array().colwise() * (1-v.cast<double>().array());
+        LOG(INFO) << res;
+
+        ?equals? (remember int cast and top/bot)
+
+        for(unsigned int i = 0; i < n; i++)
+        {
+            j.row(i) = solvent(i)*m.row(i);
+            j.row(n+i) = (1-solvent(i))*m.row(n+i);
+        }
+
+
+= Parallelization
+    - producer/consumer for Sampler
