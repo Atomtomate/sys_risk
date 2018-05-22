@@ -3,7 +3,7 @@ language: cpp
 env:
   global:
     # Ubuntu version
-    - LINUX_DIST=artful
+    - LINUX_DIST=bionic
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     # Global build options and C++ flags
     - CXX_FLAGS="-Wall -std=c++17 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
@@ -14,7 +14,7 @@ env:
 matrix:
   include:
     - os: linux
-      dist: artful
+      dist: bionic
       sudo: true
       compiler: gcc
       addons:
@@ -36,12 +36,13 @@ matrix:
 before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
+    - sudo apt-get install -y r-cran-rinside
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
-    - sudo apt-get install -y libeigen3-dev libboost-all-dev r-cran-rinside libsundials-dev libgtest-dev google-mock
+    - sudo apt-get install -y libeigen3-dev libboost-all-dev libgtest-dev google-mock libsundials-dev
 
 install:
     - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
