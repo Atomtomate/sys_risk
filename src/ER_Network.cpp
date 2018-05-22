@@ -63,8 +63,10 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
     S.register_observer(deltav1_obs, "Delta using Jacobians", 2 * N * N);
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
     LOG(INFO) << "Running Valuation for N = " << N;
+
     S.draw_samples(f_run, f_dist, 3000);
     LOG(INFO) << std::endl << "Means: ";
+
     auto res = S.extract(MCUtil::StatType::MEAN);
     for (auto el : res) {
         std::cout << el.first << ": " << std::endl;
