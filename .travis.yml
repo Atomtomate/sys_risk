@@ -36,7 +36,7 @@ env:
 before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
-    - sudo apt-get install -y r-cran-rinside libsundials-dev
+      #- sudo apt-get install -y r-cran-rinside libsundials-dev
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
