@@ -19,6 +19,7 @@ matrix:
       compiler: gcc
       addons:
        apt:
+         update: true
          packages: &precise_latest_boost_packages
            - gcc-4.8
            - g++-4.8
@@ -37,6 +38,7 @@ before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+    - sudo apt-get install -y libeigen3-dev libboost-all-dev
 
 install:
     - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
@@ -61,9 +63,10 @@ script:
     ############################################################################
      - mkdir -p build
      - cd build
-     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON .. 
+        #  -DCMAKE_BUILD_TYPE=Coverage
+     - cmake -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON .. 
      - make
-     - make project1_coverage
+       # - make project1_coverage
      - ctest
 
 
