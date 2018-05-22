@@ -20,6 +20,9 @@ namespace MCUtil
 {
 
 
+    /*!
+     * @brief Statistic types to be collected
+     */
 enum class StatType : unsigned char {
     MEAN = 0,
     VARIANCE  = 1,
@@ -29,6 +32,11 @@ enum class StatType : unsigned char {
 
 //use cache with sfinae to only define caching vector if needed
 
+    /*!
+     * @brief               This class provides the low level accumulation functionality for statistical quantities of observables
+     * @tparam T            Type of quantity
+     * @tparam CACHE_SIZE   Cache for the last CACHE_SIZE samples. This can be used for quantities that depend on multiple samples
+     */
 template<typename T, unsigned long CACHE_SIZE = 0>
 class StatAcc
 {
@@ -58,6 +66,11 @@ public:
     StatAcc &operator=(const StatAcc &) = delete;
     //StatAcc(const StatAcc&) = delete;
 
+    /*!
+     * @brief
+     * @tparam ArgTypes     Argument types for the constructor of the quantity type to be accumulated
+     * @param args          Arguments for the constructor of the quantity type to be accumulated
+     */
     template<typename... ArgTypes>
     StatAcc(ArgTypes&&... args):
         acc(T(std::forward<ArgTypes>(args)...)), cache_used{0}
@@ -71,6 +84,10 @@ public:
         return stream;
     }
 
+    /*!
+     * @brief       Adds another sample to the accumulator
+     * @param val   Value of next sample
+     */
     void operator()(T val)
     {
         if(CACHE_SIZE)
@@ -89,6 +106,11 @@ public:
         acc(val);
     }
 
+    /*!
+     * @brief       extracts statistic of accumulated quantity
+     * @param st    Stat Type
+     * @return      Value of statistic for quantity
+     */
     T extract(const StatType st)
     {
         T res;

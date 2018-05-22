@@ -1,2 +1,9 @@
 build/
-*.txt
+latex/
+html/
+cmake/
+cmake-build-debug/
+.idea/
+*.png
+*.svg
+*.pdf
