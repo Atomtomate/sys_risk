@@ -33,6 +33,9 @@ matrix:
          sources: &precise_latest_boost_sources
            - ubuntu-toolchain-r-test
            - llvm-toolchain-precise-3.7
+before_script:
+    - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
+    - sudo apt-get update -qq
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
