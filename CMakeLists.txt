@@ -4,7 +4,7 @@ project (Valuation CXX)
 
 # Compiler settings
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wextra -Wno-ignored-attributes")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -Wno-ignored-attributes")
 
 # Project settings
 set (Valuation_VERSION_MAJOR 0)
