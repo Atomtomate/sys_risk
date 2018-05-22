@@ -37,12 +37,12 @@ before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
       #- sudo apt-get install -y r-cran-rinside libsundials-dev
+        - sudo apt-get install -y libeigen3-dev libboost-all-dev libgtest-dev google-mock
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
-    - sudo apt-get install -y libeigen3-dev libboost-all-dev libgtest-dev google-mock
 install:
     - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
     - echo ${PATH}

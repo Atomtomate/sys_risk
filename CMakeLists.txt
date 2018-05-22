@@ -139,7 +139,7 @@ if (Boost_FOUND)
 endif()
 
 #SUNDIALS (reqired by stan math)
-find_package(SUNDIALS REQUIRED COMPONENTS sundials_idas sundials_cvodes)
+find_package(SUNDIALS OPTIONAL_COMPONENTS sundials_idas sundials_cvodes)
 set(SUNDIALS_STATIC_LIBRARIES)
 if (SUNDIALS_FOUND)
 	if (NOT WIN32)
