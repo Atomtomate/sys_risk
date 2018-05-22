@@ -21,22 +21,6 @@ BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0
 };
 
 
-/** 
- *  which_to_set = 0 (both) 1 (M_s = 0) 2 (M_d = 0)
- */
-BlackScholesNetwork::BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
-        S0(S0), N(S0.size()), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
-{
-    gbl_dbg_counter += 1;
-    M = Eigen::MatrixXd::Zero(N,2*N);
-    EXPECT_GT(p, 0) << "p is not a probability";
-    EXPECT_LT(p, 1) << "p is not a probability";
-    EXPECT_GT(val, 0) << "val is not a probability";
-    EXPECT_LT(val, 1) << "val is not a probability";
-    set_M_ER(p, val, which_to_set);
-}
-
-
 void BlackScholesNetwork::set_solvent()
 {
     solvent.resize(N);
@@ -65,44 +49,6 @@ std::vector<double> BlackScholesNetwork::run_valuation(unsigned int iterations)
     }
     set_solvent();
     return get_rs();
-}
-
-
-void BlackScholesNetwork::set_M_ER(const double p, const double val, char which_to_set)
-{
-    EXPECT_GT(val, 0) << "val is not a probability";
-    EXPECT_LT(val, 1) << "val is not a probability";
-    M = Eigen::MatrixXd::Zero(N, 2*N);
-    trng::yarn2 gen_u;
-    trng::uniform01_dist<> u_dist;
-    //@TODO: use bin. dist. to generate vectorized
-    for (unsigned int i = 0; i < N; i++)
-    {
-        for (unsigned int j = i + 1; j < N; j++)
-        {
-            if(which_to_set == 1 || which_to_set == 0)
-            {
-                if(u_dist(gen_u) < p)
-                    M(i,j) = 1.0;
-                if(u_dist(gen_u) < p)
-                    M(j,i) = 1.0;
-            }
-            if(which_to_set == 2 || which_to_set == 0)
-            {
-                if(u_dist(gen_u) < p)
-                    M(i,j+N) = 1.0;
-                if(u_dist(gen_u) < p)
-                    M(j,i+N) = 1.0;
-            }
-        }
-    }
-    //@TODO: valid normalization
-    auto col_sum = M.colwise().sum();
-    auto row_sum = M.rowwise().sum();
-    double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
-    M = (val/max)*M;
-    //LOG(DEBUG) << "M: ";
-    //LOG(DEBUG) << M;
 }
 
 

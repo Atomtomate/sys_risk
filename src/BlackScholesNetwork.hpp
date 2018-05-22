@@ -64,16 +64,7 @@ private:
          */
         BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
-        /**
-         * @brief               Constructs the Black Scholes Model using random cross holdings.
-         * @param p             Probability of cross holding
-         * @param val           Value of cross holding (@TODO make this variable)
-         * @param which_to_set  can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
-         * @param assets        exogenous assets
-         * @param debt          debts
-         * @param T         maturity
-         * @param r         interest rate
-         */
+
         BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
         /**
@@ -84,9 +75,7 @@ private:
         std::vector<double> run_valuation(unsigned int iterations);
 
 
-    void set_M_ER(double p, double val, char which_to_set);
-
-    inline void set_S0(const Eigen::VectorXd &s0)
+        inline void set_S0(const Eigen::VectorXd &s0)
         {
             EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
             S0 = s0;
@@ -98,32 +87,32 @@ private:
             St = a;
         }
 
-    inline void set_debt(const Eigen::VectorXd &d) {
+        inline void set_debt(const Eigen::VectorXd &d) {
             EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
             debt = d;
         }
 
-    inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
+        inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
 
-    //@TODO: consistent return typex
-    inline const Eigen::VectorXd &get_S0() {
-        return S0;
-    }
+        //@TODO: consistent return typex
+        inline const Eigen::VectorXd &get_S0() {
+            return S0;
+        }
 
-    inline const Eigen::VectorXd &get_St() {
-        return St;
-    }
+        inline const Eigen::VectorXd &get_St() {
+            return St;
+        }
 
-    inline const Eigen::VectorXd &get_debt() {
-        return debt;
-    }
+        inline const Eigen::VectorXd &get_debt() {
+            return debt;
+        }
 
-    inline const Eigen::MatrixXd &get_M() {
-        return M;
-    }
+        inline const Eigen::MatrixXd &get_M() {
+            return M;
+        }
 
-        //@TODO: move implementation to *.cpp
-        std::vector<double> get_assets();
+            //@TODO: move implementation to *.cpp
+            std::vector<double> get_assets();
 
         auto get_rs()
         {
@@ -133,9 +122,9 @@ private:
             return ret;
         }
 
-    inline Eigen::MatrixXd get_rs_eigen() {
-        return x;
-    }
+        inline Eigen::MatrixXd get_rs_eigen() {
+            return x;
+        }
 
         auto get_valuation()
         {
@@ -145,7 +134,7 @@ private:
             return ret;
         }
 
-    auto get_solvent()
+        auto get_solvent()
         {
             std::vector<double> res;
             res.resize(solvent.size());
@@ -153,7 +142,7 @@ private:
             return res;
         }
 
-    std::vector<double> get_delta_v1()
+        std::vector<double> get_delta_v1()
         {
             auto Jrs = iJacobian_fx();
             auto Jva = Jacobian_va();
