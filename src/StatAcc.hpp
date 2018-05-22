@@ -28,6 +28,7 @@ enum class StatType : unsigned char {
 };
 
 //use cache with sfinae to only define caching vector if needed
+
 template<typename T, unsigned long CACHE_SIZE = 0>
 class StatAcc
 {
@@ -47,11 +48,15 @@ private:
     unsigned long cache_used;
 
 public:
-    StatAcc(): cache_used{0}
+    /*StatAcc(): cache_used{0}
     {
         if(CACHE_SIZE)
             cache.resize(CACHE_SIZE);
     }
+     */
+
+    StatAcc &operator=(const StatAcc &) = delete;
+    //StatAcc(const StatAcc&) = delete;
 
     template<typename... ArgTypes>
     StatAcc(ArgTypes&&... args):
@@ -59,6 +64,11 @@ public:
     {
         if(CACHE_SIZE)
             cache.resize(CACHE_SIZE);
+    }
+
+    friend std::ostream &operator<<(std::ostream &stream, const StatAcc &sa) {
+        stream << "This is the temporary output for StatAcc";
+        return stream;
     }
 
     void operator()(T val)
@@ -90,13 +100,14 @@ public:
             case StatType::VARIANCE:
                 res = boost::accumulators::variance(acc);
                 break;
-            /*case StatType::SKEWNESS:
-                res = boost::accumulators::variance(acc);
-                break;
-            case StatType::KURTOSIS:
-                res = boost::accumulators::kurtosis(acc);
-                break;
-                */
+                /* @TODO: template disable
+                 * case StatType::SKEWNESS:
+                    res = boost::accumulators::variance(acc);
+                    break;
+                case StatType::KURTOSIS:
+                    res = boost::accumulators::kurtosis(acc);
+                    break;
+                    */
         }
         return res;
     }

@@ -3,16 +3,16 @@
 size_t BlackScholesNetwork::gbl_dbg_counter = 0;
 
 BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const double T,const double r):
-    M(M), T(T), r(r), exprt(std::exp(-r*T)), dbg_counter(gbl_dbg_counter)
+        M(M), N(M.rows()), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
-    LOG(TRACE) << "creating new BSN object";
     EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
 BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
-M(M), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r*T)), dbg_counter(gbl_dbg_counter)
+        M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)),
+        dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
     EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
@@ -25,10 +25,9 @@ M(M), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r*T)), dbg_cou
  *  which_to_set = 0 (both) 1 (M_s = 0) 2 (M_d = 0)
  */
 BlackScholesNetwork::BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
-    S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r*T)), dbg_counter(gbl_dbg_counter)
+        S0(S0), N(S0.size()), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
-    auto N = St.size();
     M = Eigen::MatrixXd::Zero(N,2*N);
     EXPECT_GT(p, 0) << "p is not a probability";
     EXPECT_LT(p, 1) << "p is not a probability";
@@ -40,20 +39,16 @@ BlackScholesNetwork::BlackScholesNetwork(double p, double val, char which_to_set
 
 void BlackScholesNetwork::set_solvent()
 {
-    auto N = M.rows();
     solvent.resize(N);
     for(unsigned int i = 0; i < N; i++)
     {
         solvent(i) = 1*(x(i)+x(i+N) >= debt(i));
     }
-    LOG(INFO) << "solvent: " << solvent;
 }
 
 
 std::vector<double> BlackScholesNetwork::run_valuation(unsigned int iterations)
 {
-    LOG(INFO) << "running valuation, object id = " << dbg_counter;
-    auto N = M.rows();
     x = Eigen::VectorXd::Zero(2*N);
     Eigen::VectorXd a = S0.array()*St.array();
     double dist = 99.;
@@ -77,14 +72,13 @@ void BlackScholesNetwork::set_M_ER(const double p, const double val, char which_
 {
     EXPECT_GT(val, 0) << "val is not a probability";
     EXPECT_LT(val, 1) << "val is not a probability";
-    auto N = St.size();
     M = Eigen::MatrixXd::Zero(N, 2*N);
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;
     //@TODO: use bin. dist. to generate vectorized
-    for(int i = 0; i < N;i++)
+    for (unsigned int i = 0; i < N; i++)
     {
-        for(int j = i+1; j < N; j++)
+        for (unsigned int j = i + 1; j < N; j++)
         {
             if(which_to_set == 1 || which_to_set == 0)
             {
@@ -102,16 +96,18 @@ void BlackScholesNetwork::set_M_ER(const double p, const double val, char which_
             }
         }
     }
+    //@TODO: valid normalization
     auto col_sum = M.colwise().sum();
     auto row_sum = M.rowwise().sum();
     double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
     M = (val/max)*M;
+    //LOG(DEBUG) << "M: ";
+    //LOG(DEBUG) << M;
 }
 
 
 Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
 {
-    const auto N = M.rows();
     Eigen::MatrixXd J(2*N, 2*N);
     //@TODO: replace this loop with stacked solvent matrix x matrix operation?
     //J.topRows(N) = M.array().colwise() * solvent.cast<double>().array();
@@ -135,12 +131,11 @@ Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
 
 Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
 {
-    const auto N = M.rows();
     Eigen::MatrixXd J(2*N, N);
     if(solvent.size() == M.rows())
     {
-        Eigen::MatrixXd sd = solvent.cast<double>().asDiagonal();
-        J << sd, sd;
+        Eigen::MatrixXd sd = solvent.asDiagonal();
+        J << sd, (Eigen::MatrixXd::Identity(N, N) - sd);
     } else {
         LOG(WARNING) << "solvent has wrong size: " << solvent.size();
         J = Eigen::MatrixXd::Zero(2*N,N);

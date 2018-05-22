@@ -63,13 +63,30 @@ void test_stan_math() {
 
 int main(int argc, char* argv[])
 {
+    // Logging initialization
     START_EASYLOGGINGPP(argc, argv);
+
+    // MPI initialization
+    boost::mpi::environment env(argc, argv);
+    boost::mpi::communicator world;
+    bool isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
+    boost::mpi::communicator local = world.split(isGenerator ? 0 : 1);
+
     //RInside R(argc, argv);
     //test_stan_math();
-    //run_greeks();
-    N2_network n2nn;
+    //N2_network n2NN;
+    //n2NN.test_N2_valuation();
 
 
-    n2nn.test_N2_valuation();
+    for (int N : {2, 4, 8, 16, 32}) {
+        ER_Network nNN(local, world, true, N, 1.0, 0.95, 2);
+        nNN.test_ER_valuation();
+    }
+    for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
+        ER_Network nNN(local, world, true, 10, p, 0.95, 2);
+        nNN.test_ER_valuation(10);
+    }
+
+    //@TODO: write test that expects equal sresults on equal seed
     return 0;
 }

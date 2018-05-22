@@ -5,9 +5,13 @@
 #ifndef VALUATION_EXAMPLES_HPP
 #define VALUATION_EXAMPLES_HPP
 
+
+#define ELPP_STL_LOGGING
 #include "Sampler.hpp"
+#include "StatAcc.hpp"
 #include "BlackScholesNetwork.hpp"
 
+//@TODO: move this to tests. ER_Network does the same with N=2, p=1.0
 
 
 class N2_network
@@ -22,6 +26,7 @@ private:
     Eigen::VectorXd debt;                            // debt
     Eigen::MatrixXd M;                               // Ms, Md
     Eigen::MatrixXd itSigma;
+    Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
 
     trng::yarn2 gen_z;
     Eigen::VectorXd var_h;
@@ -33,6 +38,7 @@ private:
 
     void init_network()
     {
+        Z = Eigen::VectorXd(N);
         S0 = Eigen::VectorXd(N);
         debt = Eigen::VectorXd(N);
         M = Eigen::MatrixXd(N, 2*N);
@@ -54,6 +60,7 @@ private:
         sigma << T, 0., 0., T;              //std::log(1.0*1.0 + 1.0), std::log(1.0*1.0 + 1.0);
         itSigma = (T*sigma).inverse();
         var_h = T*r - T*sigma.diagonal().array()*sigma.diagonal().array()/2.;
+        gen_z.seed(1);
     }
 
 
@@ -70,7 +77,6 @@ public:
     {
         const size_t N = M.rows();
         Eigen::VectorXd S_log(N);             // log of lognormal distribution exogenous assets, without a_0
-        Eigen::VectorXd Z(N);                 // Multivariate normal, used to generate lognormal assets
         for(unsigned int d = 0; d < N; d++)
         {
             Z(d) = Z_dist(gen_z);
@@ -88,6 +94,16 @@ public:
 
         bsn.set_St(St);
         rs = bsn.run_valuation(1000);
+    }
+
+    std::vector<double> delta_v2() {
+        //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
+        const auto N = M.rows();
+        std::vector<double> res(2 * N * N);
+        Eigen::VectorXd ln_fac = (itSigma * Z).array() / bsn.get_S0().array();
+        Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * bsn.get_rs_eigen().transpose()).transpose();
+        Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
+        return res;
     }
 
     auto test_out()

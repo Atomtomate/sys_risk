@@ -43,7 +43,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/Examples.hpp src/Examples.cpp)
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 

@@ -25,9 +25,10 @@
 
 class BlackScholesNetwork
 {
-    public:
+private:
         double T;
         double r;
+    unsigned long N;
         static size_t gbl_dbg_counter;
         size_t dbg_counter;
         Eigen::MatrixXd M;
@@ -39,7 +40,6 @@ class BlackScholesNetwork
         double exprt;
 
         void set_solvent();
-        void set_M_ER(double p, double val, char which_to_set);
         Eigen::MatrixXd iJacobian_fx();
         Eigen::MatrixXd Jacobian_va();
 
@@ -83,13 +83,10 @@ class BlackScholesNetwork
          */
         std::vector<double> run_valuation(unsigned int iterations);
 
-        inline void get_S0(const Eigen::VectorXd& s0)
-        {
-            EXPECT_EQ(S0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
-            S0 = s0;
-        }
 
-        inline void set_S0(const Eigen::VectorXd& s0)
+    void set_M_ER(double p, double val, char which_to_set);
+
+    inline void set_S0(const Eigen::VectorXd &s0)
         {
             EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
             S0 = s0;
@@ -101,13 +98,29 @@ class BlackScholesNetwork
             St = a;
         }
 
-        inline void set_debt(const Eigen::VectorXd& d)
-        {
+    inline void set_debt(const Eigen::VectorXd &d) {
             EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
             debt = d;
         }
 
-        inline void set_M(Eigen::MatrixXd M_new) {M = M_new;}
+    inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
+
+    //@TODO: consistent return typex
+    inline const Eigen::VectorXd &get_S0() {
+        return S0;
+    }
+
+    inline const Eigen::VectorXd &get_St() {
+        return St;
+    }
+
+    inline const Eigen::VectorXd &get_debt() {
+        return debt;
+    }
+
+    inline const Eigen::MatrixXd &get_M() {
+        return M;
+    }
 
         //@TODO: move implementation to *.cpp
         std::vector<double> get_assets();
@@ -120,32 +133,31 @@ class BlackScholesNetwork
             return ret;
         }
 
+    inline Eigen::MatrixXd get_rs_eigen() {
+        return x;
+    }
+
         auto get_valuation()
         {
-            const auto n = M.rows();
             std::vector<double> ret;
-            ret.resize(n);
-            Eigen::VectorXd::Map(&ret[0], n) = x.head(n) + x.tail(n);
+            ret.resize(N);
+            Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
             return ret;
         }
-        auto get_solvent()
+
+    auto get_solvent()
         {
             std::vector<double> res;
             res.resize(solvent.size());
             Eigen::Matrix<double, Eigen::Dynamic, 1>::Map(&res[0], solvent.size()) = solvent;
             return res;
         }
-    //delta_pw = delta_pw + std::exp(-r*T)*(Jrs_m1*Ja)*(St.asDiagonal());
-    //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
-        std::vector<double> get_delta_v1()
+
+    std::vector<double> get_delta_v1()
         {
-            const auto N = M.rows();
             auto Jrs = iJacobian_fx();
             auto Jva = Jacobian_va();
-            LOG(ERROR) << Jrs;
-            LOG(ERROR) << Jva;
             auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
-            LOG(INFO) << res_eigen;
             std::vector<double> res;
             res.resize(2*N*N);
             EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
@@ -154,13 +166,6 @@ class BlackScholesNetwork
             return res;
         }
 
-        auto get_delta_v2()
-        {
-            const auto N = M.rows();
-            //Eigen::VectorXd ln_fac = (itSigma*Z).array()/S0.array();
-            auto res = Eigen::MatrixXd::Zero(2*N,N);
-            return res;
-        }
 
 };
 

@@ -12,9 +12,12 @@
 //#include <RcppEigen.h>
 #include <Eigen/Dense>
 #include <stan/math.hpp>
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
 
 #include "Sampler.hpp"
-#include "Examples.hpp"
+#include "N2_network.hpp"
+#include "ER_Network.hpp"
 #include "KarlFischerPaper.hpp"
 
 #include "../test/TestMain.hpp"
