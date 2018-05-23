@@ -68,7 +68,7 @@ if (Boost_FOUND)
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 endif()
 
-find_package (Eigen3 REQUIRED NO_MODULE)
+find_package(Eigen3 REQUIRED)
 message("Found Eigen3")
 
 #add libs
