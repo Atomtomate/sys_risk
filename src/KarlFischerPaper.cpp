@@ -1,12 +1,19 @@
+/* Copyright (C) 5/23/18 Julian Stobbe - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ *
+ * You should have received a copy of the MIT license with
+ * this file.
+ */
+
 #include "KarlFischerPaper.hpp"
 
-Eigen::VectorXd run_modified(const Eigen::MatrixXd& zij, const Eigen::VectorXd& exo_assets,const Eigen::VectorXd& debt, const unsigned int N, const unsigned int max_it)
+Eigen::VectorXd run_modified(const Eigen::MatrixXd& zij, const Eigen::VectorXd& exo_assets, const Eigen::VectorXd& debt, const unsigned int N, const unsigned int max_it)
 {
-    Eigen::VectorXd Zl = Eigen::VectorXd::Zero(2*N);
+    Eigen::VectorXd Zl = Eigen::VectorXd::Zero(2 * N);
     double dist = 99.;
-    for(unsigned int r = 0; r < max_it; r++)
-    {
-        auto tmp = exo_assets + zij*Zl;
+    for(unsigned int r = 0; r < max_it; r++) {
+        auto tmp = exo_assets + zij * Zl;
         auto distV = Zl;
         Zl.head(N) = (tmp - debt).cwiseMax(0.);
         Zl.tail(N) = tmp.cwiseMin(debt);
@@ -23,11 +30,10 @@ Eigen::VectorXi classify(Eigen::VectorXd& v, Eigen::VectorXd& debt)
 Eigen::VectorXi res(v.size());
 for(unsigned int i = 0; i < v.size(); i++)
 {
-res(i) = 1*(v(i) >= debt(i));
+    res(i) = 1*(v(i) >= debt(i));
 }
 return res;
 }
-
 
 
 ACase classify_paper(Eigen::VectorXd& v, Eigen::VectorXd& debt)
@@ -35,19 +41,19 @@ ACase classify_paper(Eigen::VectorXd& v, Eigen::VectorXd& debt)
 ACase res = ACase::ERROR;
 if((v(0) >= debt(0)) && (v(1) >= debt(1)))
 {
-res = ACase::SS;
+    res = ACase::SS;
 }
 else if((v(0) >= debt(0)) && (v(1) < debt(1)))
 {
-res = ACase::SD;
+    res = ACase::SD;
 }
 else if((v(0) < debt(0)) && (v(1) >= debt(1)))
 {
-res = ACase::DS;
+    res = ACase::DS;
 }
 else if((v(0) < debt(0)) && (v(1) < debt(1)))
 {
-res = ACase::DD;
+    res = ACase::DD;
 }
 else
 {
@@ -80,16 +86,14 @@ void figure6()
     trng::yarn2 gen_v1;
     //LOG(INFO) << "lognormal distribution with mu = " << mu.transpose() << " and sigma = " << sigma.transpose();
     trng::lognormal_dist<> v1(mu(0), sigma(0));
-    trng::lognormal_dist<> v2(mu(1), sigma(1)); 
+    trng::lognormal_dist<> v2(mu(1), sigma(1));
     std::stringstream ss;
-    for(unsigned int i = 0; i < nPoints; i++)
-    {
+    for(unsigned int i = 0; i < nPoints; i++) {
         V << v1(gen_v1), v2(gen_v1);
         //LOG(INFO) << V;
         auto rs = run_modified(M, V, debt, N, 1000);
         Eigen::VectorXd v_res(N);
-        for(unsigned int j = 0; j < N; j++ )
-        {
+        for(unsigned int j = 0; j < N; j++ ) {
             v_res(j) = rs(j) + rs(j+N);
         }
         ss << v_res(0) << "\t" << v_res(1) << "\t" << static_cast<std::underlying_type<ACase>::type>(classify_paper(v_res, debt)) << std::endl;

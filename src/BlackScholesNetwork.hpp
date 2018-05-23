@@ -1,3 +1,11 @@
+/* Copyright (C) 5/23/18 Julian Stobbe - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ *
+ * You should have received a copy of the MIT license with
+ * this file.
+ */
+
 #ifndef SRC_BLACKSCHOLES_NETWORK_HPP_
 #define SRC_BLACKSCHOLES_NETWORK_HPP_
 
@@ -26,140 +34,134 @@
 class BlackScholesNetwork
 {
 private:
-        double T;
-        double r;
+    double T;
+    double r;
     unsigned long N;
-        static size_t gbl_dbg_counter;
-        size_t dbg_counter;
-        Eigen::MatrixXd M;
-        Eigen::VectorXd x;
-        Eigen::VectorXd S0;
-        Eigen::VectorXd St;
-        Eigen::VectorXd debt;
-        Eigen::VectorXd solvent;
-        double exprt;
+    static size_t gbl_dbg_counter;
+    size_t dbg_counter;
+    Eigen::MatrixXd M;
+    Eigen::VectorXd x;
+    Eigen::VectorXd S0;
+    Eigen::VectorXd St;
+    Eigen::VectorXd debt;
+    Eigen::VectorXd solvent;
+    double exprt;
 
-        void set_solvent();
-        Eigen::MatrixXd iJacobian_fx();
-        Eigen::MatrixXd Jacobian_va();
+    void set_solvent();
 
-    public:
-        BlackScholesNetwork(const BlackScholesNetwork&) = delete;
-        BlackScholesNetwork& operator=(const BlackScholesNetwork&) = delete;
+    Eigen::MatrixXd iJacobian_fx();
 
-        /**
-         * @brief
-         * @param T         maturity
-         * @param r         interest rate
-         */
-        BlackScholesNetwork(const Eigen::MatrixXd& M,const double T,const double r);
+    Eigen::MatrixXd Jacobian_va();
 
-        /**
-         * @brief
-         * @param M         Combined cross equity and cross debt matrix
-         * @param assets    exogenous assets
-         * @param debt      debts
-         * @param T         maturity
-         * @param r         interest rate
-         */
-        BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
+public:
+    BlackScholesNetwork(const BlackScholesNetwork&) = delete;
 
+    BlackScholesNetwork& operator=(const BlackScholesNetwork&) = delete;
 
-        BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
+    /**
+     * @brief
+     * @param T         maturity
+     * @param r         interest rate
+     */
+    BlackScholesNetwork(const Eigen::MatrixXd& M,const double T,const double r);
 
-        /**
-         * @brief               Finds the fixed point of the cross holding problem at maturity T.
-         * @param iterations    maximum number of self consistency iterations.
-         * @return              returns vector of value of debt and value of equity.
-         */
-        std::vector<double> run_valuation(unsigned int iterations);
+    /**
+     * @brief
+     * @param M         Combined cross equity and cross debt matrix
+     * @param assets    exogenous assets
+     * @param debt      debts
+     * @param T         maturity
+     * @param r         interest rate
+     */
+    BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
 
-        inline void set_S0(const Eigen::VectorXd &s0)
-        {
-            EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
-            S0 = s0;
-        }
+    BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
-        inline void set_St(const Eigen::VectorXd& a)
-        {
-            EXPECT_EQ(a.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
-            St = a;
-        }
+    /**
+     * @brief               Finds the fixed point of the cross holding problem at maturity T.
+     * @param iterations    maximum number of self consistency iterations.
+     * @return              returns vector of value of debt and value of equity.
+     */
+    std::vector<double> run_valuation(unsigned int iterations);
 
-        inline void set_debt(const Eigen::VectorXd &d) {
-            EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
-            debt = d;
-        }
 
-        inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
+    inline void set_S0(const Eigen::VectorXd &s0) {
+        EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
+        S0 = s0;
+    }
 
-        //@TODO: consistent return typex
-        inline const Eigen::VectorXd &get_S0() {
-            return S0;
-        }
+    inline void set_St(const Eigen::VectorXd& a) {
+        EXPECT_EQ(a.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
+        St = a;
+    }
 
-        inline const Eigen::VectorXd &get_St() {
-            return St;
-        }
+    inline void set_debt(const Eigen::VectorXd &d) {
+        EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
+        debt = d;
+    }
 
-        inline const Eigen::VectorXd &get_debt() {
-            return debt;
-        }
+    inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
 
-        inline const Eigen::MatrixXd &get_M() {
-            return M;
-        }
+    //@TODO: consistent return typex
+    inline const Eigen::VectorXd &get_S0() {
+        return S0;
+    }
 
-            //@TODO: move implementation to *.cpp
-            std::vector<double> get_assets();
+    inline const Eigen::VectorXd &get_St() {
+        return St;
+    }
 
-        auto get_rs()
-        {
-            std::vector<double> ret;
-            ret.resize(x.size());
-            Eigen::VectorXd::Map(&ret[0], x.size()) = x;
-            return ret;
-        }
+    inline const Eigen::VectorXd &get_debt() {
+        return debt;
+    }
 
-        inline Eigen::MatrixXd get_rs_eigen() {
-            return x;
-        }
+    inline const Eigen::MatrixXd &get_M() {
+        return M;
+    }
 
-        auto get_valuation()
-        {
-            std::vector<double> ret;
-            ret.resize(N);
-            Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
-            return ret;
-        }
+    //@TODO: move implementation to *.cpp
+    std::vector<double> get_assets();
 
-        auto get_solvent()
-        {
-            std::vector<double> res;
-            res.resize(solvent.size());
-            Eigen::Matrix<double, Eigen::Dynamic, 1>::Map(&res[0], solvent.size()) = solvent;
-            return res;
-        }
+    auto get_rs() {
+        std::vector<double> ret;
+        ret.resize(x.size());
+        Eigen::VectorXd::Map(&ret[0], x.size()) = x;
+        return ret;
+    }
 
-        std::vector<double> get_delta_v1()
-        {
-            auto Jrs = iJacobian_fx();
-            auto Jva = Jacobian_va();
-            auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
-            std::vector<double> res;
-            res.resize(2*N*N);
-            EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
-            EXPECT_EQ(res_eigen.cols(), N) << "Number of cols for Delta computation incorrect";
-            Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
-            return res;
-        }
+    inline Eigen::MatrixXd get_rs_eigen() {
+        return x;
+    }
+
+    auto get_valuation() {
+        std::vector<double> ret;
+        ret.resize(N);
+        Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
+        return ret;
+    }
+
+    auto get_solvent() {
+        std::vector<double> res;
+        res.resize(solvent.size());
+        Eigen::Matrix<double, Eigen::Dynamic, 1>::Map(&res[0], solvent.size()) = solvent;
+        return res;
+    }
+
+    std::vector<double> get_delta_v1() {
+        auto Jrs = iJacobian_fx();
+        auto Jva = Jacobian_va();
+        auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
+        std::vector<double> res;
+        res.resize(2*N*N);
+        EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
+        EXPECT_EQ(res_eigen.cols(), N) << "Number of cols for Delta computation incorrect";
+        Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
+        return res;
+    }
 
 
 };
-
-
-
 
 
 #endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_

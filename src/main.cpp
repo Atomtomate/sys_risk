@@ -1,3 +1,12 @@
+/* Copyright (C) 5/23/18 Julian Stobbe - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ *
+ * You should have received a copy of the MIT license with
+ * this file.
+ */
+
+
 #include "main.hpp"
 
 using namespace Eigen;
@@ -41,7 +50,7 @@ void test_stan_math() {
     Eigen::VectorXd x(2);
     x << 1.0,2.0;
     Eigen::Matrix<stan::math::var, Dynamic, 1> x_var(x.size());
-    for (int i = 0; i < x.size(); ++i) 
+    for (int i = 0; i < x.size(); ++i)
         x_var(i) = x(i);
     Eigen::Matrix<stan::math::var, Dynamic, 1> f_x_var = test_stan_math_f(x_var);
     Eigen::VectorXd f_x(f_x_var.size());

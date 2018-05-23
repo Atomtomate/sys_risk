@@ -1,3 +1,11 @@
+/* Copyright (C) 5/23/18 Julian Stobbe - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ *
+ * You should have received a copy of the MIT license with
+ * this file.
+ */
+
 #ifndef STAT_ACC_HPP_
 #define STAT_ACC_HPP_
 
@@ -41,13 +49,13 @@ template<typename T, unsigned long CACHE_SIZE = 0>
 class StatAcc
 {
 
-using AccT = boost::accumulators::accumulator_set<T,
-      boost::accumulators::features< 
-        boost::accumulators::tag::mean,
-        boost::accumulators::tag::variance
-        //,boost::accumulators::tag::skewness
-        //,boost::accumulators::tag::kurtosis
-      > >;
+    using AccT = boost::accumulators::accumulator_set<T,
+            boost::accumulators::features<
+                    boost::accumulators::tag::mean,
+                    boost::accumulators::tag::variance
+                    //,boost::accumulators::tag::skewness
+                    //,boost::accumulators::tag::kurtosis
+            > >;
 
 private:
     AccT acc;
@@ -73,8 +81,7 @@ public:
      */
     template<typename... ArgTypes>
     StatAcc(ArgTypes&&... args):
-        acc(T(std::forward<ArgTypes>(args)...)), cache_used{0}
-    {
+            acc(T(std::forward<ArgTypes>(args)...)), cache_used{0} {
         if(CACHE_SIZE)
             cache.resize(CACHE_SIZE);
     }
@@ -88,17 +95,12 @@ public:
      * @brief       Adds another sample to the accumulator
      * @param val   Value of next sample
      */
-    void operator()(T val)
-    {
-        if(CACHE_SIZE)
-        {
-            if(cache_used < CACHE_SIZE)
-            {
+    void operator()(T val) {
+        if(CACHE_SIZE) {
+            if(cache_used < CACHE_SIZE) {
                 cache.push_back(val);
                 cache_used += 1;
-            }
-            else
-            {
+            } else {
                 cache.pop_front();
                 cache.push_back(val);
             }
@@ -111,11 +113,9 @@ public:
      * @param st    Stat Type
      * @return      Value of statistic for quantity
      */
-    T extract(const StatType st)
-    {
+    T extract(const StatType st) {
         T res;
-        switch(st)
-        {
+        switch(st) {
             case StatType::MEAN:
                 res = boost::accumulators::mean(acc);
                 break;

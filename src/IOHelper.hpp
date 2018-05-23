@@ -6,9 +6,7 @@
  * this file.
  */
 
-#ifndef CONFIG_HPP_
-#define CONFIG_HPP_
+#ifndef VALUATION_IOHELPER_HPP
+#define VALUATION_IOHELPER_HPP
 
-using namespace Eigen;
-
-#endif
+#endif //VALUATION_IOHELPER_HPP

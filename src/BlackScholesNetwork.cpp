@@ -1,12 +1,20 @@
+/* Copyright (C) 5/23/18 Julian Stobbe - All Rights Reserved
+ * You may use, distribute and modify this code under the
+ * terms of the MIT license.
+ *
+ * You should have received a copy of the MIT license with
+ * this file.
+ */
+
 #include "BlackScholesNetwork.hpp"
 
 size_t BlackScholesNetwork::gbl_dbg_counter = 0;
 
-BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const double T,const double r):
+BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const double T, const double r):
         M(M), N(M.rows()), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
-    EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
+    EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
@@ -24,8 +32,7 @@ BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0
 void BlackScholesNetwork::set_solvent()
 {
     solvent.resize(N);
-    for(unsigned int i = 0; i < N; i++)
-    {
+    for(unsigned int i = 0; i < N; i++) {
         solvent(i) = 1*(x(i)+x(i+N) >= debt(i));
     }
 }
@@ -36,16 +43,15 @@ std::vector<double> BlackScholesNetwork::run_valuation(unsigned int iterations)
     x = Eigen::VectorXd::Zero(2*N);
     Eigen::VectorXd a = S0.array()*St.array();
     double dist = 99.;
-    for(unsigned int r = 0; r < iterations; r++)
-    {
+    for(unsigned int r = 0; r < iterations; r++) {
         auto tmp = a + M*x;
         auto distV = x;
         x.head(N) = (tmp - debt).cwiseMax(0.);
         x.tail(N) = tmp.cwiseMin(debt);
-        distV = distV - x; 
+        distV = distV - x;
         dist = distV.norm();
         if(dist < 1.0e-14)
-             break;
+            break;
     }
     set_solvent();
     return get_rs();
@@ -59,10 +65,8 @@ Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
     //J.topRows(N) = M.array().colwise() * solvent.cast<double>().array();
     //J.bottomRows(N) = M.array().colwise() * (1-solvent.cast<double>().array());
 
-    if(solvent.size() == M.rows())
-    {
-        for(unsigned int i = 0; i < N; i++)
-        {
+    if(solvent.size() == M.rows()) {
+        for(unsigned int i = 0; i < N; i++) {
             J.row(i) = solvent(i)*M.row(i);
             J.row(N+i) = (1-solvent(i))*M.row(i);
         }
@@ -78,8 +82,7 @@ Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
 Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
 {
     Eigen::MatrixXd J(2*N, N);
-    if(solvent.size() == M.rows())
-    {
+    if(solvent.size() == M.rows()) {
         Eigen::MatrixXd sd = solvent.asDiagonal();
         J << sd, (Eigen::MatrixXd::Identity(N, N) - sd);
     } else {
