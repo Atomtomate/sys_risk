@@ -1,4 +1,5 @@
 language: cpp
+  - clang
 
 env:
   global:
@@ -11,9 +12,9 @@ env:
     - RUN_TESTS=true
     - COVERAGE=false
 
-      matrix:
-        include:
-      - os: linux
+matrix:
+  include:
+    - os: linux
       dist: trusty
       sudo: true
       compiler: gcc
@@ -21,18 +22,18 @@ env:
        apt:
          update: true
          packages: &precise_latest_boost_packages
-           - gcc-4.8
-           - g++-4.8
-           - gcov-4.9
-                - clang-3.7
-           - valgrind
+            - gcc-4.8
+            - g++-4.8
+            - gcov-4.9
+            - clang-3.7
+            - valgrind
            # Misc
-           - python-yaml
-           - lcov
-           - libopencv-dev
-           sources: &precise_latest_boost_sources
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.7
+            - python-yaml
+            - lcov
+            - libopencv-dev
+            sources: &precise_latest_boost_sources
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
 before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
