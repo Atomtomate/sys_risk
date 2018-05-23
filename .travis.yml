@@ -1,5 +1,11 @@
+notifications:
+  email:
+    recipients:
+      - jstobbe@fias.uni-frankfurt.de
+    on_success change
+    on_failure change
+
 language: cpp
-  - clang
 
 env:
   global:
@@ -19,31 +25,68 @@ matrix:
       sudo: true
       compiler: gcc
       addons:
-       apt:
-         update: true
-         packages: &precise_latest_boost_packages
-            - gcc-4.8
-            - g++-4.8
-            - gcov-4.9
-            - clang-3.7
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
             - valgrind
-           # Misc
             - python-yaml
             - lcov
             - libopencv-dev
-            sources: &precise_latest_boost_sources
+      env:
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
+      dist: trusty
+      sudo: true
+      compiler: gcc
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7.3
+            - valgrind
+            - python-yaml
+            - lcov
+            - libopencv-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7.3 && CXX=g++-7.3"
+
+    - os: linux
+      dist: trusty
+      sudo: true
+      compiler: gcc
+      addons:
+        apt:
+          update: true
+          sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.7
+          packages:
+            - clang-6.0
+            - valgrind
+            - python-yaml
+            - lcov
+            - libopencv-dev
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+
+
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
 before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
-    - sudo apt-get install -y libeigen3-dev libboost-all-dev libgtest-dev google-mock git
+    - sudo apt-get install -y mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+
 install:
     - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
     - echo ${PATH}
@@ -67,10 +110,8 @@ script:
     ############################################################################
      - mkdir -p build
      - cd build
-        #  -DCMAKE_BUILD_TYPE=Coverage  -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON
-     - cmake .. 
+     - cmake ..
      - make
-       # - make project1_coverage
      - ctest
 
 
