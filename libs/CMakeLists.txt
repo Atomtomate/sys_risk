@@ -20,6 +20,8 @@ ExternalProject_Add(trng
         BUILD_COMMAND "make"
         INSTALL_COMMAND make install
         GIT_PROGRESS 1
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
         #CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/libs/trng
         )
 #find_path(TRNG_INCLUDE_DIR trng/trng.a)
