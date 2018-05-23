@@ -1,0 +1,70 @@
+# RInside stuff
+execute_process(COMMAND R RHOME OUTPUT_VARIABLE R_HOME)
+set(NUM_TRUNC_CHARS 2)
+set(RPATH "R")
+set(RSCRIPT_PATH "Rscript")
+set(RCPPFLAGS_CMD " ${RPATH} " " CMD " " config " " --cppflags ")
+
+execute_process(COMMAND ${RPATH} CMD config --cppflags OUTPUT_VARIABLE RCPPFLAGS)
+string(SUBSTRING ${RCPPFLAGS} ${NUM_TRUNC_CHARS} -1 RCPPFLAGS)
+include_directories(${RCPPFLAGS})
+
+execute_process(COMMAND R CMD config --ldflags OUTPUT_VARIABLE RLDFLAGS)
+string(LENGTH ${RLDFLAGS} RLDFLAGS_LEN)
+if (${RLDFLAGS} MATCHES "[-][L]([^ ;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RLDFLAGS_L)
+    string(STRIP ${RLDFLAGS_L} RLDFLAGS_L )
+    link_directories(${RLDFLAGS_L} )
+endif()
+if (${RLDFLAGS} MATCHES "[-][l]([^;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RLDFLAGS_l)
+    string(STRIP ${RLDFLAGS_l} RLDFLAGS_l )
+endif()
+
+execute_process(COMMAND Rscript -e "Rcpp:::CxxFlags()" OUTPUT_VARIABLE RCPPINCL)
+string(SUBSTRING ${RCPPINCL} ${NUM_TRUNC_CHARS} -1 RCPPINCL)
+include_directories(${RCPPINCL})
+
+execute_process(COMMAND Rscript -e "Rcpp:::LdFlags()" OUTPUT_VARIABLE RCPPLIBS)
+
+execute_process(COMMAND Rscript -e "RInside:::CxxFlags()" OUTPUT_VARIABLE RINSIDEINCL)
+string(SUBSTRING ${RINSIDEINCL} ${NUM_TRUNC_CHARS} -1 RINSIDEINCL)
+include_directories(${RINSIDEINCL})
+
+execute_process(COMMAND Rscript -e "RInside:::LdFlags()" OUTPUT_VARIABLE RINSIDELIBS)
+
+execute_process(COMMAND Rscript -e "cat(paste('-I', system.file('include', package = 'RcppEigen'), sep=''))" OUTPUT_VARIABLE RCPPEIGENINCL)
+
+string(SUBSTRING ${RCPPEIGENINCL} ${NUM_TRUNC_CHARS} -1 RCPPEIGENINCL)
+include_directories(${RCPPEIGENINCL})
+if (${RCPPLIBS} MATCHES "[-][L]([^ ;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_L)
+    link_directories(${RCPPLIBS_L} )
+endif()
+    link_directories(${RINSIDELIBS_L})
+endif()
+
+if (${RINSIDELIBS} MATCHES "[-][l][R]([^;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_l)
+endif()
+
+# If the faster 'gold' linker is used, to avoid complaints about undefined symbol
+SET(CMAKE_FIND_LIBRARY_SUFFIXES_SAVED ${CMAKE_FIND_LIBRARY_SUFFIXES}) # Backup
+LIST(APPEND CMAKE_FIND_LIBRARY_SUFFIXES ".so.3")
+FIND_LIBRARY(BLAS_LIBRARY blas)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES_SAVED}) # Restore
+LIST(APPEND EXTRA_LIBRARIES ${BLAS_LIBRARY})
+
+execute_process(COMMAND R CMD config CXXFLAGS OUTPUT_VARIABLE RCXXFLAGS)
+
+execute_process(COMMAND R CMD config BLAS_LIBS OUTPUT_VARIABLE RBLAS)
+
+execute_process(COMMAND R CMD config LAPACK_LIBS OUTPUT_VARIABLE RLAPACK)
+
+
+if (${RCPPLIBS} MATCHES "[-][l][R]([^;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RCPPLIBS_l)
+endif()
+
+if (${RINSIDELIBS} MATCHES "[-][L]([^ ;])+")
+    string(SUBSTRING ${CMAKE_MATCH_0} ${NUM_TRUNC_CHARS} -1 RINSIDELIBS_L)
