@@ -55,9 +55,6 @@ find_package(GTest)
 #find_package(GMock) {GMOCK_INCLUDE_DIRS}
 include_directories(${GTEST_INCLUDE_DIRS} $)
 
-# this is the old PRNG library, this could be retired in the future (use R and stan math)
-target_link_libraries(Valuation trng4 pthread m)
-
 find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 target_link_libraries(Valuation ${MPI_LIBRARIES})
@@ -68,8 +65,9 @@ if (Boost_FOUND)
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 endif()
 
-find_package(Eigen3 REQUIRED)
-message("Found Eigen3")
+find_package(Eigen3 REQUIRED NO_MODULE)
+include_directories(${EIGEN3_INCLUDE_DIR})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${EIGEN3_INCLUDE_DIR}")
 
 #add libs
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs)
@@ -77,17 +75,20 @@ include_directories(${CMAKE_SOURCE_DIR}/libs)
 link_directories(${CMAKE_SOURCE_DIR}/libs)
 add_dependencies(Valuation trng)
 
-target_link_libraries(Valuation ${GTEST_BOTH_LIBRARIES})
-target_link_libraries(Valuation Eigen3::Eigen)
-target_link_libraries(Valuation ${BLAS_LIBS})
-target_link_libraries(Valuation ${LAPACK_LIBS})
-target_link_libraries(Valuation ${EXTRA_LIBRARIES})
-target_link_libraries(Valuation ${LAPACK_LIBRARY})
-target_link_libraries(Valuation ${LIBS})
-#target_link_libraries(Valuation ${SUNDIALS_LIBRARIES})
-#target_link_libraries(Valuation ${RLDFLAGS_l})
-#target_link_libraries(Valuation ${RINSIDELIBS_l})
-#target_link_libraries(Valuation ${RCPPLIBS_l})
+
+# this is the old PRNG library, this could be retired in the future (use R and stan math)
+target_link_libraries(${PROJECT_NAME} trng4 pthread m)
+target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
+target_link_libraries(${PROJECT_NAME} ${BLAS_LIBS})
+target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBS})
+target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${LIBS})
+#target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} ${RLDFLAGS_l})
+#target_link_libraries(${PROJECT_NAME} ${RINSIDELIBS_l})
+#target_link_libraries(${PROJECT_NAME} ${RCPPLIBS_l})
 
 
 include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)
