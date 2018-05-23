@@ -65,7 +65,7 @@ matrix:
           update: true
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-6.0
+            - llvm-toolchain-trusty-6.0
           packages:
             - cmake
             - clang-6.0
