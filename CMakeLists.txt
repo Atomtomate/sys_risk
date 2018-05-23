@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -Wno-ignored-attribut
 
 # Project settings
 set (Valuation_VERSION_MAJOR 0)
-set (Valuation_VERSION_MINOR 1)
+set (Valuation_VERSION_MINOR 2)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 #include_directories(${ROOT})
@@ -44,7 +44,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp)
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 FIND_LIBRARY(LAPACK_LIBRARY lapack)
@@ -72,19 +72,22 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 message("Found Eigen3")
 
 #add libs
+add_subdirectory(${CMAKE_SOURCE_DIR}/libs)
 include_directories(${CMAKE_SOURCE_DIR}/libs)
+link_directories(${CMAKE_SOURCE_DIR}/libs)
+add_dependencies(Valuation trng)
 
 target_link_libraries(Valuation ${GTEST_BOTH_LIBRARIES})
-#target_link_libraries(Valuation ${SUNDIALS_LIBRARIES})
 target_link_libraries(Valuation Eigen3::Eigen)
-#target_link_libraries(Valuation ${RLDFLAGS_l})
 target_link_libraries(Valuation ${BLAS_LIBS})
 target_link_libraries(Valuation ${LAPACK_LIBS})
-#target_link_libraries(Valuation ${RINSIDELIBS_l})
-#target_link_libraries(Valuation ${RCPPLIBS_l})
 target_link_libraries(Valuation ${EXTRA_LIBRARIES})
 target_link_libraries(Valuation ${LAPACK_LIBRARY})
 target_link_libraries(Valuation ${LIBS})
+#target_link_libraries(Valuation ${SUNDIALS_LIBRARIES})
+#target_link_libraries(Valuation ${RLDFLAGS_l})
+#target_link_libraries(Valuation ${RINSIDELIBS_l})
+#target_link_libraries(Valuation ${RCPPLIBS_l})
 
 
 include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)

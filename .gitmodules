@@ -1,0 +1,3 @@
+[submodule "libs/trng4"]
+	path = libs/trng4
+	url = https://github.com/rabauke/trng4
