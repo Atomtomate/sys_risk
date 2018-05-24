@@ -65,9 +65,22 @@ if (Boost_FOUND)
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 endif()
 
-find_package(Eigen3 REQUIRED NO_MODULE)
+# Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
+include(FindPkgConfig)
+pkg_search_module(Eigen3 REQUIRED eigen3)
 include_directories(${EIGEN3_INCLUDE_DIR})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${EIGEN3_INCLUDE_DIR}")
+add_definitions(${EIGEN3_DEFINITIONS})
+if(NOT EIGEN3_FOUND)
+    # Fallback to cmake_modules
+    find_package(Eigen3 REQUIRED)
+    set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
+    set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})
+else()
+    set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
+#find_package(Eigen3 REQUIRED NO_MODULE)
+#include_directories(${EIGEN3_INCLUDE_DIR})
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${EIGEN3_INCLUDE_DIR}")
 
 #add libs
 add_subdirectory(${CMAKE_SOURCE_DIR}/libs)
