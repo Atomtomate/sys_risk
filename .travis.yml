@@ -22,8 +22,6 @@
 # FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
-
-
 notifications:
   email:
     recipients:
@@ -65,17 +63,14 @@ matrix:
       env: COMPILER=g++-6
 
 
+# - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
 
 before_script:
-#    - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
     - sudo apt-get install -qq build-essential autotools-dev mercurial libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
 
 
 install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/external"
-  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
-
   - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
   ############################################################################
   # Install Boost headers
