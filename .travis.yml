@@ -14,7 +14,6 @@ env:
 
 addons:
    apt:
-     update: true
      packages:
        - valgrind
        - cmake
@@ -33,7 +32,8 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      env: COMPILER=g++-6 BOOST_VERSION=default
+      env: COMPILER=g++-6
+      compiler: g++
 
 script:
   # Combine global build options with OS/compiler-dependent options
