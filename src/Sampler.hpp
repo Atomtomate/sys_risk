@@ -27,15 +27,16 @@ namespace MCUtil {
     class Sampler {
     private:
         friend class boost::serialization::access;
-        /*template<class Archive>
+        template<class Archive>
         void serialize(Archive & ar, const unsigned int version)
         {
             //@TODO: iterate over all stat types!
-            res_mean =
+            auto res_mean = extract_plain(StatType::MEAN);
+            auto res_var = extract_plain(StatType::VARIANCE);
             ar & descriptions;
-            ar & ;
-            ar & ;
-        }*/
+            ar & res_mean;
+            ar & res_var;
+        }
 
         std::vector<MCUtil::StatAcc<T, 100000>> accs;
         std::vector<std::function<T(void)>> observers;

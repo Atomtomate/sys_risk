@@ -8,6 +8,9 @@
 language: generic
 sudo: true
 
+cache:
+  apt: true
+
 env:
   global:
     # Ubuntu version
@@ -17,7 +20,8 @@ addons:
    apt:
      update: true
      sources:
-       - - llvm-toolchain-precise
+        - boost-latest
+       - llvm-toolchain-precise
        - ubuntu-toolchain-r-test
      packages:
        - cmake

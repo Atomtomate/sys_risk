@@ -11,7 +11,6 @@
 
 #include <string>
 
-#include <boost/serialization>
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
