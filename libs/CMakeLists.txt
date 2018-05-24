@@ -16,7 +16,7 @@ ExternalProject_Add(trng
         PATCH_COMMAND ""
         SOURCE_DIR "${CMAKE_SOURCE_DIR}/libs/trng_download"
         INSTALL_DIR "${CMAKE_SOURCE_DIR}/libs/trng"
-        CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
+        CONFIGURE_COMMAND autoreconf -f -i  > /dev/null 2>&1 && <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
         BUILD_COMMAND "make"
         INSTALL_COMMAND make install
         GIT_PROGRESS 1
