@@ -30,6 +30,7 @@
 #include "N2_network.hpp"
 #include "ER_Network.hpp"
 #include "KarlFischerPaper.hpp"
+#include "IOHelper.hpp"
 
 #include "../test/TestMain.hpp"
 

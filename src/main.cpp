@@ -57,14 +57,14 @@ int main(int argc, char* argv[])
     //n2NN.test_N2_valuation();
 
 
-    for (int N : {2, 4, 8, 16, 32}) {
+    for (int N : {2, 4}){ //, 8, 16, 32}) {
         ER_Network nNN(local, world, true, N, 1.0, 0.95, 2, 1.0, 0.0);
         nNN.test_ER_valuation();
     }
-    for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
-        ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
-        nNN.test_ER_valuation(10);
-    }
+    //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
+    //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
+    //   nNN.test_ER_valuation(10);
+    //}
 
     //@TODO: write test that expects equal sresults on equal seed
     return 0;

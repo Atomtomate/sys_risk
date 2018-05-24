@@ -31,7 +31,7 @@ namespace MCUtil {
         for(auto el: res)
         {
             ofs_desc << el.first;
-            //ofs <<
+            ofs << S;
         }
     }
 
