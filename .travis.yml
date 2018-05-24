@@ -23,12 +23,12 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      compiler: gcc
       addons:
         apt:
           update: true
-          sources:
+          sources: &sources
             - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
           packages:
             - cmake
             - g++-4.9
@@ -37,15 +37,48 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - COMPILER_NAME=gcc CC=gcc-4.9 CXX=g++-4.9
+        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
 
     - os: linux
       dist: trusty
-      compiler: gcc
       addons:
         apt:
           update: true
-          sources:
+          sources: &sources
+            - ubuntu-toolchain-r-test
+          packages:
+            - cmake
+            - g++-5
+            - valgrind
+            - python-yaml
+            - lcov
+            - libopencv-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+    - os: linux
+      dist: trusty
+      addons:
+        apt:
+          update: true
+          sources: &sources
+            - ubuntu-toolchain-r-test
+          packages:
+            - cmake
+            - g++-6
+            - valgrind
+            - python-yaml
+            - lcov
+            - libopencv-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+    - os: linux
+      dist: trusty
+      addons:
+        apt:
+          update: true
+          sources: &sources
             - ubuntu-toolchain-r-test
           packages:
             - cmake
@@ -55,7 +88,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - COMPILER_NAME=gcc CC=gcc-7.3 CXX=g++-7.3
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
     - os: linux
       dist: trusty
@@ -63,7 +96,7 @@ matrix:
       addons:
         apt:
           update: true
-          sources:
+          sources:  &sources
             - ubuntu-toolchain-r-test
             - llvm-toolchain-trusty-6.0
           packages:
@@ -74,7 +107,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - COMPILER_NAME=clang CC=clang-6.0 CXX=clang++-6.0
+        - COMPILER=clang++-6.0
 
 
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
@@ -86,7 +119,7 @@ before_script:
 before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
-    - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+    - eval "${MATRIX_EVAL}"
 
 script:
     ############################################################################
