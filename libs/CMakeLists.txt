@@ -10,17 +10,20 @@ endif()
 # obtain and build TRNG
 #TOD: find acutal .a file
 ExternalProject_Add(trng
-        GIT_REPOSITORY "https://github.com/rabauke/trng4"
-        GIT_TAG "master"
-        UPDATE_COMMAND ""
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libs
+        GIT_REPOSITORY https://github.com/rabauke/trng4
+        GIT_TAG origin/master
+        UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
         PATCH_COMMAND ""
-        SOURCE_DIR "${CMAKE_SOURCE_DIR}/libs/trng_download"
-        INSTALL_DIR "${CMAKE_SOURCE_DIR}/libs/trng"
-        CONFIGURE_COMMAND autoreconf -f -i  > /dev/null 2>&1 && <SOURCE_DIR>/configure --prefix=<INSTALL_DIR>
-        BUILD_COMMAND "make"
+        BUILD_IN_SOURCE 1
+        SOURCE_DIR ${CMAKE_SOURCE_DIR}/libs/trng_download
+        INSTALL_DIR ${CMAKE_SOURCE_DIR}/libs/trng
+        CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=${CMAKE_CURRENT_BINARY_DIR}
+#        CONFIGURE_COMMAND ./configure --prefix=<INSTALL_DIR>
+        BUILD_COMMAND make
         INSTALL_COMMAND make install
         GIT_PROGRESS 1
-        LOG_CONFIGURE 1
+        LOG_CONFIGURE 0
         LOG_BUILD 1
         #CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/libs/trng
         )
