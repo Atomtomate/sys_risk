@@ -45,7 +45,6 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
@@ -123,5 +122,7 @@ target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} ${RINSIDELIBS_l})
 #target_link_libraries(${PROJECT_NAME} ${RCPPLIBS_l})
 
-
 include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)
+
+
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp)

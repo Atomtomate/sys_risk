@@ -10,6 +10,7 @@
 #define VALUATION_IOHELPER_HPP
 
 #include <boost/filesystem/fstream.hpp>
+#include <boost/serialization/vector.hpp>
 #include <iostream>
 
 #include "Config.hpp"
