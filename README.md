@@ -13,7 +13,7 @@ optional:
 Installation on ubuntu:
     - git clone https://github.com/Atomtomate/sys_risk && cd sys_risk
     - sudo apt-get update -qq
-    - sudo apt-get install -y mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git
+    - sudo apt-get install mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git
     - mkdir build && cd build && cmake ..
     - configure cmake as needed
     - make

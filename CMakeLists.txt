@@ -71,7 +71,7 @@ pkg_search_module(Eigen3 REQUIRED eigen3)
 if(NOT EIGEN3_FOUND)
     # Fallback to cmake_modules
     message("pkg_search unsuccessful. falling back to find_package")
-    find_package(Eigen3 REQUIRED NO_MODULE)
+    find_package(Eigen3 REQUIRED)
     set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
     set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})
     target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)
