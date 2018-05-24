@@ -14,7 +14,7 @@ env:
     - LINUX_DIST=trusty
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
     # Global build options and C++ flags
-    - CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
+    #- CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     # Misc
     - RUN_TESTS=true
     - COVERAGE=false
@@ -107,7 +107,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - COMPILER=clang++-6.0
+        - MATRIX_EVAL="CC=clang-6 && CXX=clang++-6"
 
 
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
