@@ -23,6 +23,7 @@ addons:
        - cmake
        - g++-6
        - gcc-6
+       - libboost-all-dev
     # Global build options and C++ flags
     #- CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     # Misc

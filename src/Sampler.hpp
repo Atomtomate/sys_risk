@@ -30,7 +30,9 @@ namespace MCUtil {
         template<class Archive>
         void serialize(Archive & ar, const unsigned int version)
         {
-            ar & ;
+            //@TODO: iterate over all stat types!
+            res_mean =
+            ar & descriptions;
             ar & ;
             ar & ;
         }
@@ -104,6 +106,19 @@ namespace MCUtil {
          * @brief      Extracts all results for previously registered observers.
          * @param st   Type of statistic which should be extracted. For example MCUtil::StatType::MEAN
          * @return     Returns accumulated result of type T and statistic st
+         */
+        auto extract_plain(const StatType st) {
+            std::vector<T> res;
+            for (unsigned int i = 0; i < accs.size(); i++) {
+                res.emplace_back(accs[i].extract(st));
+            }
+            return res;
+        }
+
+        /*!
+         * @brief      Extracts all results for previously registered observers.
+         * @param st   Type of statistic which should be extracted. For example MCUtil::StatType::MEAN
+         * @return     Returns pairs of descriptions and accumulated result of type T with statistic st
          */
         auto extract(const StatType st) {
             std::vector<std::pair<std::string, T>> res;
