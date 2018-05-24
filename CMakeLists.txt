@@ -47,7 +47,10 @@ configure_file (
 add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
-FIND_LIBRARY(LAPACK_LIBRARY lapack)
+find_library(LAPACK_LIBRARY lapack)
+if(LAPACK_LIBRARY_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBS})
+endif()
 
 # Dependencies
 
@@ -97,7 +100,6 @@ target_link_libraries(${PROJECT_NAME} trng4 pthread m)
 target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
 target_link_libraries(${PROJECT_NAME} ${BLAS_LIBS})
-target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBS})
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
