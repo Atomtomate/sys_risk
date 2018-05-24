@@ -1,9 +1,9 @@
-notifications:
-  email:
-    recipients:
-      - jstobbe@fias.uni-frankfurt.de
-    on_success change
-    on_failure change
+#notifications:
+#  email:
+#    recipients:
+#      - jstobbe@fias.uni-frankfurt.de
+#    on_success change
+#    on_failure change
 
 language: cpp
 sudo: true
@@ -34,7 +34,6 @@ matrix:
     - os: linux
       dist: trusty
       env: COMPILER=g++-6
-      compiler: g++
 
 
 script:
@@ -48,9 +47,6 @@ script:
   - cmake ..
   - make
   - ctest
-
-after_failure:
-  less /home/travis/build/Atomtomate/sys_risk/build/external/trng-prefix/src/trng-stamp/trng-build-*.log
 
 
 #after_success:
