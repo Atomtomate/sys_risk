@@ -21,12 +21,12 @@ if (SUNDIALS_FOUND)
             unset(_LIB)
         endforeach ()
 
-        # Fall back to dynamic libs if we haven't found static libs
+        # Fall back to dynamic external if we haven't found static external
         if (NOT SUNDIALS_STATIC_LIBRARIES)
             set(SUNDIALS_STATIC_LIBRARIES ${SUNDIALS_LIBRARIES})
         endif ()
     else ()
-        # On Windows we have no way to distinguish .lib files that import dlls or represent static libs
+        # On Windows we have no way to distinguish .lib files that import dlls or represent static external
         set(SUNDIALS_STATIC_LIBRARIES ${SUNDIALS_LIBRARIES})
     endif ()
 endif ()

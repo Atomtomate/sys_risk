@@ -3,7 +3,7 @@ latex/
 html/
 cmake-build-debug/
 *download/
-libs/trng*
+external/
 .idea/
 *.png
 *.svg

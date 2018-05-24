@@ -81,7 +81,7 @@ matrix:
 before_script:
     - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -qq
-    - sudo apt-get install -y build-essential mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
+    - sudo apt-get install -y build-essential autotools-dev mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
 
 before_install:
     # Combine global build options with OS/compiler-dependent options
@@ -99,7 +99,7 @@ script:
      - ctest
 
 after_failure:
-  less /home/travis/build/Atomtomate/sys_risk/build/libs/trng-prefix/src/trng-stamp/trng-build-*.log
+  less /home/travis/build/Atomtomate/sys_risk/build/external/trng-prefix/src/trng-stamp/trng-build-*.log
 
 
 #after_success:
