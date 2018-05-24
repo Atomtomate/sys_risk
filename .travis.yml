@@ -105,6 +105,9 @@ before_install:
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
     - eval "${MATRIX_EVAL}"
+install:
+    - export CXXFLAGS="-std=c++14 -stdlib=libc++"
+
 
 script:
     ############################################################################

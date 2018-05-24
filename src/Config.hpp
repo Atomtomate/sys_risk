@@ -12,11 +12,12 @@
 #include <string>
 #include "boost/filesystem.hpp"
 
+namespace fs = boost::filesystem;
 
 class Config
 {
 private:
-    std::string output_dir;
+    fs::path output_dir;
 public:
     Config()
     {
