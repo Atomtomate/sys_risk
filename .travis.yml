@@ -22,20 +22,20 @@
 # FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
-notifications:
-  email:
-    recipients:
-      - jstobbe@fias.uni-frankfurt.de
-    on_success change
-    on_failure change
+#notifications:
+#  email:
+#    recipients:
+#      - jstobbe@fias.uni-frankfurt.de
+#    on_success change
+#    on_failure change
 
 language: cpp
 sudo: true
 
-env:
-  global:
-    matrix:
-      - TRAVIS_EMPTY_JOB_WORKAROUND=true
+#env:
+#  global:
+#    matrix:
+#      - TRAVIS_EMPTY_JOB_WORKAROUND=true
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/external
@@ -55,8 +55,8 @@ addons:
 
 
 matrix:
-  exclude:
-    env: TRAVIS_EMPTY_JOB_WORKAROUND=true
+#  exclude:
+#    env: TRAVIS_EMPTY_JOB_WORKAROUND=true
   include:
     - os: linux
       dist: trusty
@@ -64,13 +64,15 @@ matrix:
 
 
 # - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
-
+#    - sudo apt-get update -qq
 before_script:
-    - sudo apt-get update -qq
     - sudo apt-get install -qq build-essential autotools-dev mercurial libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
 
 
 install:
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/external"
+  - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
+
   - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
   ############################################################################
   # Install Boost headers
