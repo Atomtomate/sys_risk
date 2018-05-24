@@ -63,7 +63,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - MATRIX_EVAL="sudo ln -s /usr/bin/gcc-6 /usr/local/bin/gcc && sudo ln -s /usr/bin/g++-6 /usr/local/bin/g++ && CC=gcc-6 && CXX=g++-6"
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
     - os: linux
       dist: trusty
@@ -76,7 +76,7 @@ matrix:
             - cmake
             - g++-7
       env:
-        - MATRIX_EVAL="sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc && sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++ && CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
     - os: linux
       dist: trusty
@@ -100,11 +100,12 @@ before_script:
     - sudo apt-get update -qq
     - sudo apt-get install -qq build-essential autotools-dev mercurial libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
     #libeigen3-dev
-
+#sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc && sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++ &&
 before_install:
+    - eval "${MATRIX_EVAL}"
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
-    - eval "${MATRIX_EVAL}"
+
 install:
     - export CXXFLAGS="-std=c++14 -stdlib=libc++"
 

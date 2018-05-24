@@ -11,12 +11,15 @@
 
 
 #include "Config.hpp"
+#include "StatAcc.hpp"
 
 namespace MCUtil {
 
     template<typename T>
     void write_to_csv(Sampler<T> S, Config c, std::string filename) {
         fs::path out(filename);
+        fs::path out_description(filename + std::string("_description"));
+        auto res = S.extract(StatType::MEAN);
     }
 
 }
