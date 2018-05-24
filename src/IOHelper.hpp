@@ -22,6 +22,9 @@ namespace MCUtil {
         out /= fs::path(filename);
         fs::path out_description(c.output_dir);
         out_description /= fs::path(filename + std::string("_description"));
+
+        fs::ofstream ofs{out};
+        fs::ofstream ofs_desc{out_description};
         auto res = S.extract(StatType::MEAN);
         for(auto el: res)
         {

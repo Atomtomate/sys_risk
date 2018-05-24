@@ -23,7 +23,6 @@ addons:
        - cmake
        - g++-6
        - gcc-6
-       - clang-6.0
     # Global build options and C++ flags
     #- CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     # Misc
