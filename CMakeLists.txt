@@ -82,21 +82,21 @@ if (Boost_FOUND)
 endif()
 
 # Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
-find_package(PkgConfig)
-pkg_search_module(Eigen3 REQUIRED eigen3)
-if(NOT EIGEN3_FOUND)
-    # Fallback to cmake_modules
-    message("pkg_search unsuccessful. falling back to find_package")
-    find_package(Eigen3 REQUIRED)
-    set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
-    set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})
-    target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)
-else()
-    include_directories(${EIGEN3_INCLUDE_DIR})
-    include_directories(${EIGEN3_INCLUDE_DIRS})
-    add_definitions(${EIGEN3_DEFINITIONS})
-    set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-endif()
+#find_package(PkgConfig)
+#pkg_search_module(Eigen3 REQUIRED eigen3)
+#if(NOT EIGEN3_FOUND)
+#    # Fallback to cmake_modules
+#    message("pkg_search unsuccessful. falling back to find_package")
+#    find_package(Eigen3 REQUIRED)
+#    set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
+#    set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})
+#    target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)
+#else()
+#    include_directories(${EIGEN3_INCLUDE_DIR})
+#    include_directories(${EIGEN3_INCLUDE_DIRS})
+#    add_definitions(${EIGEN3_DEFINITIONS})
+#    set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+#endif()
 
 
 #add external
@@ -104,6 +104,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/external)
 include_directories(${CMAKE_SOURCE_DIR}/external/include)
 link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 add_dependencies(Valuation trng)
+add_dependencies(Valuation eigen3)
+include_directories(${EIGEN_INC}})
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
