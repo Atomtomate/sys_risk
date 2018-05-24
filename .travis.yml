@@ -112,13 +112,12 @@ before_script:
     #libeigen3-dev
 #sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc && sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++ &&
 before_install:
-    - eval "${MATRIX_EVAL}"
+    #- eval "${MATRIX_EVAL}"
     # Combine global build options with OS/compiler-dependent options
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
 
 install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
-    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-6.0" CC="clang-6.0"; fi
+    - export CXX="g++-6" CC="gcc-6"
 
 
 script:

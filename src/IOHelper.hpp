@@ -10,6 +10,7 @@
 #define VALUATION_IOHELPER_HPP
 
 #include <boost/filesystem/fstream.hpp>
+#include <iostream>
 
 #include "Config.hpp"
 #include "StatAcc.hpp"
@@ -28,7 +29,8 @@ namespace MCUtil {
         auto res = S.extract(StatType::MEAN);
         for(auto el: res)
         {
-
+            ofs_desc << el.first;
+            ofs <<
         }
     }
 
