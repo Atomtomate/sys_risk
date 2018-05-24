@@ -75,7 +75,7 @@ find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 target_link_libraries(Valuation ${MPI_LIBRARIES})
 
-find_package(Boost COMPONENTS mpi serialization REQUIRED)
+find_package(Boost COMPONENTS system filesystem mpi serialization REQUIRED)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     target_link_libraries(Valuation ${Boost_LIBRARIES})
