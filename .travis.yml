@@ -5,13 +5,10 @@ notifications:
     on_success change
     on_failure change
 
-language: c++
+language: cpp
 sudo: true
 
 env:
-  global:
-    - LINUX_DIST=trusty
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/external
   matrix:
       - TRAVIS_EMPTY_JOB_WORKAROUND=true
 
