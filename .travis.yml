@@ -33,7 +33,7 @@ matrix:
             - cmake
             - g++-4.9
       env:
-        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+        - MATRIX_EVAL="export CC=gcc-4.9 && CXX=g++-4.9"
 
     - os: linux
       dist: trusty
@@ -46,7 +46,7 @@ matrix:
             - cmake
             - g++-5
       env:
-        - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+        - MATRIX_EVAL="export CC=gcc-5 && CXX=g++-5"
 
     - os: linux
       dist: trusty
@@ -63,7 +63,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+        - MATRIX_EVAL="export CC=gcc-6 && CXX=g++-6"
 
     - os: linux
       dist: trusty
@@ -76,7 +76,7 @@ matrix:
             - cmake
             - g++-7
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - MATRIX_EVAL="export CC=gcc-7 && CXX=g++-7"
 
     - os: linux
       dist: trusty
@@ -91,7 +91,7 @@ matrix:
             - cmake
             - clang-6.0
       env:
-        - MATRIX_EVAL="CC=clang-6 && CXX=clang++-6"
+        - MATRIX_EVAL="export CC=clang-6 && CXX=clang++-6"
 
 
 #- sudo apt-get install -y r-cran-rinside libsundials-dev

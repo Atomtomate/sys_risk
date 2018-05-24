@@ -20,6 +20,10 @@ namespace MCUtil {
         fs::path out(filename);
         fs::path out_description(filename + std::string("_description"));
         auto res = S.extract(StatType::MEAN);
+        for(auto el: res)
+        {
+
+        }
     }
 
 }
