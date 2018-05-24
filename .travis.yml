@@ -12,7 +12,7 @@ env:
   global:
     # Ubuntu version
     - LINUX_DIST=trusty
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/external
     # Global build options and C++ flags
     #- CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     # Misc
