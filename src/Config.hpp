@@ -9,6 +9,33 @@
 #ifndef CONFIG_HPP_
 #define CONFIG_HPP_
 
-using namespace Eigen;
+#include <string>
+#include "boost/filesystem.hpp"
+
+
+class Config
+{
+private:
+    std::string output_dir;
+public:
+    Config()
+    {
+    }
+
+    /*!
+     * @brief       creates new directory if not existent
+     * @param path  path to directory
+     * @return      1 if directory was created sucessfully, 2 if it already existed and is writable, 0 on error
+     */
+    int set_output_dir(std::string path)
+    {
+        if(boost::filesystem::exists(path))
+        {
+
+        } else {
+            return create_directory(path);
+        }
+    }
+};
 
 #endif

@@ -25,6 +25,7 @@
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
 
+#include "Config.hpp"
 #include "Sampler.hpp"
 #include "N2_network.hpp"
 #include "ER_Network.hpp"

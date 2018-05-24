@@ -10,5 +10,15 @@
 #define VALUATION_IOHELPER_HPP
 
 
+#include "Config.hpp"
+
+namespace MCUtil {
+
+    template<typename T>
+    void write_to_csv(Sampler <T> S, Config c, std::string filename) {
+
+    }
+
+}
 
 #endif //VALUATION_IOHELPER_HPP
