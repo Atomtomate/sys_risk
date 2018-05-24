@@ -97,14 +97,12 @@ else()
     add_definitions(${EIGEN3_DEFINITIONS})
     set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 endif()
-#find_package(Eigen3 REQUIRED NO_MODULE)
-#include_directories(${EIGEN3_INCLUDE_DIR})
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${EIGEN3_INCLUDE_DIR}")
 
-#add libs
-add_subdirectory(${CMAKE_SOURCE_DIR}/libs)
-include_directories(${CMAKE_SOURCE_DIR}/libs)
-link_directories(${CMAKE_SOURCE_DIR}/libs)
+
+#add external
+add_subdirectory(${CMAKE_SOURCE_DIR}/external)
+include_directories(${CMAKE_SOURCE_DIR}/external/include)
+link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 add_dependencies(Valuation trng)
 
 
