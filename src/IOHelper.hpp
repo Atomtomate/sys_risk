@@ -9,6 +9,7 @@
 #ifndef VALUATION_IOHELPER_HPP
 #define VALUATION_IOHELPER_HPP
 
+#include <boost/filesystem/fstream.hpp>
 
 #include "Config.hpp"
 #include "StatAcc.hpp"
