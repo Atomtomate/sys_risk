@@ -8,90 +8,98 @@
 language: generic
 sudo: true
 
-#env:
-#  global:
+env:
+  global:
     # Ubuntu version
-    #- LINUX_DIST=trusty
-    #- DEPS_DIR=${TRAVIS_BUILD_DIR}/external
+    - LINUX_DIST=trusty
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/external
+addons:
+   apt:
+     update: true
+     sources: &sources
+       - ubuntu-toolchain-r-test
+     packages:
+       - cmake
+       - g++-6
     # Global build options and C++ flags
     #- CXX_FLAGS="-Wall -std=c++14 -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     # Misc
     #- RUN_TESTS=true
     #- COVERAGE=false
 
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          update: true
-          sources: &sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
-          packages:
-            - cmake
-            - g++-4.9
-      env:
-        - MATRIX_EVAL="export CC=gcc-4.9 && CXX=g++-4.9"
+#matrix:
+#  include:
+#    - os: linux
+#      dist: trusty
+#      addons:
+#        apt:
+#          update: true
+#          sources: &sources
+#            - ubuntu-toolchain-r-test
+#            - llvm-toolchain-trusty-6.0
+#          packages:
+#            - cmake
+#            - g++-4.9
+#      env:
+#        - MATRIX_EVAL="export CC=gcc-4.9 && CXX=g++-4.9"
 
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          update: true
-          sources: &sources
-            - ubuntu-toolchain-r-test
-          packages:
-            - cmake
-            - g++-5
-      env:
-        - MATRIX_EVAL="export CC=gcc-5 && CXX=g++-5"
+#    - os: linux
+#      dist: trusty
+#      addons:
+#        apt:
+#          update: true
+#          sources: &sources
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - cmake
+#            - g++-5
+#      env:
+#        - MATRIX_EVAL="export CC=gcc-5 && CXX=g++-5"
 
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          update: true
-          sources: &sources
-            - ubuntu-toolchain-r-test
-          packages:
-            - cmake
-            - g++-6
-            - valgrind
-            - python-yaml
-            - lcov
-            - libopencv-dev
-      env:
-        - MATRIX_EVAL="export CC=gcc-6 && CXX=g++-6"
+#    - os: linux
+#      dist: trusty
+#      addons:
+#        apt:
+#          update: true
+#          sources: &sources
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - cmake
+#            - g++-6
+#            - valgrind
+#            - python-yaml
+#            - lcov
+#            - libopencv-dev
+#      env:
+#        - MATRIX_EVAL="export CC=gcc-6 && CXX=g++-6"
+#
+#    - os: linux
+#      dist: trusty
+#      addons:
+#        apt:
+#          update: true
+#          sources: &sources
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - cmake
+#            - g++-7
+#      env:
+#        - MATRIX_EVAL="export CC=gcc-7 && CXX=g++-7"
 
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          update: true
-          sources: &sources
-            - ubuntu-toolchain-r-test
-          packages:
-            - cmake
-            - g++-7
-      env:
-        - MATRIX_EVAL="export CC=gcc-7 && CXX=g++-7"
-
-    - os: linux
-      dist: trusty
-      compiler: clang
-      addons:
-        apt:
-          update: true
-          sources:  &sources
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
-          packages:
-            - cmake
-            - clang-6.0
-      env:
-        - MATRIX_EVAL="export CC=clang-6 && CXX=clang++-6"
+#    - os: linux
+#      dist: trusty
+#      compiler: clang
+#      addons:
+#        apt:
+#          update: true
+#          sources:  &sources
+#            - ubuntu-toolchain-r-test
+#            - llvm-toolchain-trusty-6.0
+#          packages:
+#            - cmake
+#            - clang-6.0
+#      env:
+#        - MATRIX_EVAL="export CC=clang-6 && CXX=clang++-6"
 
 
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
@@ -107,7 +115,8 @@ before_install:
     - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
 
 install:
-    - export CXXFLAGS="-std=c++14 -stdlib=libc++"
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc-6"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-6.0" CC="clang-6.0"; fi
 
 
 script:

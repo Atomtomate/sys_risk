@@ -14,11 +14,10 @@
 
 namespace fs = boost::filesystem;
 
-class Config
+struct Config
 {
-private:
-    fs::path output_dir;
 public:
+    fs::path output_dir;
     Config(std::string out_dir)
     {
         set_output_dir(out_dir);

@@ -17,8 +17,10 @@ namespace MCUtil {
 
     template<typename T>
     void write_to_csv(Sampler<T> S, Config c, std::string filename) {
-        fs::path out(filename);
-        fs::path out_description(filename + std::string("_description"));
+        fs::path out(c.output_dir);
+        out /= fs::path(filename);
+        fs::path out_description(c.output_dir);
+        out_description /= fs::path(filename + std::string("_description"));
         auto res = S.extract(StatType::MEAN);
         for(auto el: res)
         {
