@@ -5,7 +5,7 @@
 #    on_success change
 #    on_failure change
 
-language: c++
+language: generic
 sudo: true
 
 env:
