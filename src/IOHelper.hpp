@@ -15,8 +15,8 @@
 namespace MCUtil {
 
     template<typename T>
-    void write_to_csv(Sampler <T> S, Config c, std::string filename) {
-
+    void write_to_csv(Sampler<T> S, Config c, std::string filename) {
+        fs::path out(filename);
     }
 
 }

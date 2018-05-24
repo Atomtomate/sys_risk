@@ -19,8 +19,9 @@ class Config
 private:
     fs::path output_dir;
 public:
-    Config()
+    Config(std::string out_dir)
     {
+        set_output_dir(out_dir);
     }
 
     /*!
@@ -32,7 +33,8 @@ public:
     {
         if(boost::filesystem::exists(path))
         {
-
+            //@TODO: check using fs::status
+            return 0;
         } else {
             return boost::filesystem::create_directory(path);
         }
