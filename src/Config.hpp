@@ -10,7 +10,9 @@
 #define CONFIG_HPP_
 
 #include <string>
-#include "boost/filesystem.hpp"
+
+#include <boost/serialization>
+#include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
 

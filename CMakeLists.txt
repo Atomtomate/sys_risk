@@ -7,6 +7,7 @@ enable_testing()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wextra")
+link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 
 # Project settings
 set (Valuation_VERSION_MAJOR 0)
@@ -45,6 +46,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
@@ -108,7 +110,6 @@ include_directories(${CMAKE_SOURCE_DIR}/external/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/eigen)
 include_directories(${EIGEN_INC})
 
-link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
@@ -122,7 +123,5 @@ target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} ${RINSIDELIBS_l})
 #target_link_libraries(${PROJECT_NAME} ${RCPPLIBS_l})
 
+
 include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)
-
-
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp)

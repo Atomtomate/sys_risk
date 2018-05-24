@@ -12,7 +12,7 @@
 #include <iostream>
 #include <functional>
 
-
+#include "Config.hpp"
 #include "StatAcc.hpp"
 #include "easylogging++.h"
 
@@ -26,6 +26,15 @@ namespace MCUtil {
     template<class T>
     class Sampler {
     private:
+        friend class boost::serialization::access;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & ;
+            ar & ;
+            ar & ;
+        }
+
         std::vector<MCUtil::StatAcc<T, 100000>> accs;
         std::vector<std::function<T(void)>> observers;
         std::vector<std::string> descriptions;
