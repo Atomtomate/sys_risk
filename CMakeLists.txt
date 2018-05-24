@@ -47,12 +47,25 @@ configure_file (
 add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
-find_library(LAPACK_LIBRARY lapack)
-if(LAPACK_LIBRARY_FOUND)
-    target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBS})
-endif()
 
 # Dependencies
+
+find_package(LAPACK)
+if(LAPACK_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBS})
+    target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBRARY})
+else()
+    message("LAPACK not found")
+endif()
+
+find_package(BLAS)
+if(BLAS_FOUND)
+    target_link_libraries(${PROJECT_NAME} ${BLAS_LIBS})
+else()
+    message("BLAS not found")
+endif()
+
+
 
 find_package(GTest)
 #find_package(GMock) {GMOCK_INCLUDE_DIRS}
@@ -99,9 +112,7 @@ add_dependencies(Valuation trng)
 target_link_libraries(${PROJECT_NAME} trng4 pthread m)
 target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
-target_link_libraries(${PROJECT_NAME} ${BLAS_LIBS})
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${LAPACK_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} ${RLDFLAGS_l})
