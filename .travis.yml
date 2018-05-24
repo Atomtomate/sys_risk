@@ -37,7 +37,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+        - COMPILER_NAME="CC=gcc-4.9 && CXX=g++-4.9"
 
     - os: linux
       dist: trusty
@@ -55,7 +55,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - MATRIX_EVAL="CC=gcc-7.3 && CXX=g++-7.3"
+        - COMPILER_NAME="CC=gcc-7.3 && CXX=g++-7.3"
 
     - os: linux
       dist: trusty
@@ -74,7 +74,7 @@ matrix:
             - lcov
             - libopencv-dev
       env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - COMPILER_NAME="CC=clang-6.0 && CXX=clang++-6.0"
 
 
 #- sudo apt-get install -y r-cran-rinside libsundials-dev
