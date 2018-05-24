@@ -101,19 +101,21 @@ endif()
 
 #add external
 add_subdirectory(${CMAKE_SOURCE_DIR}/external)
-include_directories(${CMAKE_SOURCE_DIR}/external/include)
-link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 add_dependencies(Valuation trng)
 add_dependencies(Valuation eigen3)
+
+include_directories(${CMAKE_SOURCE_DIR}/external/include)
 include_directories(${EIGEN_INC}})
+
+link_directories(${CMAKE_SOURCE_DIR}/external/lib)
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
 target_link_libraries(${PROJECT_NAME} trng4 pthread m)
 target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
-#target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
+#target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
 #target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} ${RLDFLAGS_l})
 #target_link_libraries(${PROJECT_NAME} ${RINSIDELIBS_l})

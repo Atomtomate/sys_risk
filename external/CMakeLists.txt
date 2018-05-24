@@ -21,7 +21,7 @@ ExternalProject_Add(eigen3
         INSTALL_COMMAND ""
         GIT_PROGRESS 1
         )
-set(EIGEN_INC ${CMAKE_CURRENT_BINARY_DIR}/external/eigen/Eigen PARENT_SCOPE)
+set(EIGEN_INC ${CMAKE_CURRENT_BINARY_DIR}/external/eigen PARENT_SCOPE)
 
 ExternalProject_Add(trng
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external
