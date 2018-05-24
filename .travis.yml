@@ -98,6 +98,9 @@ script:
      - make
      - ctest
 
+after_failure:
+  less /home/travis/build/Atomtomate/sys_risk/build/libs/trng-prefix/src/trng-stamp/trng-build-*.log
+
 
 #after_success:
 #    - codecov -t c376990f-2ad6-4f7b-bbdb-5378a52e295c -X gcov
