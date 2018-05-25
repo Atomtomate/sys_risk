@@ -40,5 +40,5 @@ ExternalProject_Add(trng
         LOG_BUILD 1
         )
 
-set(TRNG_LIB <INSTALL_DIR>/lib PARENT_SCOPE)
-set(TRNG_INC <INSTALL_DIR>/include PARENT_SCOPE)
+set(TRNG_LIB ${CMAKE_SOURCE_DIR}/external/lib PARENT_SCOPE)
+set(TRNG_INC ${CMAKE_SOURCE_DIR}/external/include PARENT_SCOPE)
