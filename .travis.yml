@@ -79,11 +79,12 @@ matrix:
 
 # - echo "deb https://ftp.fau.de/cran/bin/linux/ubuntu artful/" | sudo tee -a /etc/apt/sources.list
 #    - sudo apt-get update -qq
-before_script:
-    - sudo apt-get install -qq build-essential autotools-dev mercurial libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
+#before_script:
+
 
 
 install:
+  - sudo apt-get install -qq build-essential autotools-dev mercurial libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/external"
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 

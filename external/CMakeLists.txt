@@ -32,13 +32,14 @@ ExternalProject_Add(trng
         BUILD_IN_SOURCE 1
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/trng_download
         INSTALL_DIR ${CMAKE_SOURCE_DIR}/external
-        CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=<INSTALL_DIR>
+        CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=${CMAKE_SOURCE_DIR}/external
         BUILD_COMMAND make
-        INSTALL_COMMAND make install #&& "libtool --finish <INSTALL_DIR>/lib"
+        INSTALL_COMMAND make install
         GIT_PROGRESS 1
         LOG_CONFIGURE 0
         LOG_BUILD 1
         )
 
+#&& "libtool --finish <INSTALL_DIR>/lib"
 set(TRNG_LIB ${CMAKE_SOURCE_DIR}/external/lib PARENT_SCOPE)
 set(TRNG_INC ${CMAKE_SOURCE_DIR}/external/include PARENT_SCOPE)
