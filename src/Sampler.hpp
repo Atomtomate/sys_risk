@@ -52,6 +52,7 @@ namespace MCUtil {
         template<class Func, typename... ArgTypes>
         void call_f(Func f, ArgTypes &&... f_args) {
             //@TODO: use MPI producer/consumer model
+            //@TODO: use boost serialize to save results? https://stackoverflow.com/questions/18382457/eigen-and-boostserialize
             f(std::forward<ArgTypes>(f_args)...);
             for (std::size_t i = 0; i < accs.size(); i++)
                 accs[i](observers[i]());

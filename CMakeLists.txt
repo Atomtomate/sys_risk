@@ -14,8 +14,6 @@ set (Valuation_VERSION_MAJOR 0)
 set (Valuation_VERSION_MINOR 2)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-#include_directories(${ROOT})
-#include_directories("${ROOT}/includes")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -115,7 +113,7 @@ include_directories(${TRNG_INC})
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
 target_link_libraries(${PROJECT_NAME} trng4 pthread m)
-target_link_libraries(${PROJECT_NAME} ${GTEST_BOTH_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} gtest gtest_main)
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
