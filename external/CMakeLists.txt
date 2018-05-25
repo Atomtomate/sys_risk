@@ -19,7 +19,6 @@ ExternalProject_Add(eigen3
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
-        GIT_PROGRESS 1
         )
 set(EIGEN_INC ${CMAKE_SOURCE_DIR}/external/eigen PARENT_SCOPE)
 
@@ -35,7 +34,6 @@ ExternalProject_Add(trng
         CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=${CMAKE_SOURCE_DIR}/external
         BUILD_COMMAND make
         INSTALL_COMMAND make install
-        GIT_PROGRESS 1
         LOG_CONFIGURE 0
         LOG_BUILD 1
         )
