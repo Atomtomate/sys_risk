@@ -34,7 +34,7 @@ ExternalProject_Add(trng
         INSTALL_DIR ${CMAKE_SOURCE_DIR}/external
         CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=<INSTALL_DIR>
         BUILD_COMMAND make
-        INSTALL_COMMAND make install && "libtool --finish <INSTALL_DIR>/lib"
+        INSTALL_COMMAND make install && "libtool --finish ${CMAKE_SOURCE_DIR}/external/lib"
         GIT_PROGRESS 1
         LOG_CONFIGURE 0
         LOG_BUILD 1
