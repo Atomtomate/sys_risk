@@ -36,9 +36,9 @@ sudo: true
 #  global:
 #    matrix:
 #      - TRAVIS_EMPTY_JOB_WORKAROUND=true
-cache:
-  directories:
-    - ${TRAVIS_BUILD_DIR}/external
+#cache:
+#  directories:
+#    - ${TRAVIS_BUILD_DIR}/external
 
 addons:
    apt:

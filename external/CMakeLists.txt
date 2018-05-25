@@ -21,7 +21,7 @@ ExternalProject_Add(eigen3
         INSTALL_COMMAND ""
         GIT_PROGRESS 1
         )
-set(EIGEN_INC ${CMAKE_ROOT}/external/eigen PARENT_SCOPE)
+set(EIGEN_INC ${CMAKE_SOURCE_DIR}/external/eigen PARENT_SCOPE)
 
 ExternalProject_Add(trng
         PREFIX ${CMAKE_SOURCE_DIR}/external
@@ -34,7 +34,7 @@ ExternalProject_Add(trng
         INSTALL_DIR ${CMAKE_SOURCE_DIR}/external
         CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=<INSTALL_DIR>
         BUILD_COMMAND make
-        INSTALL_COMMAND make install && "libtool --finish ${CMAKE_SOURCE_DIR}/lib"
+        INSTALL_COMMAND make install && "libtool --finish <INSTALL_DIR>/lib"
         GIT_PROGRESS 1
         LOG_CONFIGURE 0
         LOG_BUILD 1
