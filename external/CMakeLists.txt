@@ -9,7 +9,7 @@ endif()
 
 # obtain and build TRNG
 ExternalProject_Add(eigen3
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external
+        PREFIX ${CMAKE_SOURCE_DIR}/external
         GIT_REPOSITORY https://github.com/eigenteam/eigen-git-mirror
         GIT_TAG origin/master
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
@@ -24,7 +24,7 @@ ExternalProject_Add(eigen3
 set(EIGEN_INC ${CMAKE_ROOT}/external/eigen PARENT_SCOPE)
 
 ExternalProject_Add(trng
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}/external
+        PREFIX ${CMAKE_SOURCE_DIR}/external
         GIT_REPOSITORY https://github.com/rabauke/trng4
         GIT_TAG origin/master
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
