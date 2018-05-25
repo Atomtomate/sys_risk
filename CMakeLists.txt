@@ -108,9 +108,8 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/external)
 add_dependencies(Valuation trng)
 add_dependencies(Valuation eigen3)
 
-include_directories(${CMAKE_SOURCE_DIR}/external/include)
-include_directories(${CMAKE_SOURCE_DIR}/external/eigen)
 include_directories(${EIGEN_INC})
+include_directories(${TRNG_INC})
 
 
 
