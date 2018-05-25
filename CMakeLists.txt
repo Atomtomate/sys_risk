@@ -113,7 +113,7 @@ include_directories(${TRNG_INC})
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
 target_link_libraries(${PROJECT_NAME} trng4 pthread m)
-target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
