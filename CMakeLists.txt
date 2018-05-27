@@ -14,6 +14,7 @@ set (Valuation_VERSION_MAJOR 0)
 set (Valuation_VERSION_MINOR 2)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -102,7 +103,7 @@ endif()
 
 
 #add external
-add_subdirectory(${CMAKE_SOURCE_DIR}/external)
+add_subdirectory(${PROJECT_EXTERNAL})
 add_dependencies(${PROJECT_NAME} trng)
 add_dependencies(${PROJECT_NAME} eigen3)
 include_directories(${EIGEN_INC})
