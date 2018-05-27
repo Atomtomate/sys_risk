@@ -15,17 +15,17 @@
 #include "gtest/gtest.h"
 #include "easylogging++.h"
 // Tina's Random Number Generator
-#include <trng/yarn2.hpp>
-#include <trng/uniform01_dist.hpp>
-#include <trng/lognormal_dist.hpp>
-#include <trng/correlated_normal_dist.hpp>
-#include <Eigen/Dense>
+#include "trng/yarn2.hpp"
+#include "trng/uniform01_dist.hpp"
+#include "trng/lognormal_dist.hpp"
+#include "trng/correlated_normal_dist.hpp"
+#include "Eigen/Dense"
 
 #include <boost/mpi.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/optional.hpp>
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 #include "ValuationConfig.h"
 #include "StatAcc.hpp"
