@@ -21,6 +21,9 @@
 //#include <Rcpp.h>
 //#include <RcppEigen.h>
 //#include <stan/math.hpp>
+
+
+#define EIGEN_DENSEBASE_PLUGIN "EigenDenseBaseAddons.hpp"
 #include <Eigen/Dense>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>

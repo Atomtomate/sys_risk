@@ -10,11 +10,11 @@ if(NOT GIT_FOUND)
 endif()
 
 # obtain and build TRNG
+# from 3.8: GIT_PROGRESS ON
 ExternalProject_Add(eigen3
         PREFIX ${PROJECT_EXTERNAL}
         GIT_REPOSITORY https://github.com/eigenteam/eigen-git-mirror
         GIT_TAG origin/master
-        GIT_PROGRESS ON
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
         PATCH_COMMAND ""
         BUILD_IN_SOURCE 1
@@ -30,7 +30,6 @@ ExternalProject_Add(trng
         PREFIX ${PROJECT_EXTERNAL}
         GIT_REPOSITORY https://github.com/rabauke/trng4.git
         GIT_TAG origin/master
-        GIT_PROGRESS ON
         LOG_CONFIGURE OFF
         LOG_BUILD ON
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
@@ -49,7 +48,6 @@ ExternalProject_Add(gtest
         PREFIX ${PROJECT_EXTERNAL}
         GIT_REPOSITORY https://github.com/google/googletest.git
         GIT_TAG release-1.8.0
-        GIT_PROGRESS 1
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${PROJECT_EXTERNAL}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -Dgtest_force_shared_crt=ON

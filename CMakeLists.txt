@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.5)
 project (Valuation CXX)
 
 enable_testing()
@@ -45,7 +45,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp)
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp src/EigenDenseBaseAddons.hpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
