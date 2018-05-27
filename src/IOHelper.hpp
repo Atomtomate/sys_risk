@@ -15,6 +15,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 #include <iostream>
 
 #include "Config.hpp"
@@ -37,12 +39,38 @@ namespace MCUtil {
     }
 
     template <typename T>
+    bool write_to_text(const T& data, const std::string& filename) {
+        std::ofstream ofs(filename.c_str(), std::ios::out);
+        if (!ofs.is_open())
+            return false;
+        {
+            boost::archive::text_oarchive oa(ofs);
+            oa << data;
+        }
+        ofs.close();
+        return true;
+    }
+
+    template <typename T>
     bool read_from_binary(T& data, const std::string& filename) {
         std::ifstream ifs(filename.c_str(), std::ios::in);
         if (!ifs.is_open())
             return false;
         {
             boost::archive::binary_iarchive ia(ifs);
+            ia >> data;
+        }
+        ifs.close();
+        return true;
+    }
+
+    template <typename T>
+    bool read_from_text(T& data, const std::string& filename) {
+        std::ifstream ifs(filename.c_str(), std::ios::in);
+        if (!ifs.is_open())
+            return false;
+        {
+            boost::archive::text_iarchive ia(ifs);
             ia >> data;
         }
         ifs.close();

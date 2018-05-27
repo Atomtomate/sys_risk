@@ -34,6 +34,7 @@ ExternalProject_Add(trng
         LOG_CONFIGURE OFF
         LOG_BUILD ON
         PATCH_COMMAND ""
+        UPDATE_COMMAND ""
         BUILD_IN_SOURCE 1
         SOURCE_DIR ${PROJECT_EXTERNAL}/trng_download
         INSTALL_DIR ${PROJECT_EXTERNAL}
