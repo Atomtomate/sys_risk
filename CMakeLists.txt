@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.5)
 project (Valuation CXX)
 
 enable_testing()
@@ -67,9 +67,9 @@ endif()
 
 
 
-find_package(GTest)
+#find_package(GTest)
 #find_package(GMock) {GMOCK_INCLUDE_DIRS}
-include_directories(${GTEST_INCLUDE_DIRS} $)
+#include_directories(${GTEST_INCLUDE_DIRS} $)
 
 find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
@@ -103,17 +103,19 @@ endif()
 
 #add external
 add_subdirectory(${CMAKE_SOURCE_DIR}/external)
-add_dependencies(Valuation trng)
-add_dependencies(Valuation eigen3)
-
+add_dependencies(${PROJECT_NAME} trng)
+add_dependencies(${PROJECT_NAME} eigen3)
 include_directories(${EIGEN_INC})
-include_directories(${TRNG_INC})
-
+ExternalProject_Get_Property(gtest source_dir)
+include_directories("${source_dir}/include")
+add_dependencies(${PROJECT_NAME} gtest)
+ExternalProject_Get_Property(gtest binary_dir)
+target_link_libraries(${PROJECT_NAME} libgtest trng4)
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
-target_link_libraries(${PROJECT_NAME} trng4 pthread m)
-target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} pthread m)
+#target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
