@@ -86,7 +86,6 @@ install:
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 
   - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
-  - export CXX="${CXX} -I/${DEPS_DIR}/include"
   ############################################################################
   # Install Boost headers
   ############################################################################
@@ -201,6 +200,7 @@ script:
   - mkdir -p build
   - cd build
   - cmake ..
+  - export CXX="${CXX} -I/${TRAVIS_BUILD_DIR}/external/include"
   - make
   #- ctest
 

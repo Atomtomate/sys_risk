@@ -85,6 +85,7 @@ else()
     message("Boost not found!")
 endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
 
 # Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
 #find_package(PkgConfig)
