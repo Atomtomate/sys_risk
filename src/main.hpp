@@ -23,6 +23,9 @@
 //#include <stan/math.hpp>
 
 
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/vector.hpp>
+
 #define EIGEN_DENSEBASE_PLUGIN "EigenDenseBaseAddons.hpp"
 #include <Eigen/Dense>
 #include <boost/mpi/environment.hpp>

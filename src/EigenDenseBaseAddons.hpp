@@ -11,9 +11,6 @@
 #ifndef VALUATION_EIGENDENSEBASEADDONS_HPP
 #define VALUATION_EIGENDENSEBASEADDONS_HPP
 
-#include <boost/serialization/array.hpp>
-#include <boost/serialization/vector.hpp>
-
 friend class boost::serialization::access;
 template<class Archive>
 void save(Archive & ar, const unsigned int version) const {
