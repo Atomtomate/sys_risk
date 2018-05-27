@@ -1,3 +1,7 @@
+Current build status:
+- develop: [![Build Status](https://travis-ci.org/Atomtomate/sys_risk.svg?branch=develop)](https://travis-ci.org/Atomtomate/sys_risk)
+- master: [![Build Status](https://travis-ci.org/Atomtomate/sys_risk.svg?branch=master)](https://travis-ci.org/Atomtomate/sys_risk)
+
 Dependencies:
 - Eigen3
 - trng (Tina's random number generator)
