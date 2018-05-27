@@ -8,8 +8,8 @@
  * this file.
  */
 
-#ifndef VALUATION_EIGENDENSEBASEADDONS_HPP
-#define VALUATION_EIGENDENSEBASEADDONS_HPP
+#ifndef VALUATION_EIGEN_DENSE_BASE_ADDONS_HPP
+#define VALUATION_EIGEN_DENSE_BASE_ADDONS_HPP
 
 friend class boost::serialization::access;
 template<class Archive>
