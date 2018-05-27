@@ -86,7 +86,7 @@ install:
   - mkdir -p ${DEPS_DIR} && cd ${DEPS_DIR}
 
   - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
-  - export CXX = ${CXX} -I/${DEPS_DIR}/include
+  - export CXX="${CXX} -I/${DEPS_DIR}/include"
   ############################################################################
   # Install Boost headers
   ############################################################################
