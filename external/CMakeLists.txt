@@ -26,13 +26,13 @@ ExternalProject_Add(eigen3
 set(EIGEN_INC ${PROJECT_EXTERNAL}/eigen PARENT_SCOPE)
 include_directories(${PROJECT_EXTERNAL}/eigen)
 
+# UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
 ExternalProject_Add(trng
         PREFIX ${PROJECT_EXTERNAL}
         GIT_REPOSITORY https://github.com/rabauke/trng4.git
         GIT_TAG origin/master
         LOG_CONFIGURE OFF
         LOG_BUILD ON
-        UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
         PATCH_COMMAND ""
         BUILD_IN_SOURCE 1
         SOURCE_DIR ${PROJECT_EXTERNAL}/trng_download
