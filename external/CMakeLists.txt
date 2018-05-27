@@ -35,12 +35,13 @@ ExternalProject_Add(trng
         LOG_BUILD 1
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
         PATCH_COMMAND ""
+        UPDATE_COMMAND ""
         BUILD_IN_SOURCE 1
         SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/trng_download
         INSTALL_DIR ${CMAKE_SOURCE_DIR}/external
         CONFIGURE_COMMAND autoreconf -i -f > /dev/null 2>&1 || autoreconf && ./configure CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} "CXXFLAGS=${EXTERNAL_CXX_FLAGS}" "LDFLAGS=${EXTERNAL_LD_FLAGS}" --prefix=<INSTALL_DIR>
         BUILD_COMMAND make
-        INSTALL_COMMAND make install && "libtool --finish ${CMAKE_SOURCE_DIR}/external/lib"
+        INSTALL_COMMAND make install && libtool --finish "${CMAKE_SOURCE_DIR}/external/lib"
         )
 
 set(TRNG_LIB INSTALL_DIR ${CMAKE_SOURCE_DIR}/external PARENT_SCOPE)
