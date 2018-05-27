@@ -14,6 +14,7 @@ ExternalProject_Add(eigen3
         PREFIX ${PROJECT_EXTERNAL}
         GIT_REPOSITORY https://github.com/eigenteam/eigen-git-mirror
         GIT_TAG origin/master
+        GIT_PROGRESS ON
         UPDATE_COMMAND ${GIT_EXECUTABLE} pull -s recursive -X theirs origin master
         PATCH_COMMAND ""
         BUILD_IN_SOURCE 1
@@ -21,7 +22,6 @@ ExternalProject_Add(eigen3
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
         INSTALL_COMMAND ""
-        GIT_PROGRESS 1
         )
 set(EIGEN_INC ${PROJECT_EXTERNAL}/eigen PARENT_SCOPE)
 include_directories(${PROJECT_EXTERNAL}/eigen)
