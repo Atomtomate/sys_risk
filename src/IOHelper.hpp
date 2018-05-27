@@ -15,6 +15,7 @@
 
 #include "Config.hpp"
 #include "StatAcc.hpp"
+#include "EigenDenseBaseAddons.hpp"
 
 namespace MCUtil {
 
