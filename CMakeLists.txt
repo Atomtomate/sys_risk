@@ -76,13 +76,15 @@ find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 target_link_libraries(Valuation ${MPI_LIBRARIES})
 
-find_package(Boost COMPONENTS system filesystem mpi serialization REQUIRED)
+find_package(PythonLibs REQUIRED)
+find_package(Boost COMPONENTS system filesystem mpi serialization python REQUIRED)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 else()
     message("Boost not found!")
 endif()
+include_directories(${PYTHON_INCLUDE_DIRS})
 
 # Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
 #find_package(PkgConfig)
