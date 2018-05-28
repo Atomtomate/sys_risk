@@ -87,6 +87,11 @@ endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
 
+find_package(pybind11 REQUIRED)
+target_link_libraries(${PROJECT_NAME} pybind11::module)
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
+        SUFFIX "${PYTHON_MODULE_EXTENSION}")
+
 # Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
 #find_package(PkgConfig)
 #pkg_search_module(Eigen3 REQUIRED eigen3)

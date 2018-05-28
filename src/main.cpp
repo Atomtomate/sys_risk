@@ -54,24 +54,6 @@ int main(int argc, char* argv[])
     //test_stan_math();
     //N2_network n2NN;
     //n2NN.test_N2_valuation();
-    Eigen::MatrixXd A(4,4);
-    A << 1,2,3,4,5,6,7,8,9,10,11, 12,13,14,15,16;
-    LOG(INFO) << "writing: \n" << A;
-    LOG(INFO) << "serializing";
-
-    auto res = MCUtil::write_to_binary(A, "test_out");
-    LOG(INFO) << "Writing to binary file returned: " << res;
-    res = MCUtil::write_to_text(A, "test_out_txt.txt");
-    LOG(INFO) << "Writing to text file returned: " << res;
-    Eigen::MatrixXd A2(4,4);
-    res = MCUtil::read_from_binary(A2, "test_out");
-    LOG(INFO) << "reading from binary file returned: " << res;
-    LOG(INFO) << "Read: \n" << A2;
-    A2 = Eigen::MatrixXd::Zero(4,4);
-    res = MCUtil::read_from_text(A2, "test_out_txt.txt");
-    LOG(INFO) << "reading from text file returned: " << res;
-    LOG(INFO) << "Read: \n" << A2;
-
 
 
 

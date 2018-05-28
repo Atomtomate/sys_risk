@@ -154,8 +154,8 @@ public:
         auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
         std::vector<double> res;
         res.resize(2*N*N);
-        EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
-        EXPECT_EQ(res_eigen.cols(), N) << "Number of cols for Delta computation incorrect";
+        //EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
+        //EXPECT_EQ(res_eigen.cols(), N) << "Number of cols for Delta computation incorrect";
         Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
         return res;
     }

@@ -17,6 +17,10 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/version.hpp>
 #include <iostream>
 
 #include "Config.hpp"
@@ -51,6 +55,9 @@ namespace MCUtil {
         return true;
     }
 
+
+
+
     template <typename T>
     bool read_from_binary(T& data, const std::string& filename) {
         std::ifstream ifs(filename.c_str(), std::ios::in);
@@ -77,23 +84,34 @@ namespace MCUtil {
         return true;
     }
 
-
-    template<typename T>
-    void write_to_csv(Sampler<T> S, Config c, std::string filename) {
-        fs::path out(c.output_dir);
-        out /= fs::path(filename);
-        fs::path out_description(c.output_dir);
-        out_description /= fs::path(filename + std::string("_description"));
-
-        fs::ofstream ofs{out};
-        fs::ofstream ofs_desc{out_description};
-        auto res = S.extract(StatType::MEAN);
-        for(auto el: res)
+    /*
+    template <typename T>
+    bool write_to_xml(const T& data, const std::string& filename, const std::string& data_name) {
+        std::ofstream ofs(filename.c_str(), std::ios::out);
+        if (!ofs.is_open())
+            return false;
         {
-            ofs_desc << el.first;
-            ofs << S;
+            boost::archive::xml_oarchive oa(ofs);
+            oa << boost::serialization::make_nvp(data_name.c_str(),data);
         }
+        ofs.close();
+        return true;
     }
+
+    template <typename T>
+    bool read_from_xml(T& data, const std::string& filename, const std::string& data_name) {
+        std::ifstream ifs(filename.c_str(), std::ios::in);
+        if (!ifs.is_open())
+            return false;
+        {
+            boost::archive::xml_iarchive ia(ifs);
+            ia >> boost::serialization::make_nvp(data_name.c_str(),data);
+        }
+        ifs.close();
+        return true;
+    }
+    */
+
 
 }
 

@@ -20,3 +20,39 @@ TEST(eigenMapToStdVec, testEigen)
         //std::cout << t(i) << "\t" << t2[i] << "\t" << t3(i) << "\n";
     }
 }
+
+TEST(eigenBoostSerialize, testEigen)
+{
+    Eigen::MatrixXd A(4,4);
+    A << 1,2,3,4,5,6,7,8,9,10,11, 12,13,14,15,16;
+    LOG(INFO) << "writing: \n" << A;
+    LOG(INFO) << "serializing";
+
+    auto res = MCUtil::write_to_binary(A, "test_out");
+    Eigen::MatrixXd A2 = Eigen::MatrixXd::Zero(4,4);
+    LOG(INFO) << "Writing to binary file returned: " << res;
+    res = MCUtil::read_from_binary(A2, "test_out");
+    LOG(INFO) << "reading from binary file returned: " << res;
+    LOG(INFO) << "Read: \n" << A2;
+    //ASSERT_TRUE(A.isApprox(A2));
+
+    // test text
+    A2 = Eigen::MatrixXd::Zero(4,4);
+    res = MCUtil::write_to_text(A, "test_out_txt.txt");
+    LOG(INFO) << "Writing to text file returned: " << res;
+    res = MCUtil::read_from_text(A2, "test_out_txt.txt");
+    LOG(INFO) << "reading from text file returned: " << res;
+    LOG(INFO) << "Read: \n" << A2;
+    //ASSERT_TRUE(A.isApprox(A2));
+
+
+    // test xml
+    /*A2 = Eigen::MatrixXd::Zero(4,4);
+    res = MCUtil::write_to_xml(A, "test_out.xml", "A");
+    LOG(INFO) << "Writing to xml file returned: " << res;
+    res = MCUtil::read_from_xml(A2, "test_out.xml", "A");
+
+    LOG(INFO) << "reading from xml file returned: " << res;
+    LOG(INFO) << "Read: \n" << A2;
+    //ASSERT_TRUE(A.isApprox(A2));*/
+}
