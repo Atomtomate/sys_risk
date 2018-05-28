@@ -37,8 +37,8 @@
 #include "ER_Network.hpp"
 #include "KarlFischerPaper.hpp"
 #include "IOHelper.hpp"
+#include "PythonInterface.hpp"
 
-#include "../test/TestMain.hpp"
 
 
 INITIALIZE_EASYLOGGINGPP

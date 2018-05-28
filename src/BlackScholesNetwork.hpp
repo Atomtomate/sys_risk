@@ -12,7 +12,6 @@
 #include <stdexcept>
 #include <algorithm>
 
-#include "gtest/gtest.h"
 #include "easylogging++.h"
 // Tina's Random Number Generator
 #include "trng/yarn2.hpp"
@@ -25,7 +24,6 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/optional.hpp>
 
-#include "gtest/gtest.h"
 
 #include "ValuationConfig.h"
 #include "StatAcc.hpp"
@@ -87,17 +85,17 @@ public:
 
 
     inline void set_S0(const Eigen::VectorXd &s0) {
-        EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
+        //EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
         S0 = s0;
     }
 
     inline void set_St(const Eigen::VectorXd& a) {
-        EXPECT_EQ(a.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
+        //EXPECT_EQ(a.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
         St = a;
     }
 
     inline void set_debt(const Eigen::VectorXd &d) {
-        EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
+        //EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
         debt = d;
     }
 
@@ -155,7 +153,6 @@ public:
         std::vector<double> res;
         res.resize(2*N*N);
         //EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
-        //EXPECT_EQ(res_eigen.cols(), N) << "Number of cols for Delta computation incorrect";
         Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
         return res;
     }

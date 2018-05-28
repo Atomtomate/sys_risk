@@ -9,7 +9,7 @@
 
 #include "ER_Network.hpp"
 
-void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, char which_to_set) {
+void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, unsigned int which_to_set) {
     N = N_in;
     p = p_in;
     val = val_in;
@@ -55,6 +55,7 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
     std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, &bsn);
     std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, &bsn);
     std::function<std::vector<double>(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
+    std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
     // usage: register std::function with no parameters and boost::accumulator compatible return value. 2nd,... parameters are used to construct accumulator
     //S.register_observer(rs_obs, 2*N);
@@ -62,15 +63,14 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
     S.register_observer(sol_obs, "Solvent", N);
     S.register_observer(valuation_obs, "Valuation", N);
     S.register_observer(std::bind(&ER_Network::sumM, this), "Sum over M", 1);
-    //std::function<std::vector<double>(void)> out_obs = std::bind(&N2_network::test_out, this);
-    //S.register_observer(out_obs, 1);
+    //S.register_observer(out_obs, "Debug Out" ,1);
 
     S.register_observer(deltav1_obs, "Delta using Jacobians", 2 * N * N);
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
     LOG(INFO) << "Running Valuation for N = " << N;
 
-    S.draw_samples(f_run, f_dist, 3000);
-    LOG(INFO) << std::endl << "Means: ";
+    S.draw_samples(f_run, f_dist, 10000);
+    LOG(INFO) << std::endl << " ======= Means ======= ";
 
     auto res = S.extract(MCUtil::StatType::MEAN);
     for (auto el : res) {
@@ -85,7 +85,7 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
         }
         std::cout << std::endl << std::endl;
     }
-    LOG(INFO) << std::endl << "Vars: ";
+    LOG(INFO) << std::endl << " ======= Vars ======= ";
     auto res_var = S.extract(MCUtil::StatType::VARIANCE);
     for (auto el : res_var) {
         std::cout << el.first << ": " << std::endl;
@@ -122,10 +122,10 @@ std::vector<double> ER_Network::delta_v2() {
     return res;
 }
 
-void ER_Network::set_M_ER(const double p, const double val, char which_to_set)
+void ER_Network::set_M_ER(const double p, const double val, unsigned int which_to_set)
 {
-    EXPECT_GT(val, 0) << "val is not a probability";
-    EXPECT_LT(val, 1) << "val is not a probability";
+    //EXPECT_GT(val, 0) << "val is not a probability";
+    //EXPECT_LT(val, 1) << "val is not a probability";
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;

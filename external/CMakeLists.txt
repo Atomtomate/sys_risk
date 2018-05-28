@@ -52,9 +52,10 @@ ExternalProject_Add(gtest
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${PROJECT_EXTERNAL}
         -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
         -Dgtest_force_shared_crt=ON
-        LOG_DOWNLOAD ON
-        LOG_CONFIGURE ON
-        LOG_BUILD ON
+        LOG_DOWNLOAD 1
+        LOG_CONFIGURE 1
+        LOG_BUILD 1
+        LOG_INSTALL 1
         )
 
 add_library(libgtest IMPORTED STATIC GLOBAL)

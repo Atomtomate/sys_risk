@@ -14,7 +14,7 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const double 
         M(M), N(M.rows()), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
-    EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
+    //EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
@@ -23,9 +23,9 @@ BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0
         dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
-    EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
-    EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
-    EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
+    //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
+    //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
+    //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
 };
 
 

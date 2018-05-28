@@ -45,7 +45,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp test/TestStanMath.cpp src/EigenDenseBaseAddons.hpp src/SerializationWrapper.cpp src/SerializationWrapper.hpp)
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp src/EigenDenseBaseAddons.hpp src/SerializationWrapper.cpp src/SerializationWrapper.hpp src/PythonInterface.hpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
@@ -87,28 +87,6 @@ endif()
 include_directories(${PYTHON_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
 
-find_package(pybind11 REQUIRED)
-target_link_libraries(${PROJECT_NAME} pybind11::module)
-set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "${PYTHON_MODULE_PREFIX}"
-        SUFFIX "${PYTHON_MODULE_EXTENSION}")
-
-# Workaround for travis-ci since FindEigen3 is not prevent on ubuntu 14.04
-#find_package(PkgConfig)
-#pkg_search_module(Eigen3 REQUIRED eigen3)
-#if(NOT EIGEN3_FOUND)
-#    # Fallback to cmake_modules
-#    message("pkg_search unsuccessful. falling back to find_package")
-#    find_package(Eigen3 REQUIRED)
-#    set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
-#    set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})
-#    target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)
-#else()
-#    include_directories(${EIGEN3_INCLUDE_DIR})
-#    include_directories(${EIGEN3_INCLUDE_DIRS})
-#    add_definitions(${EIGEN3_DEFINITIONS})
-#    set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
-#endif()
-
 
 #add external
 add_subdirectory(${PROJECT_EXTERNAL})
@@ -119,13 +97,13 @@ include_directories(${PROJECT_EXTERNAL}/include)
 add_dependencies(${PROJECT_NAME} gtest)
 ExternalProject_Get_Property(gtest binary_dir)
 target_link_libraries(${PROJECT_NAME} libgtest trng4)
+target_link_libraries(${PROJECT_NAME} pthread m)
+target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
-target_link_libraries(${PROJECT_NAME} pthread m)
 #target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
 #target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} ${RLDFLAGS_l})
@@ -133,8 +111,21 @@ target_link_libraries(${PROJECT_NAME} ${LIBS})
 #target_link_libraries(${PROJECT_NAME} ${RCPPLIBS_l})
 
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach(dir ${dirs})
-    message(STATUS "dir='${dir}'")
-endforeach()
+
+
+# ===== PyBind11 Library
+# =
+# =         This library can be used to export the behavior of Valuation
+# =         as a Python module.
+# =
+
+find_package(pybind11 REQUIRED)
+pybind11_add_module(PyVal src/PythonInterface.hpp ${Valuation_SOURCES})
+set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
+target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS})
+#target_link_libraries(PyVal PUBLIC libgtest)
+#target_link_libraries(PyVal PUBLIC trng4)
+target_link_libraries(PyVal PUBLIC trng4 pthread m ${EXTRA_LIBRARIES} ${LIBS} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(PyVal INTERFACE gtest)
+target_compile_options(PyVal PRIVATE -fPIC)
 #include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)

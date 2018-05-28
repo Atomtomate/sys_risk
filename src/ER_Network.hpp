@@ -31,7 +31,7 @@ private:
     const double r;              // interest
     double p;
     double val;
-    char setM;
+    unsigned int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
     BlackScholesNetwork bsn;
@@ -42,7 +42,7 @@ private:
     // last result, returned by observers
     std::vector<double> rs;
 
-    void set_M_ER(double p, double val, char which_to_set);
+    void set_M_ER(double p, double val, unsigned int which_to_set);
 
 public:
     /*!
@@ -52,7 +52,7 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void init_network(unsigned int N, double p, double val, char which_to_set);
+    void init_network(unsigned int N, double p, double val, unsigned int which_to_set);
 
     /*!
      * @brief               Constructs the Black Scholes Model using random cross holdings.
@@ -67,17 +67,18 @@ public:
      * @param r             interest rate
      */
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
-               unsigned int N, double p, double val, char which_to_set, const double T, const double r) :
+               unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
             T(T), r(r), bsn(Eigen::MatrixXd::Zero(N, 2 * N), T, r),
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
 
-            //@TODO: better Z_dist init
-        EXPECT_GT(p, 0) << "p is not a probability";
-        EXPECT_LE(p, 1) << "p is not a probability";
-        EXPECT_GT(val, 0) << "val is not a probability";
-        EXPECT_LE(val, 1) << "val is not a probability";
+        //@TODO: better Z_dist init
+        //@TODO: assertions here, move expect to tests
+        //EXPECT_GT(p, 0) << "p is not a probability";
+        //EXPECT_LE(p, 1) << "p is not a probability";
+        //EXPECT_GT(val, 0) << "val is not a probability";
+        //EXPECT_LE(val, 1) << "val is not a probability";
         init_network(N, p, val, which_to_set);
         }
 
@@ -122,6 +123,18 @@ public:
     std::vector<double> sumM() {
         std::vector<double> res{bsn.get_M().sum()};
         return res;
+    }
+
+    auto test_out()
+    {
+        auto v_o = bsn.get_valuation();
+        auto s_o = bsn.get_solvent();
+        std::cout << "output after sample: " << std::endl;
+        for(size_t i=0; i < v_o.size(); i++)
+            std::cout << v_o[i] << "\t" << s_o[i] << std::endl;
+        std::cout << "------" << std::endl;
+        std::vector<double> out {0.};
+        return out;
     }
 
 
