@@ -37,13 +37,13 @@ public:
 
     const Eigen::MatrixXd& view_M() const
     {
-        return er_net.bsn.get_M();
+        return (er_net.bsn)->get_M();
     }
 
 
     const Eigen::MatrixXd view_rs() const
     {
-        return er_net.bsn.get_rs_eigen();
+        return (er_net.bsn)->get_rs_eigen();
     }
 
 };

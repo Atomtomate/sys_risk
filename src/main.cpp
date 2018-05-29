@@ -59,9 +59,9 @@ int main(int argc, char* argv[])
 
     //ER_Network nNN(local, world, true, N, 1.0, 0.95, 2, 1.0, 0.0);
     ER_Network nNN(local, world, true);
-    for (int N : {2, 4}){ //, 8, 16, 32}) {
+    for (int N : {2}){ //, 8, 16, 32}) {
         nNN.init_network(N, 1.0, 0.95, 2, 1.0, 0.0);
-        nNN.test_ER_valuation();
+        nNN.test_ER_valuation(N, 50);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);

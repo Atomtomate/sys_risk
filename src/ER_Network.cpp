@@ -27,7 +27,9 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
     var_h.resize(N);
 
     //BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
-    bsn = BlackScholesNetwork();
+    if(bsn != nullptr)
+        delete bsn;
+    bsn = new BlackScholesNetwork(T, r);
     init_M_ER(p, val, which_to_set, S0, debt);
 
 
@@ -46,18 +48,18 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
 }
 
 
-void ER_Network::test_ER_valuation(const unsigned int N_in) {
+void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples) {
     init_network(N_in, p, val, setM);
     //@TODO: acc std::vector
     MCUtil::Sampler<std::vector<double>> S;
 
     auto f_dist = std::bind(&ER_Network::draw_from_dist, this);
     auto f_run = std::bind(&ER_Network::run, this, std::placeholders::_1);
-    std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, &bsn);
-    std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, &bsn);
-    std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, &bsn);
-    std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, &bsn);
-    std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, &bsn);
+    std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);
+    std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, bsn);
+    std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, bsn);
+    std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, bsn);
+    std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
     std::function<std::vector<double>(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
     std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
@@ -73,7 +75,7 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
     LOG(INFO) << "Running Valuation for N = " << N;
 
-    S.draw_samples(f_run, f_dist, 10000);
+    S.draw_samples(f_run, f_dist, N_Samples);
     LOG(INFO) << std::endl << " ======= Means ======= ";
 
     auto res = S.extract(MCUtil::StatType::MEAN);
@@ -120,8 +122,8 @@ std::vector<double> ER_Network::draw_from_dist() {
 std::vector<double> ER_Network::delta_v2() {
     //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
     std::vector<double> res(2 * N * N);
-    Eigen::VectorXd ln_fac = (itSigma * Z).array() / bsn.get_S0().array();
-    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * bsn.get_rs_eigen().transpose()).transpose();
+    Eigen::VectorXd ln_fac = (itSigma * Z).array() / (bsn->get_S0()).array();
+    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs_eigen()).transpose()).transpose();
     Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
     return res;
 }
@@ -159,5 +161,5 @@ void ER_Network::init_M_ER(const double p, const double val, unsigned int which_
     auto row_sum = M.rowwise().sum();
     double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
     M = (val/max)*M;
-    bsn.re_init(M, s0, debt);
+    bsn->re_init(M, s0, debt);
 }

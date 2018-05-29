@@ -34,7 +34,7 @@ class BlackScholesNetwork
 private:
     double T;
     double r;
-    int N;
+    unsigned int N;
     static size_t gbl_dbg_counter;
     size_t dbg_counter;
     bool initialized;
@@ -69,18 +69,18 @@ public:
         exprt = rhs.exprt;
     }*/
 
-    BlackScholesNetwork()
-    {
+    //BlackScholesNetwork()
+    //{
         //LOG(WARNING) << "Default constructor for BlackScholesNetwork used. This could be unintentional.";
-        initialized = false;
-    }
+    //    initialized = false;
+    //}
 
     /**
      * @brief
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::MatrixXd& M,const double T,const double r);
+    BlackScholesNetwork(const double T,const double r);
 
     /**
      * @brief
@@ -170,6 +170,8 @@ public:
         auto Jrs = iJacobian_fx();
         auto Jva = Jacobian_va();
         auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
+        //LOG(INFO) << "exprt:" << exprt <<"\n===\n" << St << "\n====\n";
+        //LOG(ERROR) << Jrs << "\n\n" << Jva << "\n\n" << res_eigen << "\n\n";
         std::vector<double> res;
         res.resize(2*N*N);
         //EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";

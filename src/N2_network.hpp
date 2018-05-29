@@ -69,7 +69,7 @@ private:
 
 public:
     N2_network():
-            bsn(Eigen::MatrixXd::Zero(N,2*N), T, r), sig {{T, 0.}, {0., T}} , Z_dist(&sig[0][0], &sig[N-1][N-1]+1)
+            bsn(T, r), sig {{T, 0.}, {0., T}} , Z_dist(&sig[0][0], &sig[N-1][N-1]+1)
     {
         init_network();
     }
