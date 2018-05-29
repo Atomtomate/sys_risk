@@ -22,19 +22,20 @@
 
 
 class ER_Network {
+    friend class Py_ER_Net;
 private:
     const boost::mpi::communicator local;
     const boost::mpi::communicator world;
     const bool isGenerator;
     unsigned int N;
-    const double T;              // maturity
-    const double r;              // interest
+    double T;              // maturity
+    double r;              // interest
     double p;
     double val;
     unsigned int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
-    BlackScholesNetwork bsn;
+    BlackScholesNetwork* bsn;
     Eigen::MatrixXd itSigma;
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
@@ -42,7 +43,7 @@ private:
     // last result, returned by observers
     std::vector<double> rs;
 
-    void set_M_ER(double p, double val, unsigned int which_to_set);
+    void init_M_ER(double p, double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
 
 public:
     /*!
@@ -52,7 +53,28 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
+    void init_network(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T_new, const double r_new);
     void init_network(unsigned int N, double p, double val, unsigned int which_to_set);
+
+    virtual ~ER_Network(){
+        if(bsn != nullptr)
+            delete bsn;
+    }
+
+    /*!
+     * @brief               Constructs the Black Scholes Model using random cross holdings.
+     * @param local         local MPI communicator (between producers/consumers only)
+     * @param world         global MPI communicator
+     * @param isGenerator   Flag for generator/consumer ranks
+     */
+    ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
+            local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
+    {
+        bsn = nullptr;
+        itSigma = Eigen::MatrixXd::Zero(1,1);
+        Z = Eigen::VectorXd::Zero(1,1);
+        var_h = Eigen::VectorXd::Zero(1,1);
+    }
 
     /*!
      * @brief               Constructs the Black Scholes Model using random cross holdings.
@@ -69,10 +91,10 @@ public:
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
                unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
-            T(T), r(r), bsn(Eigen::MatrixXd::Zero(N, 2 * N), T, r),
+            T(T), r(r),
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
-
+        bsn = new BlackScholesNetwork(T, r);
         //@TODO: better Z_dist init
         //@TODO: assertions here, move expect to tests
         //EXPECT_GT(p, 0) << "p is not a probability";
@@ -90,7 +112,7 @@ public:
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    void test_ER_valuation(const unsigned int N_in);
+    void test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples = 10000);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution
@@ -106,8 +128,8 @@ public:
     auto run(std::vector<double> St_in)//Eigen::VectorXd St)
     {
         Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size());
-        bsn.set_St(St);
-        rs = bsn.run_valuation(1000);
+        bsn->set_St(St);
+        rs = bsn->run_valuation(1000);
     }
 
     /*!
@@ -121,14 +143,14 @@ public:
      * @return  \f$\sum_{ij} M_{ij}\f$
      */
     std::vector<double> sumM() {
-        std::vector<double> res{bsn.get_M().sum()};
+        std::vector<double> res{(bsn->get_M()).sum()};
         return res;
     }
 
     auto test_out()
     {
-        auto v_o = bsn.get_valuation();
-        auto s_o = bsn.get_solvent();
+        auto v_o = bsn->get_valuation();
+        auto s_o = bsn->get_solvent();
         std::cout << "output after sample: " << std::endl;
         for(size_t i=0; i < v_o.size(); i++)
             std::cout << v_o[i] << "\t" << s_o[i] << std::endl;

@@ -10,19 +10,21 @@
 
 size_t BlackScholesNetwork::gbl_dbg_counter = 0;
 
-BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const double T, const double r):
-        M(M), N(M.rows()), T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
+BlackScholesNetwork::BlackScholesNetwork(const double T, const double r):
+        T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
+    initialized = false;
     //EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
-BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
+BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const Eigen::VectorXd& S0, const Eigen::VectorXd& assets, const Eigen::VectorXd& debt, const double T, const double r):
         M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)),
         dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
+    initialized = true;
     //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
     //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
     //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
@@ -40,6 +42,7 @@ void BlackScholesNetwork::set_solvent()
 
 std::vector<double> BlackScholesNetwork::run_valuation(unsigned int iterations)
 {
+    if(!initialized) throw std::logic_error("attempting to solve uninitialized model!");
     x = Eigen::VectorXd::Zero(2*N);
     Eigen::VectorXd a = S0.array()*St.array();
     double dist = 99.;

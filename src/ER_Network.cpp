@@ -10,22 +10,28 @@
 #include "ER_Network.hpp"
 
 void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, unsigned int which_to_set) {
+    init_network(N_in, p_in, val_in, which_to_set, this->T, this->r);
+}
+
+void ER_Network::init_network(const unsigned int N_in, const double p_in, const double val_in, const unsigned int which_to_set, const double T_new, const double r_new) {
+    T = T_new;
+    r = r_new;
     N = N_in;
     p = p_in;
     val = val_in;
     setM = which_to_set;
-    Z = Eigen::VectorXd(N);
+    Z.resize(N);
     Eigen::MatrixXd S0 = Eigen::VectorXd::Constant(N, 1.0);
     Eigen::MatrixXd debt = Eigen::VectorXd::Constant(N, 11.3);
-    Eigen::MatrixXd M = Eigen::MatrixXd(N, 2 * N);
-    itSigma = Eigen::MatrixXd(N, N);
-    var_h = Eigen::VectorXd(N);
+    itSigma.resize(N, N);
+    var_h.resize(N);
 
-    bsn.set_M(M);
-    bsn.set_S0(S0);
-    bsn.set_debt(debt);
+    //BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
+    if(bsn != nullptr)
+        delete bsn;
+    bsn = new BlackScholesNetwork(T, r);
+    init_M_ER(p, val, which_to_set, S0, debt);
 
-    set_M_ER(p, val, which_to_set);
 
     // random asset stuff
     Eigen::MatrixXd sigma = T * Eigen::MatrixXd::Identity(N, N);
@@ -42,18 +48,18 @@ void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, uns
 }
 
 
-void ER_Network::test_ER_valuation(const unsigned int N_in) {
+void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples) {
     init_network(N_in, p, val, setM);
     //@TODO: acc std::vector
     MCUtil::Sampler<std::vector<double>> S;
 
     auto f_dist = std::bind(&ER_Network::draw_from_dist, this);
     auto f_run = std::bind(&ER_Network::run, this, std::placeholders::_1);
-    std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, &bsn);
-    std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, &bsn);
-    std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, &bsn);
-    std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, &bsn);
-    std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, &bsn);
+    std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);
+    std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, bsn);
+    std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, bsn);
+    std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, bsn);
+    std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
     std::function<std::vector<double>(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
     std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
@@ -69,7 +75,7 @@ void ER_Network::test_ER_valuation(const unsigned int N_in) {
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
     LOG(INFO) << "Running Valuation for N = " << N;
 
-    S.draw_samples(f_run, f_dist, 10000);
+    S.draw_samples(f_run, f_dist, N_Samples);
     LOG(INFO) << std::endl << " ======= Means ======= ";
 
     auto res = S.extract(MCUtil::StatType::MEAN);
@@ -116,16 +122,16 @@ std::vector<double> ER_Network::draw_from_dist() {
 std::vector<double> ER_Network::delta_v2() {
     //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
     std::vector<double> res(2 * N * N);
-    Eigen::VectorXd ln_fac = (itSigma * Z).array() / bsn.get_S0().array();
-    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * bsn.get_rs_eigen().transpose()).transpose();
+    Eigen::VectorXd ln_fac = (itSigma * Z).array() / (bsn->get_S0()).array();
+    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs_eigen()).transpose()).transpose();
     Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
     return res;
 }
 
-void ER_Network::set_M_ER(const double p, const double val, unsigned int which_to_set)
+void ER_Network::init_M_ER(const double p, const double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt)
 {
-    //EXPECT_GT(val, 0) << "val is not a probability";
-    //EXPECT_LT(val, 1) << "val is not a probability";
+    if(val < 0 || val > 1) throw std::logic_error("Value is not in [0,1]");
+    if(p < 0 || p > 1) throw std::logic_error("p is not a probability");
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;
@@ -155,5 +161,5 @@ void ER_Network::set_M_ER(const double p, const double val, unsigned int which_t
     auto row_sum = M.rowwise().sum();
     double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
     M = (val/max)*M;
-    bsn.set_M(M);
+    bsn->re_init(M, s0, debt);
 }

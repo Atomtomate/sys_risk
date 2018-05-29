@@ -56,9 +56,7 @@ private:
         M << Ms, Md;
         S0 << 1.0, 1.0;
         debt << 11.3, 11.3;
-        bsn.set_M(M);
-        bsn.set_S0(S0);
-        bsn.set_debt(debt);
+        bsn.re_init(M, S0, debt);
 
         // random asset stuff
         Eigen::MatrixXd sigma(N,N);
@@ -71,7 +69,7 @@ private:
 
 public:
     N2_network():
-            bsn(Eigen::MatrixXd::Zero(N,2*N), T, r), sig {{T, 0.}, {0., T}} , Z_dist(&sig[0][0], &sig[N-1][N-1]+1)
+            bsn(T, r), sig {{T, 0.}, {0., T}} , Z_dist(&sig[0][0], &sig[N-1][N-1]+1)
     {
         init_network();
     }
