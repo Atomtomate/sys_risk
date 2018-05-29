@@ -22,13 +22,14 @@
 
 
 class ER_Network {
+    friend class Py_ER_Net;
 private:
     const boost::mpi::communicator local;
     const boost::mpi::communicator world;
     const bool isGenerator;
     unsigned int N;
-    const double T;              // maturity
-    const double r;              // interest
+    double T;              // maturity
+    double r;              // interest
     double p;
     double val;
     unsigned int setM;
@@ -42,7 +43,7 @@ private:
     // last result, returned by observers
     std::vector<double> rs;
 
-    void set_M_ER(double p, double val, unsigned int which_to_set);
+    void init_M_ER(double p, double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
 
 public:
     /*!
@@ -52,7 +53,23 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
+    void init_network(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T_new, const double r_new);
     void init_network(unsigned int N, double p, double val, unsigned int which_to_set);
+
+
+    /*!
+     * @brief               Constructs the Black Scholes Model using random cross holdings.
+     * @param local         local MPI communicator (between producers/consumers only)
+     * @param world         global MPI communicator
+     * @param isGenerator   Flag for generator/consumer ranks
+     */
+    ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
+            local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
+    {
+        itSigma = Eigen::MatrixXd::Zero(1,1);
+        Z = Eigen::VectorXd::Zero(1,1);
+        var_h = Eigen::VectorXd::Zero(1,1);
+    }
 
     /*!
      * @brief               Constructs the Black Scholes Model using random cross holdings.

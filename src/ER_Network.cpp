@@ -10,22 +10,26 @@
 #include "ER_Network.hpp"
 
 void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, unsigned int which_to_set) {
+    init_network(N_in, p_in, val_in, which_to_set, this->T, this->r);
+}
+
+void ER_Network::init_network(const unsigned int N_in, const double p_in, const double val_in, const unsigned int which_to_set, const double T_new, const double r_new) {
+    T = T_new;
+    r = r_new;
     N = N_in;
     p = p_in;
     val = val_in;
     setM = which_to_set;
-    Z = Eigen::VectorXd(N);
+    Z.resize(N);
     Eigen::MatrixXd S0 = Eigen::VectorXd::Constant(N, 1.0);
     Eigen::MatrixXd debt = Eigen::VectorXd::Constant(N, 11.3);
-    Eigen::MatrixXd M = Eigen::MatrixXd(N, 2 * N);
-    itSigma = Eigen::MatrixXd(N, N);
-    var_h = Eigen::VectorXd(N);
+    itSigma.resize(N, N);
+    var_h.resize(N);
 
-    bsn.set_M(M);
-    bsn.set_S0(S0);
-    bsn.set_debt(debt);
+    //BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
+    bsn = BlackScholesNetwork();
+    init_M_ER(p, val, which_to_set, S0, debt);
 
-    set_M_ER(p, val, which_to_set);
 
     // random asset stuff
     Eigen::MatrixXd sigma = T * Eigen::MatrixXd::Identity(N, N);
@@ -122,10 +126,10 @@ std::vector<double> ER_Network::delta_v2() {
     return res;
 }
 
-void ER_Network::set_M_ER(const double p, const double val, unsigned int which_to_set)
+void ER_Network::init_M_ER(const double p, const double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt)
 {
-    //EXPECT_GT(val, 0) << "val is not a probability";
-    //EXPECT_LT(val, 1) << "val is not a probability";
+    if(val < 0 || val > 1) throw std::logic_error("Value is not in [0,1]");
+    if(p < 0 || p > 1) throw std::logic_error("p is not a probability");
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;
@@ -155,5 +159,5 @@ void ER_Network::set_M_ER(const double p, const double val, unsigned int which_t
     auto row_sum = M.rowwise().sum();
     double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
     M = (val/max)*M;
-    bsn.set_M(M);
+    bsn.re_init(M, s0, debt);
 }

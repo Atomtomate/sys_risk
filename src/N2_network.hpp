@@ -56,9 +56,7 @@ private:
         M << Ms, Md;
         S0 << 1.0, 1.0;
         debt << 11.3, 11.3;
-        bsn.set_M(M);
-        bsn.set_S0(S0);
-        bsn.set_debt(debt);
+        bsn.re_init(M, S0, debt);
 
         // random asset stuff
         Eigen::MatrixXd sigma(N,N);

@@ -34,9 +34,10 @@ class BlackScholesNetwork
 private:
     double T;
     double r;
-    unsigned long N;
+    int N;
     static size_t gbl_dbg_counter;
     size_t dbg_counter;
+    bool initialized;
     Eigen::MatrixXd M;
     Eigen::VectorXd x;
     Eigen::VectorXd S0;
@@ -54,7 +55,25 @@ private:
 public:
     BlackScholesNetwork(const BlackScholesNetwork&) = delete;
 
-    BlackScholesNetwork& operator=(const BlackScholesNetwork&) = delete;
+    /* BlackScholesNetwork& operator=(const BlackScholesNetwork& rhs) = delete;
+    {
+        T = rhs.T;
+        r = rhs.r;
+        N = rhs.N;
+        M = rhs.M;
+        x = rhs.x;
+        S0 = rhs.S0;
+        St = rhs.St;
+        debt = rhs.debt;
+        solvent = rhs.solvent;
+        exprt = rhs.exprt;
+    }*/
+
+    BlackScholesNetwork()
+    {
+        //LOG(WARNING) << "Default constructor for BlackScholesNetwork used. This could be unintentional.";
+        initialized = false;
+    }
 
     /**
      * @brief
@@ -71,10 +90,10 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
+    BlackScholesNetwork(const Eigen::MatrixXd& M, const Eigen::VectorXd& S0, const Eigen::VectorXd& assets, const Eigen::VectorXd& debt, const double T, const double r);
 
 
-    BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
+    //BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
     /**
      * @brief               Finds the fixed point of the cross holding problem at maturity T.
@@ -84,43 +103,44 @@ public:
     std::vector<double> run_valuation(unsigned int iterations);
 
 
-    inline void set_S0(const Eigen::VectorXd &s0) {
-        //EXPECT_EQ(s0.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
+    inline void set_St(const Eigen::VectorXd &st) {
+        if(st.size() != N)
+            throw std::logic_error("Mismatch between cross ownership matrix and assets!");
+        St = st;
+    }
+
+    inline void re_init(const Eigen::MatrixXd& M_new, const Eigen::VectorXd &s0, const Eigen::VectorXd &d) {
+        initialized = true;
+        M = M_new;
+        N = M.rows();
+        if(s0.size() != N)
+            throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
         S0 = s0;
-    }
-
-    inline void set_St(const Eigen::VectorXd& a) {
-        //EXPECT_EQ(a.size(), M.rows()) << "Dimensions of new assets do not match network dimensions!";
-        St = a;
-    }
-
-    inline void set_debt(const Eigen::VectorXd &d) {
-        //EXPECT_EQ(d.size(), M.rows()) << "Dimensions of new debts do not match network dimensions!";
+        if(d.size() != N)
+            throw std::logic_error("Mismatch between cross ownership matrix and debts!");
         debt = d;
     }
 
-    inline void set_M(Eigen::MatrixXd M_new) { M = M_new; }
-
     //@TODO: consistent return typex
-    inline const Eigen::VectorXd &get_S0() {
+    inline const Eigen::VectorXd& get_S0() const {
         return S0;
     }
 
-    inline const Eigen::VectorXd &get_St() {
+    inline const Eigen::VectorXd& get_St() const {
         return St;
     }
 
-    inline const Eigen::VectorXd &get_debt() {
+    inline const Eigen::VectorXd& get_debt() const {
         return debt;
     }
 
-    inline const Eigen::MatrixXd &get_M() {
+    inline const Eigen::MatrixXd& get_M() const {
         return M;
     }
 
-    //@TODO: move implementation to *.cpp
     std::vector<double> get_assets();
 
+    //@TODO: move implementation to *.cpp
     auto get_rs() {
         std::vector<double> ret;
         ret.resize(x.size());
@@ -128,7 +148,7 @@ public:
         return ret;
     }
 
-    inline Eigen::MatrixXd get_rs_eigen() {
+    inline const Eigen::VectorXd get_rs_eigen() const {
         return x;
     }
 
