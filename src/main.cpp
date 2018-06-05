@@ -45,10 +45,17 @@ int main(int argc, char* argv[])
     START_EASYLOGGINGPP(argc, argv);
 
     // MPI initialization
+#ifdef USE_MPI
+    LOG(INFO) << "using MPI";
     boost::mpi::environment env(argc, argv);
     boost::mpi::communicator world;
     bool isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
     boost::mpi::communicator local = world.split(isGenerator ? 0 : 1);
+    ER_Network nNN(local, world, true);
+#else
+    LOG(INFO) << "not using MPI";
+    ER_Network nNN;
+#endif
 
     //RInside R(argc, argv);
     //test_stan_math();
@@ -56,12 +63,10 @@ int main(int argc, char* argv[])
     //n2NN.test_N2_valuation();
 
 
-
     //ER_Network nNN(local, world, true, N, 1.0, 0.95, 2, 1.0, 0.0);
-    ER_Network nNN(local, world, true);
-    for (int N : {2}){ //, 8, 16, 32}) {
+    for (int N : {50}){ //, 8, 16, 32}) {
         nNN.init_network(N, 1.0, 0.95, 2, 1.0, 0.0);
-        nNN.test_ER_valuation(N, 50);
+        nNN.test_ER_valuation(N, 5000);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);

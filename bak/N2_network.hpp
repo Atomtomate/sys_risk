@@ -38,7 +38,7 @@ private:
     trng::correlated_normal_dist<> Z_dist;
 
     // last result, returned by observers
-    std::vector<double> rs;
+    Eigen::VectorXd rs;
 
 
     void init_network()
@@ -91,11 +91,11 @@ public:
         return res;
     }
 
-    auto run(std::vector<double> St_in)//Eigen::VectorXd St)
+    auto run(const Eigen::Ref<const Eigen::VectorXd>& St_in)//Eigen::VectorXd St)
     {
-        Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size() );
+        //Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size() );
 
-        bsn.set_St(St);
+        bsn.set_St(St_in);
         rs = bsn.run_valuation(1000);
     }
 
@@ -104,7 +104,7 @@ public:
         const auto N = M.rows();
         std::vector<double> res(2 * N * N);
         Eigen::VectorXd ln_fac = (itSigma * Z).array() / bsn.get_S0().array();
-        Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * bsn.get_rs_eigen().transpose()).transpose();
+        Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * bsn.get_rs().transpose()).transpose();
         Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
         return res;
     }

@@ -11,6 +11,8 @@
 
 #include <iostream>
 #include <functional>
+#include <typeinfo>
+#include <type_traits>
 
 #include "Config.hpp"
 #include "StatAcc.hpp"
@@ -23,10 +25,16 @@ namespace MCUtil {
      * @brief       This class provides methods for sampling of arbitrary functions, provided distribution and sampling function is given.
      * @tparam T    return type of the sampling function
      */
-    template<class T>
+    template<typename T>
     class Sampler {
     private:
         friend class boost::serialization::access;
+        //@TODO: this needs to be dynamically adjustable between StatAcc and StatAccEigen. possibly overload StatAcc
+        //std::vector<MCUtil::StatAcc<T, 100000>> accs;
+        std::vector<MCUtil::StatAccEigen<double, 100000>> accs;
+        std::vector<std::function<T(void)>> observers;
+        std::vector<std::string> descriptions;
+
         template<class Archive>
         void serialize(Archive & ar, const unsigned int version)
         {
@@ -37,10 +45,6 @@ namespace MCUtil {
             ar & res_mean;
             ar & res_var;
         }
-
-        std::vector<MCUtil::StatAcc<T, 100000>> accs;
-        std::vector<std::function<T(void)>> observers;
-        std::vector<std::string> descriptions;
 
         /*!
          * @brief           Calling this function will produce one sample
@@ -55,7 +59,11 @@ namespace MCUtil {
             //@TODO: use boost serialize to save results? https://stackoverflow.com/questions/18382457/eigen-and-boostserialize
             f(std::forward<ArgTypes>(f_args)...);
             for (std::size_t i = 0; i < accs.size(); i++)
+            {
+                //auto res = observers[i]();
+                //LOG(ERROR) << "trying to accumulate: " << res;
                 accs[i](observers[i]());
+            }
         }
 
     public:

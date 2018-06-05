@@ -15,16 +15,18 @@ BlackScholesNetwork::BlackScholesNetwork(const double T, const double r):
 {
     gbl_dbg_counter += 1;
     initialized = false;
+    x = Eigen::VectorXd::Zero(2*N);
     //EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
-BlackScholesNetwork::BlackScholesNetwork(const Eigen::MatrixXd& M, const Eigen::VectorXd& S0, const Eigen::VectorXd& assets, const Eigen::VectorXd& debt, const double T, const double r):
+BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r):
         M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)),
         dbg_counter(gbl_dbg_counter)
 {
     gbl_dbg_counter += 1;
     initialized = true;
+    x = Eigen::VectorXd::Zero(2*N);
     //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
     //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
     //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
@@ -40,28 +42,28 @@ void BlackScholesNetwork::set_solvent()
 }
 
 
-std::vector<double> BlackScholesNetwork::run_valuation(unsigned int iterations)
+const Eigen::MatrixXd BlackScholesNetwork::run_valuation(unsigned int iterations)
 {
     if(!initialized) throw std::logic_error("attempting to solve uninitialized model!");
-    x = Eigen::VectorXd::Zero(2*N);
-    Eigen::VectorXd a = S0.array()*St.array();
+
     double dist = 99.;
+    Eigen::MatrixXd a = S0.array()*St.array();
     for(unsigned int r = 0; r < iterations; r++) {
         auto tmp = a + M*x;
         auto distV = x;
-        x.head(N) = (tmp - debt).cwiseMax(0.);
+        x.head(N) = (tmp - debt).array().max(0.);
         x.tail(N) = tmp.cwiseMin(debt);
         distV = distV - x;
         dist = distV.norm();
-        if(dist < 1.0e-14)
+        if(dist < 1.0e-12)
             break;
     }
     set_solvent();
-    return get_rs();
+    return x;
 }
 
 
-Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
+const Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
 {
     Eigen::MatrixXd J(2*N, 2*N);
     //@TODO: replace this loop with stacked solvent matrix x matrix operation?
@@ -82,7 +84,7 @@ Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
 }
 
 
-Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
+const Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
 {
     Eigen::MatrixXd J(2*N, N);
     if(solvent.size() == M.rows()) {
@@ -96,10 +98,7 @@ Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
 }
 
 
-std::vector<double>  BlackScholesNetwork::get_assets()
+const Eigen::Ref<const Eigen::VectorXd> BlackScholesNetwork::get_assets()
 {
-    std::vector<double> res;
-    res.resize(St.size());
-    Eigen::VectorXd::Map(&res[0], St.size()) = S0.array()*St.array();
-    return res;
+    return (S0.array()*St.array());
 }

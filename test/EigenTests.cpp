@@ -56,3 +56,16 @@ TEST(eigenBoostSerialize, testEigen)
     LOG(INFO) << "Read: \n" << A2;
     //ASSERT_TRUE(A.isApprox(A2));*/
 }
+
+TEST(eigenStatAcc, testEigen)
+{
+    Eigen::MatrixXd m = Eigen::MatrixXd::Random(3,3);
+    MCUtil::StatAccEigen<double, 10> acc(3,3);
+    LOG(INFO) << m;
+    for(int  i = 0; i < 1000; i++) {
+        m = Eigen::MatrixXd::Random(3, 3);
+        acc(m);
+    }
+    auto res = acc.extract(MCUtil::StatType::MEAN);
+    LOG(INFO) << res;
+}

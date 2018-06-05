@@ -14,20 +14,26 @@
 
 class Py_ER_Net {
 private:
+#ifdef USE_MPI
     boost::mpi::environment env;
     boost::mpi::communicator world;
     bool isGenerator;
     boost::mpi::communicator local;
+#endif
     ER_Network er_net;
 
 public:
 
     Py_ER_Net():
+#ifdef USE_MPI
         er_net(local, world, isGenerator)
     {
         isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
         local = world.split(isGenerator ? 0 : 1);
     }
+#else
+er_net(){}
+#endif
 
     void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r)
     {
@@ -35,7 +41,7 @@ public:
         er_net.test_ER_valuation();
     }
 
-    const Eigen::MatrixXd& view_M() const
+    const Eigen::MatrixXd view_M() const
     {
         return (er_net.bsn)->get_M();
     }
@@ -43,7 +49,7 @@ public:
 
     const Eigen::MatrixXd view_rs() const
     {
-        return (er_net.bsn)->get_rs_eigen();
+        return (er_net.bsn)->get_rs();
     }
 
 };

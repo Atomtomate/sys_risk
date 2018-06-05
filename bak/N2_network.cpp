@@ -18,6 +18,8 @@ void N2_network::test_N2_valuation() {
 
     auto f_dist = std::bind(&N2_network::draw_from_dist, this);
     auto f_run = std::bind(&N2_network::run, this, std::placeholders::_1);
+    /*
+
     std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, &bsn);
     std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, &bsn);
     std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, &bsn);
@@ -29,13 +31,14 @@ void N2_network::test_N2_valuation() {
     //S.register_observer(assets_obs, 2);
     //S.register_observer(rs_obs, 4);
     //S.register_observer(sol_obs, 2);
-    S.register_observer(valuation_obs, "Valuation", 2);
+    /*S.register_observer(valuation_obs, "Valuation", 2);
     //std::function<std::vector<double>(void)> out_obs = std::bind(&N2_network::test_out, this);
     //S.register_observer(out_obs, 1);
 
     S.register_observer(deltav1_obs, "Delta using Jacobians", 8);
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
     S.draw_samples(f_run, f_dist, 1000);
+     */
     LOG(INFO) << "Means: ";
     auto res = S.extract(MCUtil::StatType::MEAN);
     for (auto el : res) {

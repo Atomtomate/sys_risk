@@ -20,7 +20,10 @@
 #include "trng/correlated_normal_dist.hpp"
 #include "Eigen/Dense"
 
+#ifdef USE_MPI
 #include <boost/mpi.hpp>
+#endif
+
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/optional.hpp>
 
@@ -31,6 +34,8 @@
 
 class BlackScholesNetwork
 {
+    using Mat = Eigen::MatrixXd;
+    using Vec = Eigen::VectorXd;
 private:
     double T;
     double r;
@@ -38,19 +43,19 @@ private:
     static size_t gbl_dbg_counter;
     size_t dbg_counter;
     bool initialized;
-    Eigen::MatrixXd M;
-    Eigen::VectorXd x;
-    Eigen::VectorXd S0;
-    Eigen::VectorXd St;
-    Eigen::VectorXd debt;
-    Eigen::VectorXd solvent;
+    Mat M;
+    Vec x;
+    Vec S0;
+    Vec St;
+    Vec debt;
+    Vec solvent;
     double exprt;
 
     void set_solvent();
 
-    Eigen::MatrixXd iJacobian_fx();
+    const Mat iJacobian_fx();
 
-    Eigen::MatrixXd Jacobian_va();
+    const Mat Jacobian_va();
 
 public:
     BlackScholesNetwork(const BlackScholesNetwork&) = delete;
@@ -90,7 +95,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::MatrixXd& M, const Eigen::VectorXd& S0, const Eigen::VectorXd& assets, const Eigen::VectorXd& debt, const double T, const double r);
+    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r);
 
 
     //BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
@@ -100,85 +105,94 @@ public:
      * @param iterations    maximum number of self consistency iterations.
      * @return              returns vector of value of debt and value of equity.
      */
-    std::vector<double> run_valuation(unsigned int iterations);
+    const Mat run_valuation(unsigned int iterations);
 
 
-    inline void set_St(const Eigen::VectorXd &st) {
+    inline void set_St(const Vec &st) {
         if(st.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets!");
         St = st;
     }
 
-    inline void re_init(const Eigen::MatrixXd& M_new, const Eigen::VectorXd &s0, const Eigen::VectorXd &d) {
+    inline void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
         initialized = true;
         M = M_new;
         N = M.rows();
         if(s0.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
         S0 = s0;
+        St = s0;
         if(d.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and debts!");
         debt = d;
     }
 
     //@TODO: consistent return typex
-    inline const Eigen::VectorXd& get_S0() const {
+    inline const Vec get_S0() const {
         return S0;
     }
 
-    inline const Eigen::VectorXd& get_St() const {
+    inline const Vec get_St() const {
         return St;
     }
 
-    inline const Eigen::VectorXd& get_debt() const {
+    inline const Vec get_debt() const {
         return debt;
     }
 
-    inline const Eigen::MatrixXd& get_M() const {
+    inline const Mat get_M() const {
         return M;
     }
 
-    std::vector<double> get_assets();
+    const Eigen::Ref<const Vec> get_assets();
 
     //@TODO: move implementation to *.cpp
-    auto get_rs() {
-        std::vector<double> ret;
+    const Vec get_rs() {
+        return x;
+       /* std::vector<double> ret;
         ret.resize(x.size());
         Eigen::VectorXd::Map(&ret[0], x.size()) = x;
         return ret;
+        */
     }
 
-    inline const Eigen::VectorXd get_rs_eigen() const {
-        return x;
-    }
+    //inline const Eigen::VectorXd get_rs_eigen() const {
+    //    return x;
+    //}
 
-    auto get_valuation() {
+    const Vec get_valuation() {
+        Vec res = (x.head(N) + x.tail(N));
+        return res;
+        /*
         std::vector<double> ret;
         ret.resize(N);
         Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
-        return ret;
+        return ret;*/
     }
 
-    auto get_solvent() {
-        std::vector<double> res;
+   const Vec get_solvent() {
+        return solvent;
+        /*std::vector<double> res;
         res.resize(solvent.size());
         Eigen::Matrix<double, Eigen::Dynamic, 1>::Map(&res[0], solvent.size()) = solvent;
-        return res;
+        return res;*/
     }
 
-    std::vector<double> get_delta_v1() {
+    const Mat get_delta_v1() {
         auto Jrs = iJacobian_fx();
         auto Jva = Jacobian_va();
         auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
+        return res_eigen;
         //LOG(INFO) << "exprt:" << exprt <<"\n===\n" << St << "\n====\n";
         //LOG(ERROR) << Jrs << "\n\n" << Jva << "\n\n" << res_eigen << "\n\n";
-        std::vector<double> res;
-        res.resize(2*N*N);
+        //std::vector<double> res;
+        //res.resize(2*N*N);
         //EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
-        Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
-        return res;
+        //Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
+        //return res;
     }
 
+    //get_v_out()
 
 };
 

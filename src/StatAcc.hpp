@@ -20,6 +20,7 @@
 #include <boost/accumulators/statistics/density.hpp>
 #include <boost/accumulators/statistics/kurtosis.hpp>
 #include <boost/accumulators/statistics/skewness.hpp>
+#include <Eigen/Dense>
 
 #include <algorithm>
 #include <vector>
@@ -134,6 +135,96 @@ public:
         return res;
     }
 };
-}
+
+// ===== Eigen::MatrixXd specialization
+
+    // TODO: do this as template specialization
+    template<typename T, unsigned long CACHE_SIZE = 0>
+    class StatAccEigen
+    {
+
+        using AccT = boost::accumulators::accumulator_set<std::vector<T>,
+                boost::accumulators::features<
+                        boost::accumulators::tag::mean,
+                        boost::accumulators::tag::variance
+                        //,boost::accumulators::tag::skewness
+                        //,boost::accumulators::tag::kurtosis
+                > >;
+
+    private:
+        AccT acc;
+        std::vector<T> mapped;
+        std::deque<std::vector<T>> cache;
+        int r;
+        int c;
+        unsigned long cache_used;
+
+    public:
+
+        StatAccEigen &operator=(const StatAccEigen &) = delete;
+
+        /*!
+         * @brief
+         * @param rows     Rows of matrices to be accumulated
+         * @param cols     Cols of matrices to be accumulated
+         */
+        StatAccEigen(int rows, int cols):
+                acc(std::vector<T>(rows*cols)), cache_used{0}, r(rows), c(cols) {
+            mapped.resize(cols*rows);
+            if(CACHE_SIZE)
+                cache.resize(CACHE_SIZE);
+        }
+
+        /*!
+         * @brief       Adds another sample to the accumulator
+         * @param val   Value of next sample
+         */
+        void operator()(const Eigen::Ref<const Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>& val) {
+            Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>::Map(&mapped[0], val.rows(), val.cols()) = val;
+            if(CACHE_SIZE) {
+                if(cache_used < CACHE_SIZE) {
+                    cache.push_back(mapped);
+                    cache_used += 1;
+                } else {
+                    cache.pop_front();
+                    cache.push_back(mapped);
+                }
+            }
+            acc(mapped);
+        }
+
+        /*!
+         * @brief       extracts statistic of accumulated quantity
+         * @param st    Stat Type
+         * @return      Value of statistic for quantity
+         */
+        Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> extract(const StatType st) {
+            std::vector<T> res;
+            switch(st) {
+                case StatType::MEAN:
+                    res = boost::accumulators::mean(acc);
+                    break;
+                case StatType::VARIANCE:
+                    res = boost::accumulators::variance(acc);
+                    break;
+                    /* @TODO: template disable
+                     * case StatType::SKEWNESS:
+                        res = boost::accumulators::variance(acc);
+                        break;
+                    case StatType::KURTOSIS:
+                        res = boost::accumulators::kurtosis(acc);
+                        break;
+                        */
+            }
+            Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> out =\
+                Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>(&res[0], r, c);
+            return out;
+        }
+    };
+
+
+
+
+} // end namespace
 
 #endif

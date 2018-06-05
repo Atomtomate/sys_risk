@@ -28,16 +28,19 @@
 
 #define EIGEN_DENSEBASE_PLUGIN "EigenDenseBaseAddons.hpp"
 #include <Eigen/Dense>
+
+#ifdef USE_MPI
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
+#endif
 
 #include "Config.hpp"
 #include "Sampler.hpp"
-#include "N2_network.hpp"
+//#include "N2_network.hpp"
 #include "ER_Network.hpp"
-#include "KarlFischerPaper.hpp"
+//#include "KarlFischerPaper.hpp"
 #include "IOHelper.hpp"
-#include "PythonInterface.hpp"
+//#include "PythonInterface.hpp"
 
 
 

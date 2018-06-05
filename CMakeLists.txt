@@ -2,11 +2,14 @@ cmake_minimum_required (VERSION 3.5)
 project (Valuation CXX)
 
 enable_testing()
+option(USE_CLANG "build wqith LLVM/CLANG" OFF)
+option(USE_MPI "build with MPI" ON)
 
 # Compiler settings
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wextra")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -ffast-math -ftree-vectorize") # -g3 -fno-inline
 set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 link_directories(${PROJECT_EXTERNAL}/lib)
 
@@ -45,11 +48,12 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/N2_network.hpp src/N2_network.cpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp src/EigenDenseBaseAddons.hpp src/SerializationWrapper.cpp src/SerializationWrapper.hpp src/PythonInterface.hpp)
+add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp src/EigenDenseBaseAddons.hpp src/SerializationWrapper.cpp src/SerializationWrapper.hpp src/PythonInterface.hpp)
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
 # Dependencies
+find_package(Threads REQUIRED)
 
 find_package(LAPACK)
 if(LAPACK_FOUND)
@@ -72,12 +76,20 @@ endif()
 #find_package(GMock) {GMOCK_INCLUDE_DIRS}
 #include_directories(${GTEST_INCLUDE_DIRS} $)
 
-find_package(MPI REQUIRED)
-include_directories(${MPI_INCLUDE_PATH})
-target_link_libraries(Valuation ${MPI_LIBRARIES})
+if(USE_MPI)
+    find_package(MPI REQUIRED)
+    include_directories(${MPI_INCLUDE_PATH})
+    target_link_libraries(Valuation ${MPI_LIBRARIES})
+    add_definitions(-DUSE_MPI)
+endif()
 
 find_package(PythonLibs REQUIRED)
-find_package(Boost COMPONENTS system filesystem mpi serialization python REQUIRED)
+if(USE_MPI)
+    find_package(Boost COMPONENTS system filesystem mpi serialization python REQUIRED)
+else()
+    find_package(Boost COMPONENTS system filesystem serialization python REQUIRED)
+endif()
+
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     target_link_libraries(Valuation ${Boost_LIBRARIES})
@@ -97,7 +109,7 @@ include_directories(${PROJECT_EXTERNAL}/include)
 add_dependencies(${PROJECT_NAME} gtest)
 ExternalProject_Get_Property(gtest binary_dir)
 target_link_libraries(${PROJECT_NAME} libgtest trng4)
-target_link_libraries(${PROJECT_NAME} pthread m)
+target_link_libraries(${PROJECT_NAME} Threads::Threads m)
 target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
@@ -125,7 +137,7 @@ set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
 target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS})
 #target_link_libraries(PyVal PUBLIC libgtest)
 #target_link_libraries(PyVal PUBLIC trng4)
-target_link_libraries(PyVal PUBLIC trng4 pthread m ${EXTRA_LIBRARIES} ${LIBS} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(PyVal PUBLIC trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${LIBS} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(PyVal INTERFACE gtest)
 target_compile_options(PyVal PRIVATE -fPIC)
 #include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)

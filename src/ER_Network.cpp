@@ -51,81 +51,70 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
 void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples) {
     init_network(N_in, p, val, setM);
     //@TODO: acc std::vector
-    MCUtil::Sampler<std::vector<double>> S;
+
 
     auto f_dist = std::bind(&ER_Network::draw_from_dist, this);
     auto f_run = std::bind(&ER_Network::run, this, std::placeholders::_1);
-    std::function<std::vector<double>(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);
-    std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, bsn);
-    std::function<std::vector<double>(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, bsn);
-    std::function<std::vector<double>(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, bsn);
-    std::function<std::vector<double>(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
-    std::function<std::vector<double>(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
-    std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
+    std::function<const Eigen::MatrixXd(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);
+    //std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, bsn);
+    std::function<const Eigen::MatrixXd(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, bsn);
+    std::function<const Eigen::MatrixXd(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, bsn);
+    std::function<const Eigen::MatrixXd(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
+    std::function<const Eigen::MatrixXd(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
+    //std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
     // usage: register std::function with no parameters and boost::accumulator compatible return value. 2nd,... parameters are used to construct accumulator
     //S.register_observer(rs_obs, 2*N);
-    S.register_observer(assets_obs, "Assets", N);
-    S.register_observer(sol_obs, "Solvent", N);
-    S.register_observer(valuation_obs, "Valuation", N);
-    S.register_observer(std::bind(&ER_Network::sumM, this), "Sum over M", 1);
+    S.register_observer(assets_obs, "Assets", N, 1);
+    S.register_observer(sol_obs, "Solvent", N, 1);
+    S.register_observer(valuation_obs, "Valuation", N, 1);
+    //S.register_observer(std::bind(&ER_Network::sumM, this), "Sum over M", 1);
     //S.register_observer(out_obs, "Debug Out" ,1);
 
-    S.register_observer(deltav1_obs, "Delta using Jacobians", 2 * N * N);
-    S.register_observer(deltav2_obs, "Delta using Log", 2 * N * N);
+    S.register_observer(deltav1_obs, "Delta using Jacobians", 2 * N , N);
+    S.register_observer(deltav2_obs, "Delta using Log", 2 * N , N);
     LOG(INFO) << "Running Valuation for N = " << N;
+
 
     S.draw_samples(f_run, f_dist, N_Samples);
     LOG(INFO) << std::endl << " ======= Means ======= ";
 
+
     auto res = S.extract(MCUtil::StatType::MEAN);
     for (auto el : res) {
         std::cout << el.first << ": " << std::endl;
-        Eigen::MatrixXd m;
-        if (el.second.size() > N) {
-            m = Eigen::MatrixXd::Map(&el.second[0], 2 * N, N);
-            std::cout << m;
-        } else {
-            for (auto eli : el.second)
-                std::cout << eli << ", ";
-        }
+        std::cout << el.second;
         std::cout << std::endl << std::endl;
     }
+
     LOG(INFO) << std::endl << " ======= Vars ======= ";
     auto res_var = S.extract(MCUtil::StatType::VARIANCE);
     for (auto el : res_var) {
         std::cout << el.first << ": " << std::endl;
-        Eigen::MatrixXd m;
-        if (el.second.size() > N) {
-            m = Eigen::MatrixXd::Map(&el.second[0], 2 * N, N);
-            std::cout << m << ", ";
-        } else {
-            for (auto eli : el.second)
-                std::cout << eli << ", ";
-        }
+        std::cout << el.second;
         std::cout << std::endl << std::endl;
     }
 }
 
-std::vector<double> ER_Network::draw_from_dist() {
+Eigen::MatrixXd ER_Network::draw_from_dist() {
     Eigen::VectorXd S_log(N);             // log of lognormal distribution exogenous assets, without a_0
     for (unsigned int d = 0; d < N; d++) {
         Z(d) = Z_dist(gen_z);
         S_log(d) = var_h(d) + std::sqrt(T) * Z(d);
     }
-    std::vector<double> res;
-    res.resize(S_log.size());
-    Eigen::VectorXd::Map(&res[0], S_log.size()) = S_log.array().exp();
-    return res;
+    //std::vector<double> res;
+    //res.resize(S_log.size());
+    //Eigen::VectorXd::Map(&res[0], S_log.size()) = S_log.array().exp();
+    return S_log.array().exp();
 }
 
-std::vector<double> ER_Network::delta_v2() {
+const Eigen::MatrixXd ER_Network::delta_v2() {
     //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
-    std::vector<double> res(2 * N * N);
+    //std::vector<double> res(2 * N * N);
     Eigen::VectorXd ln_fac = (itSigma * Z).array() / (bsn->get_S0()).array();
-    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs_eigen()).transpose()).transpose();
-    Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
-    return res;
+    Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs()).transpose()).transpose();
+    //Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
+    return m;
 }
 
 void ER_Network::init_M_ER(const double p, const double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt)
@@ -157,9 +146,12 @@ void ER_Network::init_M_ER(const double p, const double val, unsigned int which_
         }
     }
     //@TODO: valid normalization
-    auto col_sum = M.colwise().sum();
-    auto row_sum = M.rowwise().sum();
-    double max = std::max(col_sum.maxCoeff(), row_sum.maxCoeff());
+    auto col_sum = M.leftCols(N).colwise().sum();
+    auto row_r_sum = M.leftCols(N).rowwise().sum();
+    auto row_s_sum = M.rightCols(N).rowwise().sum();
+    double max = std::max({col_sum.maxCoeff(), row_r_sum.maxCoeff(), row_s_sum.maxCoeff()});
+    //LOG(ERROR) << "M:\n" << M << "\nCol Sum: \n" <<col_sum << std::endl <<  std::endl << max << std::endl;
     M = (val/max)*M;
+    //LOG(ERROR) << M;
     bsn->re_init(M, s0, debt);
 }

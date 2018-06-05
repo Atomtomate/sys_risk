@@ -12,9 +12,12 @@
 
 #include <cstdlib>
 
+#ifdef USE_MPI
 
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
+
+#endif
 
 #include "Sampler.hpp"
 #include "StatAcc.hpp"
@@ -24,9 +27,13 @@
 class ER_Network {
     friend class Py_ER_Net;
 private:
+
+#ifdef USE_MPI
     const boost::mpi::communicator local;
     const boost::mpi::communicator world;
     const bool isGenerator;
+#endif
+
     unsigned int N;
     double T;              // maturity
     double r;              // interest
@@ -39,9 +46,10 @@ private:
     Eigen::MatrixXd itSigma;
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
+    MCUtil::Sampler<Eigen::MatrixXd> S;
 
     // last result, returned by observers
-    std::vector<double> rs;
+    Eigen::VectorXd rs;
 
     void init_M_ER(double p, double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
 
@@ -67,8 +75,13 @@ public:
      * @param world         global MPI communicator
      * @param isGenerator   Flag for generator/consumer ranks
      */
+#ifdef USE_MPI
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
             local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
+#else
+ER_Network():
+            Z_dist(&tmp[0][0], &tmp[1][1])
+#endif
     {
         bsn = nullptr;
         itSigma = Eigen::MatrixXd::Zero(1,1);
@@ -88,9 +101,13 @@ public:
      * @param T             maturity
      * @param r             interest rate
      */
+#ifdef USE_MPI
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
                unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
+#else
+    ER_Network(unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
+#endif
             T(T), r(r),
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
@@ -118,17 +135,17 @@ public:
      * @brief   Draws a random number from a multivariate lognormal distribution
      * @return  Random sample from a multivariate lognormal distribution
      */
-    std::vector<double> draw_from_dist();
+    Eigen::MatrixXd draw_from_dist();
 
     /*!
      * @brief       Runs a single simulation of the Black Scholes model to find the fix point valuation.
      * @param St_in Initial asset value
      * @return      Valuation of firms at maturity T
      */
-    auto run(std::vector<double> St_in)//Eigen::VectorXd St)
+    auto run(const Eigen::Ref<const Eigen::VectorXd>& St_in)//Eigen::VectorXd St)
     {
-        Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size());
-        bsn->set_St(St);
+        //Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size());
+        bsn->set_St(St_in);
         rs = bsn->run_valuation(1000);
     }
 
@@ -136,7 +153,7 @@ public:
      * @brief   Compute \f$\Delta\f$ using the covariance matrix of the normal distribution
      * @return  \f$\Delta\f$
      */
-    std::vector<double> delta_v2();
+    const Eigen::MatrixXd delta_v2();
 
     /*!
      * @brief   Computes the sum over all elements of the cross holdings matrix
@@ -152,7 +169,7 @@ public:
         auto v_o = bsn->get_valuation();
         auto s_o = bsn->get_solvent();
         std::cout << "output after sample: " << std::endl;
-        for(size_t i=0; i < v_o.size(); i++)
+        for(int i=0; i < v_o.size(); i++)
             std::cout << v_o[i] << "\t" << s_o[i] << std::endl;
         std::cout << "------" << std::endl;
         std::vector<double> out {0.};
