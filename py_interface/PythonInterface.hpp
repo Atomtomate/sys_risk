@@ -23,12 +23,11 @@ PYBIND11_MODULE(PyVal, m) {
     py::class_<Py_ER_Net>(m, "BS_Network")
             .def(py::init<>())
             .def("add", &Py_ER_Net::add)
-            .def("run", &Py_ER_Net::run_valuation);
-            //.def("view_M", &Py_ER_Net::view_M, py::return_value_policy::reference_internal)
-            //.def("view_rs", &Py_ER_Net::view_rs, py::return_value_policy::reference_internal);
+            .def("run", &Py_ER_Net::run_valuation)
+            .def("get_M", &Py_ER_Net::get_M)  //, py::return_value_policy::reference_internal)
+            .def("get_rs", &Py_ER_Net::get_rs) // , py::return_value_policy::reference_internal)
+            .def("get_solvent", &Py_ER_Net::get_solvent); //, py::return_value_policy::reference_internal);
 
-//    m.doc() = "documentation string"; // optional
-//    m.def("add", [](int a, int b) { return a + b; });
 }
 
 #endif //VALUATION_PYTHONINTERFACE_HPP

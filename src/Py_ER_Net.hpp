@@ -42,14 +42,18 @@ public:
         er_net.test_ER_valuation();
     }
 
-    const Eigen::MatrixXd view_M() const
+    Eigen::MatrixXd get_M() const
     {
         return (er_net.bsn)->get_M();
     }
 
 
-    const Eigen::MatrixXd view_rs() const {
+    Eigen::MatrixXd get_rs() const {
         return (er_net.bsn)->get_rs();
+    }
+
+    Eigen::MatrixXd get_solvent() const {
+        return (er_net.bsn)->get_solvent();
     }
 
 };
