@@ -10,9 +10,10 @@
 #define VALUATION_PY_ER_NET_HPP
 
 #include "ER_Network.hpp"
-#include "pybind11/eigen.h"
 
-class Py_ER_Net {
+class Py_ER_Net
+{
+
 private:
 #ifdef USE_MPI
     boost::mpi::environment env;
@@ -24,16 +25,16 @@ private:
 
 public:
 
-    Py_ER_Net():
 #ifdef USE_MPI
+    Py_ER_Net():
         er_net(local, world, isGenerator)
     {
         isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
         local = world.split(isGenerator ? 0 : 1);
     }
-#else
-er_net(){}
 #endif
+
+    double add(int i, int j) { return i + j;}
 
     void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r)
     {
@@ -47,8 +48,7 @@ er_net(){}
     }
 
 
-    const Eigen::MatrixXd view_rs() const
-    {
+    const Eigen::MatrixXd view_rs() const {
         return (er_net.bsn)->get_rs();
     }
 

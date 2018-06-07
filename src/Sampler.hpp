@@ -31,7 +31,7 @@ namespace MCUtil {
         friend class boost::serialization::access;
         //@TODO: this needs to be dynamically adjustable between StatAcc and StatAccEigen. possibly overload StatAcc
         //std::vector<MCUtil::StatAcc<T, 100000>> accs;
-        std::vector<MCUtil::StatAccEigen<double, 100000>> accs;
+        std::vector<MCUtil::StatAccEigen<double, 0>> accs;
         std::vector<std::function<T(void)>> observers;
         std::vector<std::string> descriptions;
 

@@ -11,6 +11,11 @@
 #ifndef MAIN_HPP_
 #define MAIN_HPP_
 
+#ifdef NDEBUG
+#define EIGEN_NO_DEBUG
+#define EIGEN_NO_STATIC_ASSERT
+#endif
+
 #define ELPP_NO_DEFAULT_LOG_FILE
 #define ELPP_STL_LOGGING
 #include "easylogging++.h"

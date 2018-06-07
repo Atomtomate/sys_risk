@@ -40,19 +40,20 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
 
     // creating correlated normal distribution from Eigen Sigma
     double *sigma_arr = new double[N * N];
+    double sigma2d_arr[N][ N];
     Eigen::MatrixXd::Map(sigma_arr, sigma.rows(), sigma.cols()) = sigma;
-    double (*sigma_mat)[N] = (double (*)[N]) sigma_arr;
-    Z_dist = trng::correlated_normal_dist<>(&sigma_mat[0][0], &sigma_mat[N - 1][N - 1] + 1);
-    delete sigma_arr;
+    //double (*sigma_mat)[N] = (double (*)[N]) sigma_arr;
+    memcpy(sigma2d_arr[0], sigma_arr, N*N*sizeof(double));
+    Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
+    delete[] sigma_arr;
     gen_z.seed(1);
 }
 
 
 void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples) {
     init_network(N_in, p, val, setM);
-    //@TODO: acc std::vector
 
-
+    //@TODO: use lambdas instead of bind, it is not 2011....
     auto f_dist = std::bind(&ER_Network::draw_from_dist, this);
     auto f_run = std::bind(&ER_Network::run, this, std::placeholders::_1);
     std::function<const Eigen::MatrixXd(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);

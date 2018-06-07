@@ -8,6 +8,7 @@
 
 
 #include "main.hpp"
+#include "Py_ER_Net.hpp"
 
 
 /*void test_section6(void)
@@ -46,26 +47,37 @@ int main(int argc, char* argv[])
 
     // MPI initialization
 #ifdef USE_MPI
-    LOG(INFO) << "using MPI";
+    LOG(INFO) << "SETTINGS: using MPI";
     boost::mpi::environment env(argc, argv);
     boost::mpi::communicator world;
     bool isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
     boost::mpi::communicator local = world.split(isGenerator ? 0 : 1);
     ER_Network nNN(local, world, true);
 #else
-    LOG(INFO) << "not using MPI";
+    LOG(INFO) << "SETTINGS: not using MPI";
     ER_Network nNN;
 #endif
 
+#ifdef NDEBUG
+    LOG(INFO) << "SETTINGS: Running release version";
+#else
+    LOG(INFO) << "SETTINGS: Running debug version";
+#endif
     //RInside R(argc, argv);
     //test_stan_math();
     //N2_network n2NN;
     //n2NN.test_N2_valuation();
 
 
+    Py_ER_Net pn;
+    LOG(INFO) << pn.add(4,5);
+    pn.run_valuation(2, 0.7, 0.5, 2, 1, 0);
+
     //ER_Network nNN(local, world, true, N, 1.0, 0.95, 2, 1.0, 0.0);
-    for (int N : {50}){ //, 8, 16, 32}) {
+    for (int N : {200}){ //, 8, 16, 32}) {
+        LOG(TRACE) << "before first init";
         nNN.init_network(N, 1.0, 0.95, 2, 1.0, 0.0);
+        LOG(TRACE) << "before ER valuation";
         nNN.test_ER_valuation(N, 5000);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {

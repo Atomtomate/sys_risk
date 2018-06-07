@@ -9,10 +9,11 @@ option(USE_MPI "build with MPI" ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -ffast-math -ftree-vectorize") # -g3 -fno-inline
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -ftree-vectorize -march=native -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline
 set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 link_directories(${PROJECT_EXTERNAL}/lib)
 
+#@TODO: load and install pybind11 and check for consistent version
 # Project settings
 set (Valuation_VERSION_MAJOR 0)
 set (Valuation_VERSION_MINOR 2)
@@ -48,7 +49,7 @@ configure_file (
     "${PROJECT_BINARY_DIR}/ValuationConfig.h"
     )
 
-add_executable(Valuation ${Valuation_SOURCES} src/Sampler.hpp src/ER_Network.hpp src/ER_Network.cpp src/IOHelper.hpp src/EigenDenseBaseAddons.hpp src/SerializationWrapper.cpp src/SerializationWrapper.hpp src/PythonInterface.hpp)
+add_executable(Valuation ${Valuation_SOURCES})
 target_include_directories(Valuation PRIVATE ${Valuation_INCLUDE_DIRS})
 
 
@@ -74,7 +75,6 @@ endif()
 
 #find_package(GTest)
 #find_package(GMock) {GMOCK_INCLUDE_DIRS}
-#include_directories(${GTEST_INCLUDE_DIRS} $)
 
 if(USE_MPI)
     find_package(MPI REQUIRED)
@@ -83,21 +83,20 @@ if(USE_MPI)
     add_definitions(-DUSE_MPI)
 endif()
 
-find_package(PythonLibs REQUIRED)
-if(USE_MPI)
-    find_package(Boost COMPONENTS system filesystem mpi serialization python REQUIRED)
+if(use_mpi)
+    find_package(Boost COMPONENTS system filesystem mpi serialization REQUIRED)
 else()
-    find_package(Boost COMPONENTS system filesystem serialization python REQUIRED)
+    find_package(Boost COMPONENTS system filesystem serialization REQUIRED)
 endif()
 
 if (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIR})
+    include_directories(${Boost_INCLUDE_DIRS})
     target_link_libraries(Valuation ${Boost_LIBRARIES})
 else()
-    message("Boost not found!")
+    message("boost not found!")
 endif()
-include_directories(${PYTHON_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+message(${Boost_INCLUDE_DIRS})
+message(${Boost_LIBRARIES})
 
 
 #add external
@@ -108,19 +107,12 @@ ExternalProject_Get_Property(gtest source_dir)
 include_directories(${PROJECT_EXTERNAL}/include)
 add_dependencies(${PROJECT_NAME} gtest)
 ExternalProject_Get_Property(gtest binary_dir)
-target_link_libraries(${PROJECT_NAME} libgtest trng4)
-target_link_libraries(${PROJECT_NAME} Threads::Threads m)
-target_link_libraries(${PROJECT_NAME} ${EXTRA_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} ${LIBS})
+target_link_libraries(${PROJECT_NAME} libgtest trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${LIBS})
 
 
 # this is the old PRNG library, this could be retired in the future (use R and stan math)
 #target_link_libraries(${PROJECT_NAME} ${GTEST_LIBRARIES})
-#target_link_libraries(${PROJECT_NAME} Eigen) #Eigen3::Eigen
-#target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES})
-#target_link_libraries(${PROJECT_NAME} ${RLDFLAGS_l})
-#target_link_libraries(${PROJECT_NAME} ${RINSIDELIBS_l})
-#target_link_libraries(${PROJECT_NAME} ${RCPPLIBS_l})
+#target_link_libraries(${PROJECT_NAME} ${SUNDIALS_LIBRARIES} ${RLDFLAGS_l} ${RINSIDELIBS_l} ${RCPPLIBS_l})
 
 
 
@@ -132,12 +124,9 @@ target_link_libraries(${PROJECT_NAME} ${LIBS})
 # =
 
 find_package(pybind11 REQUIRED)
-pybind11_add_module(PyVal src/PythonInterface.hpp ${Valuation_SOURCES})
+pybind11_add_module(PyVal MODULE py_interface/PythonInterface.cpp ${Valuation_SOURCES})
 set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
-target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS})
-#target_link_libraries(PyVal PUBLIC libgtest)
-#target_link_libraries(PyVal PUBLIC trng4)
-target_link_libraries(PyVal PUBLIC trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${LIBS} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
-target_link_libraries(PyVal INTERFACE gtest)
-target_compile_options(PyVal PRIVATE -fPIC)
-#include(${CMAKE_CURRENT_LIST_DIR}/GTests.cmake)
+#set_target_properties(PyVal PROPERTIES LINKER_LANGUAGE CXX)
+target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS} ${PROJECT_EXTERNAL}/include ${Boost_INCLUDE_DIRS})
+target_link_libraries(PyVal PUBLIC libgtest trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${Boost_LIBRARIES} ${LIBS}) #
+#target_compile_options(PyVal PUBLIC -fPIC)
