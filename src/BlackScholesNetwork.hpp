@@ -40,8 +40,6 @@ private:
     double T;
     double r;
     unsigned int N;
-    static size_t gbl_dbg_counter;
-    size_t dbg_counter;
     bool initialized;
     Mat M;
     Vec x;
@@ -98,7 +96,6 @@ public:
     BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r);
 
 
-    //BlackScholesNetwork(double p, double val, char which_to_set, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r);
 
     /**
      * @brief               Finds the fixed point of the cross holding problem at maturity T.
@@ -144,7 +141,7 @@ public:
         return M;
     }
 
-    const Eigen::Ref<const Vec> get_assets();
+    const Vec get_assets();
 
     //@TODO: move implementation to *.cpp
     const Vec get_rs() {

@@ -69,15 +69,14 @@ int main(int argc, char* argv[])
     //n2NN.test_N2_valuation();
 
 
-    Py_ER_Net pn;
-    LOG(INFO) << pn.add(4,5);
-    pn.run_valuation(2, 0.7, 0.5, 2, 1, 0);
+    //Py_ER_Net pn;
+    //LOG(INFO) << pn.add(4,5);
+    //pn.run_valuation(2, 0.7, 0.5, 2, 1, 0);
 
-    //ER_Network nNN(local, world, true, N, 1.0, 0.95, 2, 1.0, 0.0);
-    for (int N : {200}){ //, 8, 16, 32}) {
-        LOG(TRACE) << "before first init";
-        nNN.init_network(N, 1.0, 0.95, 2, 1.0, 0.0);
-        LOG(TRACE) << "before ER valuation";
+    //TODO: eigen matrix dimension missmatch on large size?!?!
+    for (int N : {10})
+    { //, 8, 16, 32}) {
+        nNN.init_network(N, 0.2, 0.95, 2, 1.0, 0.0);
         nNN.test_ER_valuation(N, 5000);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {

@@ -1,0 +1,71 @@
+2018-06-09 16:05:03,016 INFO [default] Initializing network
+2018-06-09 16:05:03,016 ERROR [default] aaa
+2018-06-09 16:05:03,016 ERROR [default] creating new Black Scholes Network
+2018-06-09 16:05:03,016 ERROR [default] Initializing random connectivity matrix
+2018-06-09 16:05:03,017 ERROR [default] Generating Model
+2018-06-09 16:05:03,018 INFO [default] Network initialized
+2018-06-09 16:05:03,019 INFO [default] Running Valuation for N = 80
+2018-06-09 16:05:33,777 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:05:33,778 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:06:16,361 INFO [default] Initializing network
+2018-06-09 16:06:16,361 ERROR [default] aaa
+2018-06-09 16:06:16,361 ERROR [default] creating new Black Scholes Network
+2018-06-09 16:06:16,361 ERROR [default] Initializing random connectivity matrix
+2018-06-09 16:06:16,361 ERROR [default] Generating Model
+2018-06-09 16:06:16,362 INFO [default] Network initialized
+2018-06-09 16:06:16,363 INFO [default] Running Valuation for N = 80
+2018-06-09 16:06:43,626 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:06:43,626 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:08:44,973 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:08:44,973 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:08:44,973 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:08:44,973 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:08:44,974 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:08:44,974 INFO [default] Running Valuation for N = 80
+2018-06-09 16:09:13,201 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:09:13,201 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:13:11,419 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:13:11,419 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:13:11,419 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:13:11,419 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:13:11,420 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:13:11,420 INFO [default] Running Valuation for N = 60
+2018-06-09 16:13:24,057 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:13:24,057 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:13:24,060 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:13:24,060 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:13:24,060 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:13:24,061 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:13:24,061 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:13:24,061 INFO [default] Running Valuation for N = 60
+2018-06-09 16:13:48,333 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:13:48,333 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:13:48,334 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:13:48,334 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:13:48,334 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:13:48,335 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:13:48,335 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:13:48,335 INFO [default] Running Valuation for N = 60
+2018-06-09 16:14:27,715 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:14:27,715 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:14:27,716 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:14:27,716 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:14:27,716 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:14:27,716 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:14:27,717 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:14:27,717 INFO [default] Running Valuation for N = 60
+2018-06-09 16:15:15,799 INFO [default] 
+ ======= Means ======= 
+2018-06-09 16:15:15,799 WARNING [default] Output disabled because of large matrix size
+2018-06-09 16:15:15,800 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-09 16:15:15,800 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-09 16:15:15,800 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-09 16:15:15,801 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-09 16:15:15,801 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-09 16:15:15,801 INFO [default] Running Valuation for N = 60

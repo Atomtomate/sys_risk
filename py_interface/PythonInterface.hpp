@@ -26,7 +26,8 @@ PYBIND11_MODULE(PyVal, m) {
             .def("run", &Py_ER_Net::run_valuation)
             .def("get_M", &Py_ER_Net::get_M)  //, py::return_value_policy::reference_internal)
             .def("get_rs", &Py_ER_Net::get_rs) // , py::return_value_policy::reference_internal)
-            .def("get_solvent", &Py_ER_Net::get_solvent); //, py::return_value_policy::reference_internal);
+            .def("get_solvent", &Py_ER_Net::get_solvent) //, py::return_value_policy::reference_internal);
+            .def("get_delta_jacobians", &Py_ER_Net::get_delta_jacobians); //, py::return_value_policy::reference_internal);
 
 }
 

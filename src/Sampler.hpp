@@ -55,14 +55,11 @@ namespace MCUtil {
          */
         template<class Func, typename... ArgTypes>
         void call_f(Func f, ArgTypes &&... f_args) {
-            //@TODO: use MPI producer/consumer model
-            //@TODO: use boost serialize to save results? https://stackoverflow.com/questions/18382457/eigen-and-boostserialize
             f(std::forward<ArgTypes>(f_args)...);
             for (std::size_t i = 0; i < accs.size(); i++)
             {
-                //auto res = observers[i]();
-                //LOG(ERROR) << "trying to accumulate: " << res;
-                accs[i](observers[i]());
+                auto res = observers[i]();
+                accs[i](res);//std::move(observers[i]()));
             }
         }
 
@@ -83,11 +80,11 @@ namespace MCUtil {
          * @param description   Description for the observer function, this is needed to identify the extracted results
          * @param args          Arguments for the observer
          */
-        template<typename... ArgTypes>
-        void register_observer(std::function<T(void)> f, std::string const &description, ArgTypes &&... args) {
+        template<typename Func, typename... ArgTypes>
+        void register_observer(Func f, std::string const &description, ArgTypes &&... args) {
             //static_assert(std::is_same<std::invoke_result_t<Func, ArgTypes... >, T>::value, "Return type of function and accumulation type do not match!");
-            observers.push_back(f);
-            descriptions.emplace_back(description);
+            observers.push_back(std::move(f));
+            descriptions.emplace_back(std::move(description));
             accs.emplace_back(std::forward<ArgTypes>(args)...);
         }
 
@@ -102,10 +99,10 @@ namespace MCUtil {
          * @param f_args            Arguments for f()
          */
         template<class Func, class DistT, typename... ArgTypes>
-        void draw_samples(Func f, DistT draw_from_dist, unsigned int n, ArgTypes &&... f_args) {
+        void draw_samples(Func&& f, DistT&& draw_from_dist, unsigned int n, ArgTypes &&... f_args) {
             for (unsigned int i = 0; i < n; i++) {
                 //@TODO: use curry for f with f_args. see: https://stackoverflow.com/questions/152005/how-can-currying-be-done-in-c
-                call_f(f, draw_from_dist(), std::forward<ArgTypes>(f_args)...);
+                call_f(std::forward<Func>(f), draw_from_dist(), std::forward<ArgTypes>(f_args)...);
             }
         }
 

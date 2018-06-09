@@ -21,6 +21,7 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
     val = val_in;
     setM = which_to_set;
     Z.resize(N);
+
     Eigen::MatrixXd S0 = Eigen::VectorXd::Constant(N, 1.0);
     Eigen::MatrixXd debt = Eigen::VectorXd::Constant(N, 11.3);
     itSigma.resize(N, N);
@@ -29,8 +30,11 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
     //BlackScholesNetwork::BlackScholesNetwork(Eigen::MatrixXd& M, Eigen::VectorXd& S0, Eigen::VectorXd& assets, Eigen::VectorXd& debt, double T, double r):
     if(bsn != nullptr)
         delete bsn;
+    LOG(TRACE) << "creating new Black Scholes Network";
     bsn = new BlackScholesNetwork(T, r);
+    LOG(TRACE) << "Initializing random connectivity matrix";
     init_M_ER(p, val, which_to_set, S0, debt);
+    LOG(TRACE) << "Generating Model";
 
 
     // random asset stuff
@@ -47,25 +51,28 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
     Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
     delete[] sigma_arr;
     gen_z.seed(1);
+    initialized = true;
 }
 
 
-void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples) {
-    init_network(N_in, p, val, setM);
+void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned long N_Samples) {
+    //init_network(N_in, p, val, setM);
+    if(!initialized) LOG(ERROR) << "attempting to run uninitialized network";
 
     //@TODO: use lambdas instead of bind, it is not 2011....
-    auto f_dist = std::bind(&ER_Network::draw_from_dist, this);
-    auto f_run = std::bind(&ER_Network::run, this, std::placeholders::_1);
-    std::function<const Eigen::MatrixXd(void)> assets_obs = std::bind(&BlackScholesNetwork::get_assets, bsn);
-    //std::function<std::vector<double>(void)> rs_obs = std::bind(&BlackScholesNetwork::get_rs, bsn);
-    std::function<const Eigen::MatrixXd(void)> sol_obs = std::bind(&BlackScholesNetwork::get_solvent, bsn);
-    std::function<const Eigen::MatrixXd(void)> valuation_obs = std::bind(&BlackScholesNetwork::get_valuation, bsn);
-    std::function<const Eigen::MatrixXd(void)> deltav1_obs = std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
-    std::function<const Eigen::MatrixXd(void)> deltav2_obs = std::bind(&ER_Network::delta_v2, this);
+    //auto f_dist2 = [this]()-> std::result_of_t<decltype(&ER_Network::draw_from_dist)(ER_Network)> { return this->draw_from_dist(); };
+    auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };//std::bind(&ER_Network::draw_from_dist, this);
+    auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) {this->run(x); };//std::bind(&ER_Network::run, this, std::placeholders::_1);
+    std::function<const Eigen::MatrixXd(void)> assets_obs    = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };//std::bind(&BlackScholesNetwork::get_assets, bsn);
+    std::function<const Eigen::MatrixXd(void)> rs_obs        = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };//std::bind(&BlackScholesNetwork::get_rs, bsn);
+    std::function<const Eigen::MatrixXd(void)> sol_obs       = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
+    std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };//std::bind(&BlackScholesNetwork::get_valuation, bsn);
+    std::function<const Eigen::MatrixXd(void)> deltav1_obs   = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};//std::bind(&BlackScholesNetwork::get_delta_v1, bsn);
+    std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};//std::bind(&ER_Network::delta_v2, this);
     //std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
     // usage: register std::function with no parameters and boost::accumulator compatible return value. 2nd,... parameters are used to construct accumulator
-    //S.register_observer(rs_obs, 2*N);
+    S.register_observer(rs_obs, "RS", 2*N, 1);
     S.register_observer(assets_obs, "Assets", N, 1);
     S.register_observer(sol_obs, "Solvent", N, 1);
     S.register_observer(valuation_obs, "Valuation", N, 1);
@@ -76,33 +83,38 @@ void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned int N
     S.register_observer(deltav2_obs, "Delta using Log", 2 * N , N);
     LOG(INFO) << "Running Valuation for N = " << N;
 
-
     S.draw_samples(f_run, f_dist, N_Samples);
-    LOG(INFO) << std::endl << " ======= Means ======= ";
 
 
-    auto res = S.extract(MCUtil::StatType::MEAN);
-    for (auto el : res) {
-        std::cout << el.first << ": " << std::endl;
-        std::cout << el.second;
-        std::cout << std::endl << std::endl;
+    if(N < 50) {
+        LOG(INFO) << std::endl << " ======= Means ======= ";
+        auto res = S.extract(MCUtil::StatType::MEAN);
+        for (auto el : res) {
+            std::cout << el.first << ": " << std::endl;
+            std::cout << el.second;
+            std::cout << std::endl << std::endl;
+        }
+
+        LOG(INFO) << std::endl << " ======= Vars ======= ";
+        auto res_var = S.extract(MCUtil::StatType::VARIANCE);
+        for (auto el : res_var) {
+            std::cout << el.first << ": " << std::endl;
+            std::cout << el.second;
+            std::cout << std::endl << std::endl;
+        }
     }
-
-    LOG(INFO) << std::endl << " ======= Vars ======= ";
-    auto res_var = S.extract(MCUtil::StatType::VARIANCE);
-    for (auto el : res_var) {
-        std::cout << el.first << ": " << std::endl;
-        std::cout << el.second;
-        std::cout << std::endl << std::endl;
+    else{
+        LOG(WARNING) << "Output disabled because of large matrix size";
     }
+    initialized = false;
 }
 
-Eigen::MatrixXd ER_Network::draw_from_dist() {
+const Eigen::MatrixXd ER_Network::draw_from_dist() {
     Eigen::VectorXd S_log(N);             // log of lognormal distribution exogenous assets, without a_0
     for (unsigned int d = 0; d < N; d++) {
         Z(d) = Z_dist(gen_z);
-        S_log(d) = var_h(d) + std::sqrt(T) * Z(d);
     }
+    S_log = var_h + std::sqrt(T) * Z;
     //std::vector<double> res;
     //res.resize(S_log.size());
     //Eigen::VectorXd::Map(&res[0], S_log.size()) = S_log.array().exp();

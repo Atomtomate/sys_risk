@@ -11,6 +11,8 @@
 #define VALUATION_ER_NETWORK_HPP
 
 #include <cstdlib>
+#include <type_traits>
+
 
 #ifdef USE_MPI
 
@@ -35,6 +37,7 @@ private:
 #endif
 
     unsigned int N;
+    bool initialized;
     double T;              // maturity
     double r;              // interest
     double p;
@@ -48,8 +51,7 @@ private:
     Eigen::VectorXd var_h;
     MCUtil::Sampler<Eigen::MatrixXd> S;
 
-    // last result, returned by observers
-    Eigen::VectorXd rs;
+    // last result, returned by observe
 
     void init_M_ER(double p, double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
 
@@ -80,7 +82,7 @@ public:
             local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
 #else
 ER_Network():
-            Z_dist(&tmp[0][0], &tmp[1][1])
+            Z_dist(&tmp[0][0], &tmp[1][1]), initialized(false)
 #endif
     {
         bsn = nullptr;
@@ -129,13 +131,13 @@ ER_Network():
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    void test_ER_valuation(const unsigned int N_in, const unsigned int N_Samples = 10000);
+    void test_ER_valuation(const unsigned int N_in, const unsigned long N_Samples = 10000);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution
      * @return  Random sample from a multivariate lognormal distribution
      */
-    Eigen::MatrixXd draw_from_dist();
+    const Eigen::MatrixXd draw_from_dist();
 
     /*!
      * @brief       Runs a single simulation of the Black Scholes model to find the fix point valuation.
@@ -146,7 +148,7 @@ ER_Network():
     {
         //Eigen::VectorXd St = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(St_in.data(), St_in.size());
         bsn->set_St(St_in);
-        rs = bsn->run_valuation(1000);
+        bsn->run_valuation(1000);
     }
 
     /*!

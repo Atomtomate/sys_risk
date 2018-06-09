@@ -8,25 +8,19 @@
 
 #include "BlackScholesNetwork.hpp"
 
-size_t BlackScholesNetwork::gbl_dbg_counter = 0;
 
 BlackScholesNetwork::BlackScholesNetwork(const double T, const double r):
-        T(T), r(r), exprt(std::exp(-r * T)), dbg_counter(gbl_dbg_counter)
+        T(T), r(r), exprt(std::exp(-r * T))
 {
-    gbl_dbg_counter += 1;
     initialized = false;
-    x = Eigen::VectorXd::Zero(2*N);
     //EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
 BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r):
-        M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T)),
-        dbg_counter(gbl_dbg_counter)
+        M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T))
 {
-    gbl_dbg_counter += 1;
     initialized = true;
-    x = Eigen::VectorXd::Zero(2*N);
     //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
     //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
     //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
@@ -45,11 +39,13 @@ void BlackScholesNetwork::set_solvent()
 const Eigen::MatrixXd BlackScholesNetwork::run_valuation(unsigned int iterations)
 {
     if(!initialized) throw std::logic_error("attempting to solve uninitialized model!");
+    int N = M.rows();
+    x.resize(2*N);
 
     double dist = 99.;
     Eigen::MatrixXd a = S0.array()*St.array();
     for(unsigned int r = 0; r < iterations; r++) {
-        auto tmp = a + M*x;
+        Eigen::MatrixXd tmp = a + M*x;
         auto distV = x;
         x.head(N) = (tmp - debt).array().max(0.);
         x.tail(N) = tmp.cwiseMin(debt);
@@ -77,7 +73,7 @@ const Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
         }
         J = (Eigen::MatrixXd::Identity(2*N, 2*N) - J).inverse();
     } else {
-        LOG(WARNING) << "solvent has wrong size: " << solvent.size() << "\nobject id = " << dbg_counter;
+        LOG(WARNING) << "solvent has wrong size: " << solvent.size();
         J = Eigen::MatrixXd::Zero(2*N,2*N);
     }
     return J;
@@ -98,7 +94,8 @@ const Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
 }
 
 
-const Eigen::Ref<const Eigen::VectorXd> BlackScholesNetwork::get_assets()
+//@TODO: check if return Eigen::Refwould be better here
+const Eigen::VectorXd BlackScholesNetwork::get_assets()
 {
     return (S0.array()*St.array());
 }

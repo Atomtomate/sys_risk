@@ -36,10 +36,12 @@ public:
 
     double add(int i, int j) { return i + j;}
 
-    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r)
+    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const unsigned long iterations)
     {
+        LOG(TRACE) << "Initializing network";
         er_net.init_network(N, p, val, which_to_set, T, r);
-        er_net.test_ER_valuation();
+        LOG(TRACE) << "Network initialized";
+        er_net.test_ER_valuation(N, iterations);
     }
 
     Eigen::MatrixXd get_M() const
@@ -54,6 +56,10 @@ public:
 
     Eigen::MatrixXd get_solvent() const {
         return (er_net.bsn)->get_solvent();
+    }
+
+    Eigen::MatrixXd get_delta_jacobians() const {
+        return (er_net.bsn)->get_delta_v1();
     }
 
 };
