@@ -10,3 +10,6 @@ external/
 *.pdf
 *.so
 *.p
+*.npy
+*.log
+*.profdata

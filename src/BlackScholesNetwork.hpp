@@ -9,6 +9,9 @@
 #ifndef SRC_BLACKSCHOLES_NETWORK_HPP_
 #define SRC_BLACKSCHOLES_NETWORK_HPP_
 
+#define USE_SPARSE_INTERNAL
+
+
 #include <stdexcept>
 #include <algorithm>
 
@@ -19,6 +22,8 @@
 #include "trng/lognormal_dist.hpp"
 #include "trng/correlated_normal_dist.hpp"
 #include "Eigen/Dense"
+#include "Eigen/Sparse"
+#include <Eigen/SparseLU>
 
 #ifdef USE_MPI
 #include <boost/mpi.hpp>
@@ -39,21 +44,31 @@ class BlackScholesNetwork
 private:
     double T;
     double r;
-    unsigned int N;
+    int N;
     bool initialized;
-    Mat M;
     Vec x;
     Vec S0;
     Vec St;
     Vec debt;
     Vec solvent;
     double exprt;
+#ifdef USE_SPARSE_INTERNAL
+    Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> Id;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> M;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
+    //Eigen::SparseMatrix<double, Eigen::ColMajor> Z;
+#else
+    Mat M;
+    //Mat Jrs;
+    Mat J_a;
+    Eigen::PartialPivLU<Eigen::MatrixXd> lu;
+#endif
 
     void set_solvent();
 
-    const Mat iJacobian_fx();
 
-    const Mat Jacobian_va();
 
 public:
     BlackScholesNetwork(const BlackScholesNetwork&) = delete;
@@ -112,16 +127,28 @@ public:
     }
 
     inline void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
-        initialized = true;
+        N = M_new.rows();
+        //Jrs.resize(2*N, 2*N);
+        J_a.resize(2*N, N);
+#ifdef USE_SPARSE_INTERNAL
+        M = M_new.sparseView();
+        M.makeCompressed();
+        Id.resize(2*N, 2*N);
+        Id.setIdentity();
+        J_a.reserve(2*N);
+        Jrs.reserve(2*M.nonZeros());
+#else
         M = M_new;
-        N = M.rows();
+        lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
+#endif
+        St = s0;
         if(s0.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
         S0 = s0;
-        St = s0;
         if(d.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and debts!");
         debt = d;
+        initialized = true;
     }
 
     //@TODO: consistent return typex
@@ -138,7 +165,11 @@ public:
     }
 
     inline const Mat get_M() const {
+#ifdef USE_SPARSE_INTERNAL
+        return Eigen::MatrixXd(M);
+#else
         return M;
+#endif
     }
 
     const Vec get_assets();
@@ -146,16 +177,7 @@ public:
     //@TODO: move implementation to *.cpp
     const Vec get_rs() {
         return x;
-       /* std::vector<double> ret;
-        ret.resize(x.size());
-        Eigen::VectorXd::Map(&ret[0], x.size()) = x;
-        return ret;
-        */
     }
-
-    //inline const Eigen::VectorXd get_rs_eigen() const {
-    //    return x;
-    //}
 
     const Vec get_valuation() {
         Vec res = (x.head(N) + x.tail(N));
@@ -169,22 +191,36 @@ public:
 
    const Vec get_solvent() {
         return solvent;
-        /*std::vector<double> res;
-        res.resize(solvent.size());
-        Eigen::Matrix<double, Eigen::Dynamic, 1>::Map(&res[0], solvent.size()) = solvent;
-        return res;*/
     }
 
     const Mat get_delta_v1() {
-        auto Jrs = iJacobian_fx();
-        auto Jva = Jacobian_va();
-        auto res_eigen =  exprt*(Jrs*Jva)*(St.asDiagonal());
+        //TIMED_FUNC(timerObj);
+#ifdef USE_SPARSE_INTERNAL
+        J_a.setZero();
+        for(int i = 0; i < N; i++)
+        {
+            J_a.insert(i,i) = solvent(i);
+            J_a.insert(i+N,i) = (1.-solvent(i));
+        }
+        //PERFORMANCE_CHECKPOINT(timerObj);
+        //Jrs = Z*M;
+        J_a.makeCompressed();
+        //PERFORMANCE_CHECKPOINT(timerObj);
+        lu.compute(Id - J_a*M);
+        auto Jrs = lu.solve(Id);
+        //PERFORMANCE_CHECKPOINT(timerObj);
+        Eigen::MatrixXd res_eigen = exprt*(Jrs*J_a)*St.asDiagonal();
+        //PERFORMANCE_CHECKPOINT(timerObj);
+    #else
+        auto msol = 1-solvent.array();
+        J_a.diagonal(0) = solvent;
+        J_a.diagonal(-N) = msol;
+        //Jrs.topRows(N) = M.array().colwise() * solvent.array();
+        //Jrs.bottomRows(N) = M.array().colwise() * msol;
+        //Jrs = J_a*M;
+        auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - J_a*M).inverse()*J_a)*(St.asDiagonal());
+    #endif
         return res_eigen;
-        //LOG(INFO) << "exprt:" << exprt <<"\n===\n" << St << "\n====\n";
-        //LOG(ERROR) << Jrs << "\n\n" << Jva << "\n\n" << res_eigen << "\n\n";
-        //std::vector<double> res;
-        //res.resize(2*N*N);
-        //EXPECT_EQ(res_eigen.rows(), 2*N) << "Number of rows for Delta computation incorrect";
         //Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
         //return res;
     }
@@ -194,4 +230,4 @@ public:
 };
 
 
-#endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_
+    #endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_

@@ -17,10 +17,24 @@ BlackScholesNetwork::BlackScholesNetwork(const double T, const double r):
 }
 
 
-BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r):
-        M(M), N(M.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T))
+BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r):
+        N(M_.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T))
 {
     initialized = true;
+#ifdef USE_SPARSE_INTERNAL
+    Id.resize(2*N, 2*N);
+    Id.setIdentity();
+    //Jrs.resize(2*N,2*N);
+    J_a.resize(2*N, N);
+    M = M_.sparseView();
+    M.makeCompressed();
+#else
+    M = M_;
+    lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
+    //Jrs = Eigen::MatrixXd::Zero(2*N, 2*N);
+    J_a = Eigen::MatrixXd::Zero(2*N, N);
+#endif
+
     //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
     //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
     //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
@@ -30,7 +44,7 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::
 void BlackScholesNetwork::set_solvent()
 {
     solvent.resize(N);
-    for(unsigned int i = 0; i < N; i++) {
+    for(int i = 0; i < N; i++) {
         solvent(i) = 1*(x(i)+x(i+N) >= debt(i));
     }
 }
@@ -39,58 +53,23 @@ void BlackScholesNetwork::set_solvent()
 const Eigen::MatrixXd BlackScholesNetwork::run_valuation(unsigned int iterations)
 {
     if(!initialized) throw std::logic_error("attempting to solve uninitialized model!");
-    int N = M.rows();
     x.resize(2*N);
+    auto x_old = x;
 
     double dist = 99.;
     Eigen::MatrixXd a = S0.array()*St.array();
-    for(unsigned int r = 0; r < iterations; r++) {
-        Eigen::MatrixXd tmp = a + M*x;
-        auto distV = x;
+    while(dist > 1.0e-12)
+    { //for(unsigned int r = 0; r < iterations; r++) {
+        auto tmp = (a + M*x);
+        x_old = x;
         x.head(N) = (tmp - debt).array().max(0.);
         x.tail(N) = tmp.cwiseMin(debt);
-        distV = distV - x;
-        dist = distV.norm();
-        if(dist < 1.0e-12)
-            break;
+        dist = (x_old - x).norm();
+        //if(dist < 1.0e-12)
+        //    break;
     }
     set_solvent();
     return x;
-}
-
-
-const Eigen::MatrixXd BlackScholesNetwork::iJacobian_fx()
-{
-    Eigen::MatrixXd J(2*N, 2*N);
-    //@TODO: replace this loop with stacked solvent matrix x matrix operation?
-    //J.topRows(N) = M.array().colwise() * solvent.cast<double>().array();
-    //J.bottomRows(N) = M.array().colwise() * (1-solvent.cast<double>().array());
-
-    if(solvent.size() == M.rows()) {
-        for(unsigned int i = 0; i < N; i++) {
-            J.row(i) = solvent(i)*M.row(i);
-            J.row(N+i) = (1-solvent(i))*M.row(i);
-        }
-        J = (Eigen::MatrixXd::Identity(2*N, 2*N) - J).inverse();
-    } else {
-        LOG(WARNING) << "solvent has wrong size: " << solvent.size();
-        J = Eigen::MatrixXd::Zero(2*N,2*N);
-    }
-    return J;
-}
-
-
-const Eigen::MatrixXd BlackScholesNetwork::Jacobian_va()
-{
-    Eigen::MatrixXd J(2*N, N);
-    if(solvent.size() == M.rows()) {
-        Eigen::MatrixXd sd = solvent.asDiagonal();
-        J << sd, (Eigen::MatrixXd::Identity(N, N) - sd);
-    } else {
-        LOG(WARNING) << "solvent has wrong size: " << solvent.size();
-        J = Eigen::MatrixXd::Zero(2*N,N);
-    }
-    return J;
 }
 
 

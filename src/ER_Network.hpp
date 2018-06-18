@@ -12,7 +12,8 @@
 
 #include <cstdlib>
 #include <type_traits>
-
+#include <string>
+#include <unordered_map>
 
 #ifdef USE_MPI
 
@@ -35,6 +36,8 @@ private:
     const boost::mpi::communicator world;
     const bool isGenerator;
 #endif
+    trng::yarn2 gen_u;
+    trng::uniform01_dist<> u_dist;
 
     unsigned int N;
     bool initialized;
@@ -50,6 +53,19 @@ private:
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
     MCUtil::Sampler<Eigen::MatrixXd> S;
+
+    Eigen::MatrixXd mean_delta_jac;
+    Eigen::MatrixXd mean_assets;
+    Eigen::MatrixXd mean_rs;
+    Eigen::MatrixXd mean_solvent;
+    Eigen::MatrixXd mean_valuation;
+    Eigen::MatrixXd var_delta_jac;
+    Eigen::MatrixXd var_assets;
+    Eigen::MatrixXd var_rs;
+    Eigen::MatrixXd var_solvent;
+    Eigen::MatrixXd var_valuation;
+    double connectivity;
+
 
     // last result, returned by observe
 
@@ -113,6 +129,7 @@ ER_Network():
             T(T), r(r),
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
+        gen_u.seed();
         bsn = new BlackScholesNetwork(T, r);
         //@TODO: better Z_dist init
         //@TODO: assertions here, move expect to tests
@@ -131,7 +148,7 @@ ER_Network():
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    void test_ER_valuation(const unsigned int N_in, const unsigned long N_Samples = 10000);
+    std::unordered_map<std::string, Eigen::MatrixXd> test_ER_valuation(const long N_in, const long N_Samples = 2000, const long N_networks = 100);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution
