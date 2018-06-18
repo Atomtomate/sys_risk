@@ -44,6 +44,7 @@ int main(int argc, char* argv[])
 {
     // Logging initialization
     START_EASYLOGGINGPP(argc, argv);
+    el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
 
     // MPI initialization
 #ifdef USE_MPI
@@ -61,6 +62,9 @@ int main(int argc, char* argv[])
 #ifdef NDEBUG
     LOG(INFO) << "SETTINGS: Running release version";
 #else
+    el::Loggers::addFlag(el::LoggingFlag::DisableApplicationAbortOnFatalLog);
+    el::Loggers::addFlag(el::LoggingFlag::HierarchicalLogging);
+    el::Loggers::setLoggingLevel(el::Level::Global);
     LOG(INFO) << "SETTINGS: Running debug version";
 #endif
     //RInside R(argc, argv);
@@ -76,8 +80,10 @@ int main(int argc, char* argv[])
     //TODO: eigen matrix dimension missmatch on large size?!?!
     for (int N : {10})
     { //, 8, 16, 32}) {
-        nNN.init_network(N, 0.2, 0.95, 2, 1.0, 0.0);
-        nNN.test_ER_valuation(N, 5000);
+        nNN.init_network(N, 0.05, 0.95, 2, 1.0, 0.0);
+        auto res = nNN.test_ER_valuation(N, 2000, 100);//10000, 500);
+        for(const auto& el : res)
+            LOG(INFO) << el.first << ": " << el.second;
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);

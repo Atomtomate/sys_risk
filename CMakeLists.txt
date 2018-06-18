@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.5)
-project (Valuation CXX)
+project (Valuation C CXX)
 
 enable_testing()
 option(USE_CLANG "build wqith LLVM/CLANG" OFF)
@@ -9,7 +9,7 @@ option(USE_MPI "build with MPI" ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -ftree-vectorize -march=native -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -flto -ftree-vectorize -march=native -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline
 set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 link_directories(${PROJECT_EXTERNAL}/lib)
 
@@ -28,7 +28,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 #	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 #	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 #else(OPENMP_FOUND)
-#	message("ERROR: OpenMP could not be found.")
+#	message("No OpenMP found.")
 #endif(OPENMP_FOUND)
 
 file(GLOB_RECURSE Valuation_SOURCES "src/*.c*")
@@ -126,7 +126,5 @@ target_link_libraries(${PROJECT_NAME} libgtest trng4 Threads::Threads m ${EXTRA_
 find_package(pybind11 REQUIRED)
 pybind11_add_module(PyVal MODULE py_interface/PythonInterface.cpp ${Valuation_SOURCES})
 set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
-#set_target_properties(PyVal PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS} ${PROJECT_EXTERNAL}/include ${Boost_INCLUDE_DIRS})
 target_link_libraries(PyVal PUBLIC libgtest trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${Boost_LIBRARIES} ${LIBS}) #
-#target_compile_options(PyVal PUBLIC -fPIC)

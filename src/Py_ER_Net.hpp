@@ -34,14 +34,13 @@ public:
     }
 #endif
 
-    double add(int i, int j) { return i + j;}
 
-    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const unsigned long iterations)
+    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks)
     {
         LOG(TRACE) << "Initializing network";
         er_net.init_network(N, p, val, which_to_set, T, r);
         LOG(TRACE) << "Network initialized";
-        er_net.test_ER_valuation(N, iterations);
+        er_net.test_ER_valuation(N, iterations, N_networks);
     }
 
     Eigen::MatrixXd get_M() const
@@ -51,15 +50,43 @@ public:
 
 
     Eigen::MatrixXd get_rs() const {
-        return (er_net.bsn)->get_rs();
+        return er_net.mean_rs;
+    }
+
+    Eigen::MatrixXd get_rs_var() const {
+        return er_net.var_rs;
     }
 
     Eigen::MatrixXd get_solvent() const {
-        return (er_net.bsn)->get_solvent();
+        return er_net.mean_solvent;
     }
 
-    Eigen::MatrixXd get_delta_jacobians() const {
-        return (er_net.bsn)->get_delta_v1();
+    Eigen::MatrixXd get_solvent_var() const {
+        return er_net.var_solvent;
+    }
+
+    Eigen::MatrixXd get_delta_jac() const {
+        return er_net.mean_delta_jac;
+    }
+
+    Eigen::MatrixXd get_delta_jac_var() const {
+        return er_net.var_delta_jac;
+    }
+
+    Eigen::MatrixXd get_assets() const {
+        return er_net.mean_assets;
+    }
+
+    Eigen::MatrixXd get_assets_var() const {
+        return er_net.var_assets;
+    }
+
+    Eigen::MatrixXd get_valuation() const {
+        return er_net.mean_valuation;
+    }
+
+    Eigen::MatrixXd get_valuation_var() const {
+        return er_net.var_valuation;
     }
 
 };

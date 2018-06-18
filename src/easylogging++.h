@@ -14,10 +14,12 @@
 //  https://muflihun.github.io/easyloggingpp
 //  http://muflihun.com
 //
-
-#ifndef NDEBUG
+#ifdef NDEBUG
 #define ELPP_DISABLE_TRACE_LOGS
 #define ELPP_DISABLE_DEBUG_LOGS
+#else
+#define ELPP_FEATURE_PERFORMANCE_TRACKING
+#define ELPP_FEATURE_CRASH_LOG
 #endif
 
 #ifndef EASYLOGGINGPP_H

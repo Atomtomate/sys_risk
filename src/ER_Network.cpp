@@ -14,16 +14,11 @@ void ER_Network::init_network(unsigned int N_in, double p_in, double val_in, uns
 }
 
 void ER_Network::init_network(const unsigned int N_in, const double p_in, const double val_in, const unsigned int which_to_set, const double T_new, const double r_new) {
-    T = T_new;
-    r = r_new;
-    N = N_in;
-    p = p_in;
-    val = val_in;
-    setM = which_to_set;
+    T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
     Z.resize(N);
 
     Eigen::MatrixXd S0 = Eigen::VectorXd::Constant(N, 1.0);
-    Eigen::MatrixXd debt = Eigen::VectorXd::Constant(N, 11.3);
+    Eigen::MatrixXd debt = Eigen::VectorXd::Constant(N, 1.1);
     itSigma.resize(N, N);
     var_h.resize(N);
 
@@ -37,8 +32,9 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
     LOG(TRACE) << "Generating Model";
 
 
+    double scale = 0.15; // volatility, higher -> prob to default increases
     // random asset stuff
-    Eigen::MatrixXd sigma = T * Eigen::MatrixXd::Identity(N, N);
+    Eigen::MatrixXd sigma = scale*scale* T * Eigen::MatrixXd::Identity(N, N);
     itSigma = (T * sigma).inverse();
     var_h = T * r - T * sigma.diagonal().array() * sigma.diagonal().array() / 2.;
 
@@ -55,9 +51,15 @@ void ER_Network::init_network(const unsigned int N_in, const double p_in, const 
 }
 
 
-void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned long N_Samples) {
-    //init_network(N_in, p, val, setM);
-    if(!initialized) LOG(ERROR) << "attempting to run uninitialized network";
+std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(const long N_in, const long N_Samples, const long N_networks) {
+    init_network(N_in, p, val, setM);
+
+    const std::string rs_str("RS");
+    const std::string assets_str("Assets");
+    const std::string solvent_str("Solvent");
+    const std::string val_str("Valuation");
+    const std::string delta1_str("Delta using Jacobians");
+    std::unordered_map<std::string, Eigen::MatrixXd> res;
 
     //@TODO: use lambdas instead of bind, it is not 2011....
     //auto f_dist2 = [this]()-> std::result_of_t<decltype(&ER_Network::draw_from_dist)(ER_Network)> { return this->draw_from_dist(); };
@@ -72,41 +74,48 @@ void ER_Network::test_ER_valuation(const unsigned int N_in, const unsigned long 
     //std::function<std::vector<double>(void)> out_obs = std::bind(&ER_Network::test_out, this);
 
     // usage: register std::function with no parameters and boost::accumulator compatible return value. 2nd,... parameters are used to construct accumulator
-    S.register_observer(rs_obs, "RS", 2*N, 1);
-    S.register_observer(assets_obs, "Assets", N, 1);
-    S.register_observer(sol_obs, "Solvent", N, 1);
-    S.register_observer(valuation_obs, "Valuation", N, 1);
+    S.register_observer(rs_obs, rs_str, 2*N, 1);
+    S.register_observer(assets_obs, assets_str, N, 1);
+    S.register_observer(sol_obs, solvent_str, N, 1);
+    S.register_observer(valuation_obs, val_str, N, 1);
     //S.register_observer(std::bind(&ER_Network::sumM, this), "Sum over M", 1);
     //S.register_observer(out_obs, "Debug Out" ,1);
 
-    S.register_observer(deltav1_obs, "Delta using Jacobians", 2 * N , N);
-    S.register_observer(deltav2_obs, "Delta using Log", 2 * N , N);
-    LOG(INFO) << "Running Valuation for N = " << N;
+    S.register_observer(deltav1_obs, delta1_str, 2 * N , N);
+    //S.register_observer(deltav2_obs, "Delta using Log", 2 * N , N);
+    std::cout << "Running Valuation for N = " << N <<  ", p =" << p << "\n";
 
-    S.draw_samples(f_run, f_dist, N_Samples);
-
-
-    if(N < 50) {
-        LOG(INFO) << std::endl << " ======= Means ======= ";
-        auto res = S.extract(MCUtil::StatType::MEAN);
-        for (auto el : res) {
-            std::cout << el.first << ": " << std::endl;
-            std::cout << el.second;
-            std::cout << std::endl << std::endl;
-        }
-
-        LOG(INFO) << std::endl << " ======= Vars ======= ";
-        auto res_var = S.extract(MCUtil::StatType::VARIANCE);
-        for (auto el : res_var) {
-            std::cout << el.first << ": " << std::endl;
-            std::cout << el.second;
-            std::cout << std::endl << std::endl;
-        }
+    std::cout << "Preparing to run"<< std::flush ;
+    for(int jj = 0; jj < N_networks; jj++)
+    {
+        std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
+        init_M_ER(p, val, setM, Eigen::VectorXd::Constant(N, 1.0), Eigen::VectorXd::Constant(N, 1.1));
+        if(!initialized) LOG(ERROR) << "attempting to run uninitialized network";
+        S.draw_samples(f_run, f_dist, N_Samples);
     }
-    else{
-        LOG(WARNING) << "Output disabled because of large matrix size";
+    std::cout << "\r";
+    //@TODO: workaround for pybind11. A sane version of this would only use maps
+    auto res_mean = S.extract(MCUtil::StatType::MEAN);
+    auto res_var = S.extract(MCUtil::StatType::VARIANCE);
+    for (auto el : res_mean) {
+        if(el.first.compare(rs_str) == 0){ mean_rs = el.second; res[rs_str] = el.second;}
+        else if(el.first.compare(assets_str) == 0){ mean_assets = el.second; res[assets_str] = el.second;}
+        else if(el.first.compare(solvent_str) == 0){ mean_solvent = el.second; res[solvent_str] = el.second;}
+        else if(el.first.compare(val_str) == 0){ mean_valuation = el.second; res[val_str] = el.second;}
+        else if(el.first.compare(delta1_str) == 0){ mean_delta_jac = el.second; res[delta1_str] = el.second;}
+        else LOG(WARNING) << "result " << el.first << ", not saved";
     }
+    for (auto el : res_var) {
+        if(el.first.compare(rs_str) == 0) var_rs = el.second;
+        else if(el.first.compare(assets_str) == 0) var_assets = el.second;
+        else if(el.first.compare(solvent_str) == 0) var_solvent = el.second;
+        else if(el.first.compare(val_str) == 0) var_valuation = el.second;
+        else if(el.first.compare(delta1_str) == 0) var_delta_jac= el.second;
+        else LOG(WARNING) << "result " << el.first << ", not saved";
+    }
+
     initialized = false;
+    return res;
 }
 
 const Eigen::MatrixXd ER_Network::draw_from_dist() {
@@ -134,9 +143,9 @@ void ER_Network::init_M_ER(const double p, const double val, unsigned int which_
 {
     if(val < 0 || val > 1) throw std::logic_error("Value is not in [0,1]");
     if(p < 0 || p > 1) throw std::logic_error("p is not a probability");
+    connectivity = N*p;
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
-    trng::yarn2 gen_u;
-    trng::uniform01_dist<> u_dist;
+
     //@TODO: use bin. dist. to generate vectorized
     for (unsigned int i = 0; i < N; i++)
     {

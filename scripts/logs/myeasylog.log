@@ -486,3 +486,2739 @@
 2018-06-10 12:12:16,485 INFO [default] 
  ======= Means ======= 
 2018-06-10 12:12:16,485 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:19:20,864 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-10 12:19:20,864 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-10 12:19:20,864 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-10 12:19:20,865 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-10 12:19:20,866 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-10 12:19:20,868 INFO [default] Running Valuation for N = 100
+2018-06-10 12:20:06,235 INFO [default] 
+ ======= Means ======= 
+2018-06-10 12:20:06,235 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:20:47,465 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:41] Initializing network
+2018-06-10 12:20:47,465 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:33] creating new Black Scholes Network
+2018-06-10 12:20:47,465 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:35] Initializing random connectivity matrix
+2018-06-10 12:20:47,466 TRACE [default] [void ER_Network::init_network(unsigned int, double, double, unsigned int, double, double)] [/home/julian/CLionProjects/sys_risk/src/ER_Network.cpp:37] Generating Model
+2018-06-10 12:20:47,466 TRACE [default] [void Py_ER_Net::run_valuation(unsigned int, double, double, unsigned int, double, double, long unsigned int)] [/home/julian/CLionProjects/sys_risk/py_interface/../src/Py_ER_Net.hpp:43] Network initialized
+2018-06-10 12:20:47,467 INFO [default] Running Valuation for N = 100
+2018-06-10 12:21:40,029 INFO [default] 
+ ======= Means ======= 
+2018-06-10 12:21:40,029 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:21:48,255 INFO [default] Running Valuation for N = 100
+2018-06-10 12:22:44,370 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:22:44,377 INFO [default] Running Valuation for N = 100
+2018-06-10 12:24:20,518 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:24:20,524 INFO [default] Running Valuation for N = 100
+2018-06-10 12:26:55,901 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:26:55,910 INFO [default] Running Valuation for N = 100
+2018-06-10 12:30:33,805 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:30:33,810 INFO [default] Running Valuation for N = 100
+2018-06-10 12:34:45,188 WARNING [default] Output disabled because of large matrix size
+2018-06-10 12:34:45,195 INFO [default] Running Valuation for N = 100
+2018-06-10 13:02:28,122 INFO [default] Running Valuation for N = 100
+2018-06-10 13:03:10,335 WARNING [default] Output disabled because of large matrix size
+2018-06-10 13:03:10,340 INFO [default] Running Valuation for N = 100
+2018-06-10 13:04:36,176 WARNING [default] Output disabled because of large matrix size
+2018-06-10 13:09:23,932 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:24,642 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:24,642 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:24,642 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:25,430 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:25,430 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:25,431 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:26,209 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:26,210 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:26,210 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:27,022 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:27,023 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:27,024 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:27,875 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:27,876 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:27,877 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:28,774 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:28,776 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:28,777 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:29,714 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:29,715 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:29,716 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:30,699 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:30,701 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:30,703 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:31,722 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:31,724 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:31,725 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:32,789 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:32,791 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:32,793 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:33,900 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:33,903 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:33,905 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:35,061 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:35,063 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:35,066 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:36,258 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:36,260 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:36,263 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:37,502 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:37,505 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:37,508 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:38,786 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:38,789 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:38,792 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:40,122 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:40,125 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:40,129 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:41,497 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:41,501 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:41,504 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:42,918 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:42,922 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:42,925 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:44,381 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:44,385 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:44,389 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:45,891 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:45,896 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:45,901 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:47,456 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:47,460 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:47,465 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:49,043 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:49,047 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:49,051 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:50,673 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:50,678 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:50,683 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:52,341 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:52,346 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:52,351 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:54,061 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:54,066 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:54,071 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:55,825 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:55,831 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:55,836 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:57,664 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:57,669 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:57,675 INFO [default] Running Valuation for N = 4
+2018-06-10 13:09:59,560 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:09:59,566 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:09:59,571 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:01,507 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:01,514 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:01,522 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:03,458 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:03,464 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:03,470 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:05,440 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:05,446 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:05,452 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:07,476 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:07,483 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:07,489 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:09,593 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:09,600 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:09,606 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:11,733 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:11,740 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:11,746 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:13,908 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:13,915 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:13,921 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:16,116 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:16,123 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:16,130 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:18,360 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:18,367 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:18,375 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:20,672 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:20,680 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:20,687 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:23,009 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:23,017 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:23,025 INFO [default] Running Valuation for N = 4
+2018-06-10 13:10:25,380 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:10:25,388 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:10:25,397 INFO [default] Running Valuation for N = 14
+2018-06-10 13:11:01,798 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:02,511 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:02,511 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:02,512 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:02,578 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:02,578 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:02,579 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:02,674 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:02,675 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:02,675 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:02,798 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:02,799 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:02,800 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:02,951 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:02,952 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:02,953 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:03,137 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:03,137 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:03,139 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:03,348 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:03,349 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:03,350 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:03,586 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:03,587 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:03,588 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:03,933 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:03,934 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:03,935 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:04,320 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:04,321 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:04,322 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:06,172 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:06,173 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:06,174 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:07,740 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:07,742 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:07,745 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:09,541 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:09,545 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:09,548 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:11,604 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:11,608 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:11,612 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:13,939 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:13,945 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:13,953 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:16,523 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:16,530 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:16,538 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:19,284 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:19,292 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:19,301 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:22,349 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:22,357 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:22,368 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:25,630 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:25,639 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:25,651 INFO [default] Running Valuation for N = 12
+2018-06-10 13:11:29,122 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:29,133 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:29,150 INFO [default] Running Valuation for N = 22
+2018-06-10 13:11:33,717 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:33,720 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:33,723 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:34,441 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:34,441 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:34,442 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:34,510 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:34,510 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:34,510 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:34,687 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:34,687 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:34,688 INFO [default] Running Valuation for N = 5
+2018-06-10 13:11:35,679 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:35,679 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:35,680 INFO [default] Running Valuation for N = 5
+2018-06-10 13:11:36,760 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:36,761 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:41,945 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:42,660 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:42,660 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:42,660 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:42,728 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:42,728 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:42,728 INFO [default] Running Valuation for N = 2
+2018-06-10 13:11:42,904 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:42,904 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:42,905 INFO [default] Running Valuation for N = 5
+2018-06-10 13:11:43,891 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:43,891 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:43,893 INFO [default] Running Valuation for N = 5
+2018-06-10 13:11:44,942 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:44,943 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:44,943 INFO [default] Running Valuation for N = 5
+2018-06-10 13:11:46,058 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:46,059 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:46,060 INFO [default] Running Valuation for N = 8
+2018-06-10 13:11:47,026 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:47,027 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:47,027 INFO [default] Running Valuation for N = 8
+2018-06-10 13:11:48,134 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:48,136 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:48,137 INFO [default] Running Valuation for N = 8
+2018-06-10 13:11:49,369 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:49,371 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:49,373 INFO [default] Running Valuation for N = 11
+2018-06-10 13:11:51,373 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:51,374 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:11:51,375 INFO [default] Running Valuation for N = 11
+2018-06-10 13:11:53,554 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:11:53,556 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:12:15,600 INFO [default] Running Valuation for N = 2
+2018-06-10 13:12:16,309 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:12:16,309 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:12:16,309 INFO [default] Running Valuation for N = 2
+2018-06-10 13:12:16,376 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:12:16,377 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:12:16,377 INFO [default] Running Valuation for N = 2
+2018-06-10 13:12:16,555 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:12:16,555 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:12:16,556 INFO [default] Running Valuation for N = 52
+2018-06-10 13:12:23,482 WARNING [default] Output disabled because of large matrix size
+2018-06-10 13:12:23,483 INFO [default] Running Valuation for N = 52
+2018-06-10 13:12:38,309 WARNING [default] Output disabled because of large matrix size
+2018-06-10 13:12:38,311 INFO [default] Running Valuation for N = 52
+2018-06-10 13:13:00,828 WARNING [default] Output disabled because of large matrix size
+2018-06-10 13:16:21,850 INFO [default] Running Valuation for N = 10
+2018-06-10 13:16:23,341 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:16:23,342 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:16:23,342 INFO [default] Running Valuation for N = 10
+2018-06-10 13:16:25,031 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:16:25,033 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:19:54,907 INFO [default] Running Valuation for N = 10
+2018-06-10 13:19:56,444 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:19:56,445 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:19:56,447 INFO [default] Running Valuation for N = 10
+2018-06-10 13:19:58,193 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:19:58,195 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:21:24,172 INFO [default] Running Valuation for N = 10
+2018-06-10 13:21:25,692 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:21:25,693 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:21:25,694 INFO [default] Running Valuation for N = 10
+2018-06-10 13:21:27,413 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:21:27,414 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:38,348 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:38,545 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:38,546 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:38,547 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:38,921 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:38,923 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:38,925 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:39,493 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:39,495 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:39,498 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:40,239 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:40,242 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:40,246 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:41,165 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:41,170 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:41,174 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:42,271 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:42,277 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:42,282 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:43,569 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:43,575 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:43,582 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:45,082 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:45,090 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:45,101 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:46,811 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:46,820 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:46,833 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:48,690 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:48,699 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:48,715 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:50,755 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:50,765 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:50,781 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:53,016 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:53,027 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:53,045 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:55,558 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:55,570 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:55,593 INFO [default] Running Valuation for N = 10
+2018-06-10 13:24:58,342 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:24:58,359 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:24:58,380 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:01,706 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:01,728 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:01,751 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:05,107 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:05,127 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:05,148 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:08,621 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:08,647 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:08,666 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:12,252 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:12,274 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:12,301 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:15,954 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:15,976 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:16,003 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:19,811 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:19,836 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:19,864 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:23,863 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:23,898 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:23,927 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:28,155 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:28,179 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:28,207 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:32,522 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:32,551 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:32,578 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:37,774 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:37,812 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:37,840 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:43,326 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:43,367 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:43,410 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:49,000 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:49,038 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:49,065 INFO [default] Running Valuation for N = 10
+2018-06-10 13:25:54,506 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:25:54,545 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:25:54,588 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:00,232 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:00,268 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:00,313 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:05,874 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:05,916 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:05,963 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:11,700 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:11,746 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:11,796 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:17,691 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:17,735 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:17,783 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:23,899 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:23,940 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:23,989 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:30,436 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:30,479 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:30,531 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:37,292 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:37,344 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:37,395 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:44,077 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:44,124 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:44,177 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:51,084 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:51,135 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:51,188 INFO [default] Running Valuation for N = 10
+2018-06-10 13:26:58,556 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:26:58,604 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:26:58,661 INFO [default] Running Valuation for N = 10
+2018-06-10 13:27:06,068 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:06,121 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:06,173 INFO [default] Running Valuation for N = 10
+2018-06-10 13:27:13,781 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:13,840 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:13,892 INFO [default] Running Valuation for N = 10
+2018-06-10 13:27:22,012 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:22,064 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:22,123 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:22,551 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:22,553 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:22,555 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:23,357 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:23,360 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:23,364 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:24,630 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:24,636 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:24,642 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:26,291 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:26,299 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:26,312 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:28,402 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:28,412 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:28,430 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:30,879 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:30,891 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:30,915 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:33,786 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:33,806 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:33,827 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:37,085 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:37,109 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:37,130 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:40,899 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:40,924 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:40,951 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:45,048 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:45,083 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:45,110 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:49,612 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:49,650 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:49,671 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:54,618 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:27:54,654 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:27:54,680 INFO [default] Running Valuation for N = 15
+2018-06-10 13:27:59,963 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:00,003 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:00,045 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:05,853 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:05,897 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:05,943 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:11,977 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:12,020 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:12,070 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:18,396 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:18,443 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:18,495 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:25,224 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:25,271 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:25,328 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:32,461 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:32,508 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:32,564 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:40,707 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:40,757 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:40,814 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:48,842 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:48,895 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:48,953 INFO [default] Running Valuation for N = 15
+2018-06-10 13:28:57,425 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:28:57,479 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:28:57,555 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:06,374 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:06,429 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:06,512 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:15,732 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:15,789 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:15,875 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:25,744 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:25,807 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:25,894 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:36,033 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:36,122 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:36,214 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:46,591 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:46,654 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:46,742 INFO [default] Running Valuation for N = 15
+2018-06-10 13:29:57,595 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:29:57,678 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:29:57,774 INFO [default] Running Valuation for N = 15
+2018-06-10 13:30:08,835 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:30:08,919 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:30:08,998 INFO [default] Running Valuation for N = 15
+2018-06-10 13:30:20,630 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:30:20,716 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:30:20,814 INFO [default] Running Valuation for N = 15
+2018-06-10 13:30:32,714 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:30:32,806 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:30:32,904 INFO [default] Running Valuation for N = 15
+2018-06-10 13:30:45,241 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:30:45,334 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:30:45,432 INFO [default] Running Valuation for N = 15
+2018-06-10 13:30:58,259 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:30:58,356 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:30:58,456 INFO [default] Running Valuation for N = 15
+2018-06-10 13:31:11,677 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:31:11,773 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:31:11,878 INFO [default] Running Valuation for N = 15
+2018-06-10 13:31:25,411 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:31:25,509 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:31:25,614 INFO [default] Running Valuation for N = 15
+2018-06-10 13:31:39,522 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:31:39,622 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:31:39,726 INFO [default] Running Valuation for N = 15
+2018-06-10 13:31:54,150 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:31:54,244 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:31:54,348 INFO [default] Running Valuation for N = 15
+2018-06-10 13:32:09,156 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:09,262 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:09,389 INFO [default] Running Valuation for N = 15
+2018-06-10 13:32:24,553 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:24,665 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:24,792 INFO [default] Running Valuation for N = 15
+2018-06-10 13:32:40,415 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:40,528 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:40,663 INFO [default] Running Valuation for N = 15
+2018-06-10 13:32:56,666 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:56,777 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:56,907 INFO [default] Running Valuation for N = 20
+2018-06-10 13:32:57,610 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:57,613 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:57,616 INFO [default] Running Valuation for N = 20
+2018-06-10 13:32:58,976 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:32:58,981 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:32:58,987 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:01,047 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:01,056 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:01,073 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:04,111 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:04,129 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:04,151 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:07,970 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:07,994 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:08,020 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:12,292 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:12,324 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:12,347 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:17,278 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:17,313 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:17,337 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:22,883 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:22,921 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:22,947 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:29,199 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:29,241 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:29,292 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:36,219 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:36,268 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:36,322 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:43,916 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:43,965 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:44,024 INFO [default] Running Valuation for N = 20
+2018-06-10 13:33:52,305 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:33:52,365 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:33:52,442 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:01,469 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:01,525 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:01,606 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:11,291 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:11,353 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:11,442 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:21,815 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:21,879 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:21,969 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:33,032 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:33,117 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:33,192 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:44,899 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:44,989 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:45,067 INFO [default] Running Valuation for N = 20
+2018-06-10 13:34:57,459 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:34:57,553 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:34:57,654 INFO [default] Running Valuation for N = 20
+2018-06-10 13:35:10,782 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:35:10,881 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:35:10,985 INFO [default] Running Valuation for N = 20
+2018-06-10 13:35:24,796 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:35:24,898 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:35:25,008 INFO [default] Running Valuation for N = 20
+2018-06-10 13:35:39,508 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:35:39,614 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:35:39,743 INFO [default] Running Valuation for N = 20
+2018-06-10 13:35:54,963 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:35:55,067 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:35:55,201 INFO [default] Running Valuation for N = 20
+2018-06-10 13:36:11,167 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:36:11,298 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:36:11,419 INFO [default] Running Valuation for N = 20
+2018-06-10 13:36:28,016 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:36:28,131 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:36:28,270 INFO [default] Running Valuation for N = 20
+2018-06-10 13:36:45,628 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:36:45,763 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:36:45,888 INFO [default] Running Valuation for N = 20
+2018-06-10 13:37:03,903 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:37:04,040 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:37:04,171 INFO [default] Running Valuation for N = 20
+2018-06-10 13:37:22,880 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:37:23,035 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:37:23,185 INFO [default] Running Valuation for N = 20
+2018-06-10 13:37:42,768 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:37:42,915 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:37:43,070 INFO [default] Running Valuation for N = 20
+2018-06-10 13:38:03,188 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:38:03,329 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:38:03,484 INFO [default] Running Valuation for N = 20
+2018-06-10 13:38:24,489 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:38:24,642 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:38:24,802 INFO [default] Running Valuation for N = 20
+2018-06-10 13:38:46,141 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:38:46,301 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:38:46,481 INFO [default] Running Valuation for N = 20
+2018-06-10 13:39:08,548 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:39:08,704 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:39:08,866 INFO [default] Running Valuation for N = 20
+2018-06-10 13:39:31,587 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:39:31,746 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:39:31,935 INFO [default] Running Valuation for N = 20
+2018-06-10 13:39:55,323 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:39:55,516 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:39:55,692 INFO [default] Running Valuation for N = 20
+2018-06-10 13:40:19,833 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:40:19,997 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:40:20,188 INFO [default] Running Valuation for N = 20
+2018-06-10 13:40:44,953 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:40:45,145 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:40:45,322 INFO [default] Running Valuation for N = 20
+2018-06-10 13:41:10,739 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:41:10,929 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:41:11,131 INFO [default] Running Valuation for N = 20
+2018-06-10 13:41:37,213 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:41:37,412 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:41:37,615 INFO [default] Running Valuation for N = 20
+2018-06-10 13:42:04,398 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:04,602 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:04,806 INFO [default] Running Valuation for N = 20
+2018-06-10 13:42:32,465 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:32,673 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:32,900 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:34,095 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:34,099 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:34,104 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:36,464 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:36,473 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:36,487 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:40,059 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:40,078 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:40,098 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:44,855 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:44,879 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:44,904 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:50,880 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:50,914 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:50,940 INFO [default] Running Valuation for N = 25
+2018-06-10 13:42:58,068 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:42:58,106 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:42:58,152 INFO [default] Running Valuation for N = 25
+2018-06-10 13:43:06,464 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:43:06,510 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:43:06,563 INFO [default] Running Valuation for N = 25
+2018-06-10 13:43:16,053 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:43:16,103 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:43:16,160 INFO [default] Running Valuation for N = 25
+2018-06-10 13:43:26,830 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:43:26,887 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:43:26,973 INFO [default] Running Valuation for N = 25
+2018-06-10 13:43:38,818 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:43:38,877 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:43:38,968 INFO [default] Running Valuation for N = 25
+2018-06-10 13:43:52,019 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:43:52,083 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:43:52,180 INFO [default] Running Valuation for N = 25
+2018-06-10 13:44:06,406 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:44:06,494 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:44:06,574 INFO [default] Running Valuation for N = 25
+2018-06-10 13:44:21,980 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:44:22,074 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:44:22,178 INFO [default] Running Valuation for N = 25
+2018-06-10 13:44:38,861 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:44:38,959 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:44:39,070 INFO [default] Running Valuation for N = 25
+2018-06-10 13:44:56,851 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:44:56,958 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:44:57,073 INFO [default] Running Valuation for N = 25
+2018-06-10 13:45:16,026 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:45:16,135 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:45:16,270 INFO [default] Running Valuation for N = 25
+2018-06-10 13:45:36,573 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:45:36,691 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:45:36,836 INFO [default] Running Valuation for N = 25
+2018-06-10 13:45:58,666 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:45:58,803 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:45:58,932 INFO [default] Running Valuation for N = 25
+2018-06-10 13:46:21,455 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:46:21,599 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:46:21,751 INFO [default] Running Valuation for N = 25
+2018-06-10 13:46:45,556 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:46:45,706 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:46:45,865 INFO [default] Running Valuation for N = 25
+2018-06-10 13:47:10,833 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:47:10,987 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:47:11,149 INFO [default] Running Valuation for N = 25
+2018-06-10 13:47:37,227 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:47:37,390 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:47:37,557 INFO [default] Running Valuation for N = 25
+2018-06-10 13:48:04,855 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:48:05,023 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:48:05,207 INFO [default] Running Valuation for N = 25
+2018-06-10 13:48:33,693 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:48:33,880 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:48:34,055 INFO [default] Running Valuation for N = 25
+2018-06-10 13:49:03,633 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:49:03,822 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:49:04,005 INFO [default] Running Valuation for N = 25
+2018-06-10 13:49:34,909 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:49:35,111 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:49:35,317 INFO [default] Running Valuation for N = 25
+2018-06-10 13:50:07,336 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:50:07,539 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:50:07,751 INFO [default] Running Valuation for N = 25
+2018-06-10 13:50:40,983 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:50:41,195 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:50:41,410 INFO [default] Running Valuation for N = 25
+2018-06-10 13:51:15,799 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:51:16,013 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:51:16,259 INFO [default] Running Valuation for N = 25
+2018-06-10 13:51:51,791 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:51:52,009 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:51:52,260 INFO [default] Running Valuation for N = 25
+2018-06-10 13:52:29,014 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:52:29,258 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:52:29,493 INFO [default] Running Valuation for N = 25
+2018-06-10 13:53:07,477 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:53:07,721 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:53:07,978 INFO [default] Running Valuation for N = 25
+2018-06-10 13:53:47,135 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:53:47,391 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:53:47,654 INFO [default] Running Valuation for N = 25
+2018-06-10 13:54:28,041 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:54:28,303 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:54:28,591 INFO [default] Running Valuation for N = 25
+2018-06-10 13:55:10,076 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:55:10,340 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:55:10,631 INFO [default] Running Valuation for N = 25
+2018-06-10 13:55:53,285 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:55:53,576 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:55:53,857 INFO [default] Running Valuation for N = 25
+2018-06-10 13:56:37,760 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:56:38,055 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:56:38,335 INFO [default] Running Valuation for N = 25
+2018-06-10 13:57:23,587 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:57:23,862 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:57:24,165 INFO [default] Running Valuation for N = 25
+2018-06-10 13:58:10,652 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:58:10,963 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:58:11,276 INFO [default] Running Valuation for N = 25
+2018-06-10 13:58:58,900 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:58:59,210 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:58:59,524 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:01,371 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:01,377 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:01,391 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:05,110 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:05,130 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:05,148 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:10,740 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:10,776 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:10,800 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:18,228 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:18,269 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:18,314 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:27,584 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:27,627 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:27,684 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:38,798 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:38,852 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:38,936 INFO [default] Running Valuation for N = 30
+2018-06-10 13:59:51,871 INFO [default] 
+ ======= Means ======= 
+2018-06-10 13:59:51,926 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 13:59:52,016 INFO [default] Running Valuation for N = 30
+2018-06-10 14:00:06,866 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:00:06,962 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:00:07,060 INFO [default] Running Valuation for N = 30
+2018-06-10 14:00:23,778 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:00:23,879 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:00:23,988 INFO [default] Running Valuation for N = 30
+2018-06-10 14:00:42,485 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:00:42,597 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:00:42,729 INFO [default] Running Valuation for N = 30
+2018-06-10 14:01:03,082 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:01:03,198 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:01:03,338 INFO [default] Running Valuation for N = 30
+2018-06-10 14:01:25,550 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:01:25,667 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:01:25,812 INFO [default] Running Valuation for N = 30
+2018-06-10 14:01:49,850 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:01:49,994 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:01:50,146 INFO [default] Running Valuation for N = 30
+2018-06-10 14:02:16,103 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:02:16,259 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:02:16,417 INFO [default] Running Valuation for N = 30
+2018-06-10 14:02:44,132 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:02:44,288 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:02:44,478 INFO [default] Running Valuation for N = 30
+2018-06-10 14:03:14,216 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:03:14,387 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:03:14,579 INFO [default] Running Valuation for N = 30
+2018-06-10 14:03:46,105 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:03:46,299 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:03:46,509 INFO [default] Running Valuation for N = 30
+2018-06-10 14:04:19,820 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:04:20,017 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:04:20,222 INFO [default] Running Valuation for N = 30
+2018-06-10 14:04:55,416 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:04:55,623 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:04:55,838 INFO [default] Running Valuation for N = 30
+2018-06-10 14:05:32,923 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:05:33,142 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:05:33,384 INFO [default] Running Valuation for N = 30
+2018-06-10 14:06:12,167 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:06:12,415 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:06:12,677 INFO [default] Running Valuation for N = 30
+2018-06-10 14:06:53,328 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:06:53,584 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:06:53,842 INFO [default] Running Valuation for N = 30
+2018-06-10 14:07:36,382 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:07:36,643 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:07:36,906 INFO [default] Running Valuation for N = 30
+2018-06-10 14:08:21,208 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:08:21,475 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:08:21,763 INFO [default] Running Valuation for N = 30
+2018-06-10 14:09:07,971 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:09:08,237 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:09:08,539 INFO [default] Running Valuation for N = 30
+2018-06-10 14:09:56,761 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:09:57,054 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:09:57,365 INFO [default] Running Valuation for N = 30
+2018-06-10 14:10:47,148 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:10:47,459 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:10:47,773 INFO [default] Running Valuation for N = 30
+2018-06-10 14:11:39,829 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:11:40,141 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:11:40,462 INFO [default] Running Valuation for N = 30
+2018-06-10 14:12:34,245 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:12:34,566 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:12:34,914 INFO [default] Running Valuation for N = 30
+2018-06-10 14:13:30,487 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:13:30,843 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:13:31,205 INFO [default] Running Valuation for N = 30
+2018-06-10 14:14:28,680 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:14:29,041 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:14:29,409 INFO [default] Running Valuation for N = 30
+2018-06-10 14:15:28,956 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:15:29,323 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:15:29,711 INFO [default] Running Valuation for N = 30
+2018-06-10 14:16:31,095 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:16:31,472 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:16:31,877 INFO [default] Running Valuation for N = 30
+2018-06-10 14:17:35,675 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:17:36,091 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:17:36,493 INFO [default] Running Valuation for N = 30
+2018-06-10 14:18:42,155 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:18:42,535 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:18:42,973 INFO [default] Running Valuation for N = 30
+2018-06-10 14:19:50,338 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:19:50,756 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:19:51,165 INFO [default] Running Valuation for N = 30
+2018-06-10 14:21:00,424 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:21:00,871 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:21:01,295 INFO [default] Running Valuation for N = 30
+2018-06-10 14:22:12,051 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:22:12,498 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:22:12,926 INFO [default] Running Valuation for N = 30
+2018-06-10 14:23:25,575 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:23:26,032 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:23:26,496 INFO [default] Running Valuation for N = 30
+2018-06-10 14:24:41,377 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:24:41,840 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:24:42,307 INFO [default] Running Valuation for N = 35
+2018-06-10 14:24:45,014 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:24:45,022 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:24:45,039 INFO [default] Running Valuation for N = 35
+2018-06-10 14:24:50,504 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:24:50,527 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:24:50,556 INFO [default] Running Valuation for N = 35
+2018-06-10 14:24:58,757 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:24:58,795 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:24:58,821 INFO [default] Running Valuation for N = 35
+2018-06-10 14:25:09,813 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:25:09,862 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:25:09,921 INFO [default] Running Valuation for N = 35
+2018-06-10 14:25:23,689 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:25:23,747 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:25:23,834 INFO [default] Running Valuation for N = 35
+2018-06-10 14:25:40,285 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:25:40,371 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:25:40,450 INFO [default] Running Valuation for N = 35
+2018-06-10 14:25:59,605 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:25:59,701 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:25:59,809 INFO [default] Running Valuation for N = 35
+2018-06-10 14:26:21,702 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:26:21,808 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:26:21,925 INFO [default] Running Valuation for N = 35
+2018-06-10 14:26:46,480 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:26:46,595 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:26:46,743 INFO [default] Running Valuation for N = 35
+2018-06-10 14:27:14,021 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:27:14,168 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:27:14,326 INFO [default] Running Valuation for N = 35
+2018-06-10 14:27:44,278 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:27:44,435 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:27:44,629 INFO [default] Running Valuation for N = 35
+2018-06-10 14:28:17,551 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:28:17,714 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:28:17,908 INFO [default] Running Valuation for N = 35
+2018-06-10 14:28:53,435 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:28:53,628 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:28:53,814 INFO [default] Running Valuation for N = 35
+2018-06-10 14:29:32,187 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:29:32,394 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:29:32,607 INFO [default] Running Valuation for N = 35
+2018-06-10 14:30:13,630 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:30:13,852 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:30:14,086 INFO [default] Running Valuation for N = 35
+2018-06-10 14:30:57,867 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:30:58,112 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:30:58,345 INFO [default] Running Valuation for N = 35
+2018-06-10 14:31:45,152 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:31:45,410 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:31:45,682 INFO [default] Running Valuation for N = 35
+2018-06-10 14:32:34,894 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:32:35,160 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:32:35,458 INFO [default] Running Valuation for N = 35
+2018-06-10 14:33:27,308 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:33:27,599 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:33:27,886 INFO [default] Running Valuation for N = 35
+2018-06-10 14:34:22,443 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:34:22,761 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:34:23,102 INFO [default] Running Valuation for N = 35
+2018-06-10 14:35:20,400 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:35:20,711 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:35:21,027 INFO [default] Running Valuation for N = 35
+2018-06-10 14:36:21,114 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:36:21,437 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:36:21,783 INFO [default] Running Valuation for N = 35
+2018-06-10 14:37:24,822 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:37:25,183 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:37:25,537 INFO [default] Running Valuation for N = 35
+2018-06-10 14:38:31,461 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:38:31,819 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:38:32,198 INFO [default] Running Valuation for N = 35
+2018-06-10 14:39:40,816 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:39:41,213 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:39:41,598 INFO [default] Running Valuation for N = 35
+2018-06-10 14:40:53,596 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:40:54,010 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:40:54,423 INFO [default] Running Valuation for N = 35
+2018-06-10 14:42:09,471 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:42:09,887 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:42:10,302 INFO [default] Running Valuation for N = 35
+2018-06-10 14:43:27,362 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:43:27,792 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:43:28,247 INFO [default] Running Valuation for N = 35
+2018-06-10 14:44:48,784 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:44:49,277 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:44:49,708 INFO [default] Running Valuation for N = 35
+2018-06-10 14:46:13,348 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:46:13,813 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:46:14,280 INFO [default] Running Valuation for N = 35
+2018-06-10 14:47:40,014 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:47:40,479 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:47:40,954 INFO [default] Running Valuation for N = 35
+2018-06-10 14:49:09,491 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:49:09,974 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:49:10,454 INFO [default] Running Valuation for N = 35
+2018-06-10 14:50:41,884 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:50:42,400 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:50:42,921 INFO [default] Running Valuation for N = 35
+2018-06-10 14:52:17,562 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:52:18,089 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:52:18,615 INFO [default] Running Valuation for N = 35
+2018-06-10 14:53:55,445 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:53:55,972 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:53:56,538 INFO [default] Running Valuation for N = 35
+2018-06-10 14:55:35,882 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:55:36,416 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:55:36,974 INFO [default] Running Valuation for N = 35
+2018-06-10 14:57:18,932 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:57:19,500 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:57:20,078 INFO [default] Running Valuation for N = 35
+2018-06-10 14:59:05,215 INFO [default] 
+ ======= Means ======= 
+2018-06-10 14:59:05,801 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 14:59:06,409 INFO [default] Running Valuation for N = 35
+2018-06-10 15:00:54,532 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:00:55,141 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:00:55,777 INFO [default] Running Valuation for N = 35
+2018-06-10 15:02:46,837 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:02:47,500 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:02:48,121 INFO [default] Running Valuation for N = 40
+2018-06-10 15:02:51,843 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:02:51,853 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:02:51,875 INFO [default] Running Valuation for N = 40
+2018-06-10 15:02:59,379 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:02:59,415 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:02:59,440 INFO [default] Running Valuation for N = 40
+2018-06-10 15:03:10,747 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:03:10,795 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:03:10,852 INFO [default] Running Valuation for N = 40
+2018-06-10 15:03:25,845 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:03:25,905 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:03:26,007 INFO [default] Running Valuation for N = 40
+2018-06-10 15:03:44,789 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:03:44,881 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:03:44,987 INFO [default] Running Valuation for N = 40
+2018-06-10 15:04:07,464 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:04:07,572 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:04:07,715 INFO [default] Running Valuation for N = 40
+2018-06-10 15:04:33,838 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:04:33,982 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:04:34,111 INFO [default] Running Valuation for N = 40
+2018-06-10 15:05:04,143 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:05:04,327 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:05:04,489 INFO [default] Running Valuation for N = 40
+2018-06-10 15:05:38,210 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:05:38,401 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:05:38,576 INFO [default] Running Valuation for N = 40
+2018-06-10 15:06:15,956 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:06:16,156 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:06:16,366 INFO [default] Running Valuation for N = 40
+2018-06-10 15:06:57,417 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:06:57,628 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:06:57,872 INFO [default] Running Valuation for N = 40
+2018-06-10 15:07:42,676 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:07:42,921 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:07:43,155 INFO [default] Running Valuation for N = 40
+2018-06-10 15:08:31,757 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:08:32,020 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:08:32,282 INFO [default] Running Valuation for N = 40
+2018-06-10 15:09:24,577 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:09:24,852 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:09:25,154 INFO [default] Running Valuation for N = 40
+2018-06-10 15:10:21,239 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:10:21,537 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:10:21,847 INFO [default] Running Valuation for N = 40
+2018-06-10 15:11:21,857 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:11:22,174 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:11:22,528 INFO [default] Running Valuation for N = 40
+2018-06-10 15:12:26,274 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:12:26,633 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:12:26,962 INFO [default] Running Valuation for N = 40
+2018-06-10 15:13:34,466 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:13:34,821 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:13:35,192 INFO [default] Running Valuation for N = 40
+2018-06-10 15:14:46,327 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:14:46,705 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:14:47,111 INFO [default] Running Valuation for N = 40
+2018-06-10 15:16:02,199 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:16:02,602 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:16:03,019 INFO [default] Running Valuation for N = 40
+2018-06-10 15:17:22,296 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:17:22,718 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:17:23,177 INFO [default] Running Valuation for N = 40
+2018-06-10 15:18:46,483 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:18:46,937 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:18:47,379 INFO [default] Running Valuation for N = 40
+2018-06-10 15:20:13,964 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:20:14,469 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:20:14,994 INFO [default] Running Valuation for N = 40
+2018-06-10 15:21:45,254 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:21:45,736 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:21:46,240 INFO [default] Running Valuation for N = 40
+2018-06-10 15:23:20,514 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:23:21,031 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:23:21,561 INFO [default] Running Valuation for N = 40
+2018-06-10 15:24:59,546 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:25:00,068 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:25:00,593 INFO [default] Running Valuation for N = 40
+2018-06-10 15:26:42,452 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:26:43,017 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:26:43,553 INFO [default] Running Valuation for N = 40
+2018-06-10 15:28:29,330 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:28:29,907 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:28:30,506 INFO [default] Running Valuation for N = 40
+2018-06-10 15:30:20,110 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:30:20,709 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:30:21,312 INFO [default] Running Valuation for N = 40
+2018-06-10 15:32:14,889 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:32:15,510 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:32:16,138 INFO [default] Running Valuation for N = 40
+2018-06-10 15:34:13,368 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:34:14,010 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:34:14,676 INFO [default] Running Valuation for N = 40
+2018-06-10 15:36:15,967 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:36:16,634 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:36:17,281 INFO [default] Running Valuation for N = 40
+2018-06-10 15:38:23,275 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:38:23,957 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:38:24,641 INFO [default] Running Valuation for N = 40
+2018-06-10 15:40:34,753 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:40:35,473 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:40:36,173 INFO [default] Running Valuation for N = 40
+2018-06-10 15:42:49,875 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:42:50,607 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:42:51,329 INFO [default] Running Valuation for N = 40
+2018-06-10 15:45:08,365 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:45:09,106 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:45:09,866 INFO [default] Running Valuation for N = 40
+2018-06-10 15:47:31,152 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:47:31,925 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:47:32,673 INFO [default] Running Valuation for N = 40
+2018-06-10 15:49:57,938 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:49:58,726 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:49:59,509 INFO [default] Running Valuation for N = 40
+2018-06-10 15:52:29,231 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:52:30,032 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:52:30,815 INFO [default] Running Valuation for N = 40
+2018-06-10 15:55:04,612 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:55:05,451 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:55:06,279 INFO [default] Running Valuation for N = 45
+2018-06-10 15:55:11,245 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:55:11,265 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:55:11,290 INFO [default] Running Valuation for N = 45
+2018-06-10 15:55:21,418 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:55:21,465 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:55:21,514 INFO [default] Running Valuation for N = 45
+2018-06-10 15:55:36,629 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:55:36,688 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:55:36,777 INFO [default] Running Valuation for N = 45
+2018-06-10 15:55:56,895 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:55:56,993 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:55:57,096 INFO [default] Running Valuation for N = 45
+2018-06-10 15:56:22,231 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:56:22,337 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:56:22,478 INFO [default] Running Valuation for N = 45
+2018-06-10 15:56:52,652 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:56:52,798 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:56:52,956 INFO [default] Running Valuation for N = 45
+2018-06-10 15:57:28,061 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:57:28,224 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:57:28,417 INFO [default] Running Valuation for N = 45
+2018-06-10 15:58:08,599 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:58:08,800 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:58:09,011 INFO [default] Running Valuation for N = 45
+2018-06-10 15:58:54,217 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:58:54,435 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:58:54,678 INFO [default] Running Valuation for N = 45
+2018-06-10 15:59:44,995 INFO [default] 
+ ======= Means ======= 
+2018-06-10 15:59:45,250 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 15:59:45,521 INFO [default] Running Valuation for N = 45
+2018-06-10 16:00:40,770 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:00:41,042 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:00:41,337 INFO [default] Running Valuation for N = 45
+2018-06-10 16:01:41,580 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:01:41,885 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:01:42,202 INFO [default] Running Valuation for N = 45
+2018-06-10 16:02:47,631 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:02:47,954 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:02:48,306 INFO [default] Running Valuation for N = 45
+2018-06-10 16:03:58,692 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:03:59,059 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:03:59,425 INFO [default] Running Valuation for N = 45
+2018-06-10 16:05:14,888 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:05:15,292 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:05:15,676 INFO [default] Running Valuation for N = 45
+2018-06-10 16:06:36,365 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:06:36,777 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:06:37,194 INFO [default] Running Valuation for N = 45
+2018-06-10 16:08:03,125 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:08:03,583 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:08:04,015 INFO [default] Running Valuation for N = 45
+2018-06-10 16:09:34,984 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:09:35,454 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:09:35,932 INFO [default] Running Valuation for N = 45
+2018-06-10 16:11:12,033 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:11:12,512 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:11:13,021 INFO [default] Running Valuation for N = 45
+2018-06-10 16:12:54,361 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:12:54,878 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:12:55,397 INFO [default] Running Valuation for N = 45
+2018-06-10 16:14:41,934 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:14:42,461 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:14:43,028 INFO [default] Running Valuation for N = 45
+2018-06-10 16:16:35,264 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:16:35,831 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:16:36,410 INFO [default] Running Valuation for N = 45
+2018-06-10 16:18:34,056 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:18:34,636 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:18:35,249 INFO [default] Running Valuation for N = 45
+2018-06-10 16:20:37,672 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:20:38,292 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:20:38,932 INFO [default] Running Valuation for N = 45
+2018-06-10 16:22:46,342 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:22:46,974 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:22:47,633 INFO [default] Running Valuation for N = 45
+2018-06-10 16:24:59,784 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:25:00,455 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:25:01,127 INFO [default] Running Valuation for N = 45
+2018-06-10 16:27:18,332 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:27:19,014 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:27:19,735 INFO [default] Running Valuation for N = 45
+2018-06-10 16:29:42,413 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:29:43,139 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:29:43,878 INFO [default] Running Valuation for N = 45
+2018-06-10 16:32:11,735 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:32:12,475 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:32:13,246 INFO [default] Running Valuation for N = 45
+2018-06-10 16:34:46,715 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:34:47,492 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:34:48,279 INFO [default] Running Valuation for N = 45
+2018-06-10 16:37:27,554 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:37:28,348 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:37:29,166 INFO [default] Running Valuation for N = 45
+2018-06-10 16:40:13,016 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:40:13,849 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:40:14,686 INFO [default] Running Valuation for N = 45
+2018-06-10 16:43:04,721 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:43:05,570 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:43:06,435 INFO [default] Running Valuation for N = 45
+2018-06-10 16:46:01,226 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:46:02,108 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:46:02,998 INFO [default] Running Valuation for N = 45
+2018-06-10 16:49:03,589 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:49:04,499 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:49:05,423 INFO [default] Running Valuation for N = 45
+2018-06-10 16:52:10,915 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:52:11,846 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:52:12,792 INFO [default] Running Valuation for N = 45
+2018-06-10 16:55:23,428 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:55:24,391 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:55:25,370 INFO [default] Running Valuation for N = 45
+2018-06-10 16:58:41,663 INFO [default] 
+ ======= Means ======= 
+2018-06-10 16:58:42,660 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 16:58:43,658 INFO [default] Running Valuation for N = 45
+2018-06-10 17:02:05,361 INFO [default] 
+ ======= Means ======= 
+2018-06-10 17:02:06,368 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 17:02:07,399 INFO [default] Running Valuation for N = 45
+2018-06-10 17:05:34,010 INFO [default] 
+ ======= Means ======= 
+2018-06-10 17:05:35,048 INFO [default] 
+ ======= Vars ======= 
+2018-06-10 17:05:36,090 INFO [default] Running Valuation for N = 50
+2018-06-10 17:05:42,546 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:05:42,547 INFO [default] Running Valuation for N = 50
+2018-06-10 17:05:55,746 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:05:55,747 INFO [default] Running Valuation for N = 50
+2018-06-10 17:06:15,584 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:06:15,585 INFO [default] Running Valuation for N = 50
+2018-06-10 17:06:41,847 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:06:41,848 INFO [default] Running Valuation for N = 50
+2018-06-10 17:07:14,753 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:07:14,754 INFO [default] Running Valuation for N = 50
+2018-06-10 17:07:54,180 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:07:54,181 INFO [default] Running Valuation for N = 50
+2018-06-10 17:08:40,098 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:08:40,099 INFO [default] Running Valuation for N = 50
+2018-06-10 17:09:32,656 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:09:32,657 INFO [default] Running Valuation for N = 50
+2018-06-10 17:10:31,856 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:10:31,857 INFO [default] Running Valuation for N = 50
+2018-06-10 17:11:37,614 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:11:37,615 INFO [default] Running Valuation for N = 50
+2018-06-10 17:12:49,816 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:12:49,817 INFO [default] Running Valuation for N = 50
+2018-06-10 17:14:08,506 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:14:08,507 INFO [default] Running Valuation for N = 50
+2018-06-10 17:15:34,039 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:15:34,040 INFO [default] Running Valuation for N = 50
+2018-06-10 17:17:06,111 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:17:06,112 INFO [default] Running Valuation for N = 50
+2018-06-10 17:18:45,531 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:18:45,532 INFO [default] Running Valuation for N = 50
+2018-06-10 17:20:31,316 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:20:31,317 INFO [default] Running Valuation for N = 50
+2018-06-10 17:22:23,824 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:22:23,825 INFO [default] Running Valuation for N = 50
+2018-06-10 17:24:23,117 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:24:23,118 INFO [default] Running Valuation for N = 50
+2018-06-10 17:26:29,694 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:26:29,695 INFO [default] Running Valuation for N = 50
+2018-06-10 17:28:42,772 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:28:42,773 INFO [default] Running Valuation for N = 50
+2018-06-10 17:31:02,580 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:31:02,583 INFO [default] Running Valuation for N = 50
+2018-06-10 17:33:30,590 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:33:30,591 INFO [default] Running Valuation for N = 50
+2018-06-10 17:36:04,964 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:36:04,965 INFO [default] Running Valuation for N = 50
+2018-06-10 17:38:45,902 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:38:45,903 INFO [default] Running Valuation for N = 50
+2018-06-10 17:41:33,261 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:41:33,262 INFO [default] Running Valuation for N = 50
+2018-06-10 17:44:27,200 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:44:27,201 INFO [default] Running Valuation for N = 50
+2018-06-10 17:47:29,050 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:47:29,051 INFO [default] Running Valuation for N = 50
+2018-06-10 17:50:36,988 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:50:36,989 INFO [default] Running Valuation for N = 50
+2018-06-10 17:53:51,670 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:53:51,671 INFO [default] Running Valuation for N = 50
+2018-06-10 17:57:13,553 WARNING [default] Output disabled because of large matrix size
+2018-06-10 17:57:13,554 INFO [default] Running Valuation for N = 50
+2018-06-10 18:00:42,349 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:00:42,350 INFO [default] Running Valuation for N = 50
+2018-06-10 18:04:18,306 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:04:18,307 INFO [default] Running Valuation for N = 50
+2018-06-10 18:08:00,998 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:08:00,999 INFO [default] Running Valuation for N = 50
+2018-06-10 18:11:50,454 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:11:50,455 INFO [default] Running Valuation for N = 50
+2018-06-10 18:15:46,688 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:15:46,689 INFO [default] Running Valuation for N = 50
+2018-06-10 18:19:49,985 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:19:49,986 INFO [default] Running Valuation for N = 50
+2018-06-10 18:24:00,339 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:24:00,340 INFO [default] Running Valuation for N = 50
+2018-06-10 18:28:17,709 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:28:17,710 INFO [default] Running Valuation for N = 50
+2018-06-10 18:32:41,830 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:32:41,831 INFO [default] Running Valuation for N = 50
+2018-06-10 18:37:12,515 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:37:12,519 INFO [default] Running Valuation for N = 55
+2018-06-10 18:37:20,914 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:37:20,915 INFO [default] Running Valuation for N = 55
+2018-06-10 18:37:38,041 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:37:38,042 INFO [default] Running Valuation for N = 55
+2018-06-10 18:38:03,768 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:38:03,769 INFO [default] Running Valuation for N = 55
+2018-06-10 18:38:37,905 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:38:37,906 INFO [default] Running Valuation for N = 55
+2018-06-10 18:39:20,645 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:39:20,647 INFO [default] Running Valuation for N = 55
+2018-06-10 18:40:12,008 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:40:12,009 INFO [default] Running Valuation for N = 55
+2018-06-10 18:41:11,900 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:41:11,901 INFO [default] Running Valuation for N = 55
+2018-06-10 18:42:20,314 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:42:20,315 INFO [default] Running Valuation for N = 55
+2018-06-10 18:43:37,272 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:43:37,273 INFO [default] Running Valuation for N = 55
+2018-06-10 18:45:02,749 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:45:02,750 INFO [default] Running Valuation for N = 55
+2018-06-10 18:46:37,057 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:46:37,058 INFO [default] Running Valuation for N = 55
+2018-06-10 18:48:19,934 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:48:19,935 INFO [default] Running Valuation for N = 55
+2018-06-10 18:50:11,110 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:50:11,112 INFO [default] Running Valuation for N = 55
+2018-06-10 18:52:11,024 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:52:11,025 INFO [default] Running Valuation for N = 55
+2018-06-10 18:54:19,919 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:54:19,921 INFO [default] Running Valuation for N = 55
+2018-06-10 18:56:37,645 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:56:37,646 INFO [default] Running Valuation for N = 55
+2018-06-10 18:59:04,161 WARNING [default] Output disabled because of large matrix size
+2018-06-10 18:59:04,162 INFO [default] Running Valuation for N = 55
+2018-06-10 19:01:39,441 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:01:39,442 INFO [default] Running Valuation for N = 55
+2018-06-10 19:04:23,771 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:04:23,772 INFO [default] Running Valuation for N = 55
+2018-06-10 19:07:17,333 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:07:17,334 INFO [default] Running Valuation for N = 55
+2018-06-10 19:10:19,650 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:10:19,654 INFO [default] Running Valuation for N = 55
+2018-06-10 19:13:30,544 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:13:30,545 INFO [default] Running Valuation for N = 55
+2018-06-10 19:16:50,338 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:16:50,340 INFO [default] Running Valuation for N = 55
+2018-06-10 19:20:18,965 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:20:18,966 INFO [default] Running Valuation for N = 55
+2018-06-10 19:23:56,789 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:23:56,790 INFO [default] Running Valuation for N = 55
+2018-06-10 19:27:43,332 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:27:43,333 INFO [default] Running Valuation for N = 55
+2018-06-10 19:31:38,706 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:31:38,707 INFO [default] Running Valuation for N = 55
+2018-06-10 19:35:42,162 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:35:42,163 INFO [default] Running Valuation for N = 55
+2018-06-10 19:39:55,305 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:39:55,306 INFO [default] Running Valuation for N = 55
+2018-06-10 19:44:17,432 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:44:17,433 INFO [default] Running Valuation for N = 55
+2018-06-10 19:48:48,513 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:48:48,515 INFO [default] Running Valuation for N = 55
+2018-06-10 19:53:27,890 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:53:27,891 INFO [default] Running Valuation for N = 55
+2018-06-10 19:58:15,814 WARNING [default] Output disabled because of large matrix size
+2018-06-10 19:58:15,815 INFO [default] Running Valuation for N = 55
+2018-06-10 20:03:12,206 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:03:12,207 INFO [default] Running Valuation for N = 55
+2018-06-10 20:08:17,638 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:08:17,639 INFO [default] Running Valuation for N = 55
+2018-06-10 20:13:32,815 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:13:32,816 INFO [default] Running Valuation for N = 55
+2018-06-10 20:19:08,725 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:19:08,726 INFO [default] Running Valuation for N = 55
+2018-06-10 20:24:42,074 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:24:42,076 INFO [default] Running Valuation for N = 55
+2018-06-10 20:30:25,094 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:30:25,095 INFO [default] Running Valuation for N = 55
+2018-06-10 20:36:16,299 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:36:16,303 INFO [default] Running Valuation for N = 60
+2018-06-10 20:36:26,655 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:36:26,656 INFO [default] Running Valuation for N = 60
+2018-06-10 20:36:47,824 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:36:47,825 INFO [default] Running Valuation for N = 60
+2018-06-10 20:37:19,413 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:37:19,414 INFO [default] Running Valuation for N = 60
+2018-06-10 20:38:01,544 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:38:01,546 INFO [default] Running Valuation for N = 60
+2018-06-10 20:38:54,104 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:38:54,106 INFO [default] Running Valuation for N = 60
+2018-06-10 20:39:56,919 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:39:56,921 INFO [default] Running Valuation for N = 60
+2018-06-10 20:41:10,135 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:41:10,137 INFO [default] Running Valuation for N = 60
+2018-06-10 20:42:34,011 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:42:34,012 INFO [default] Running Valuation for N = 60
+2018-06-10 20:44:08,558 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:44:08,559 INFO [default] Running Valuation for N = 60
+2018-06-10 20:45:53,947 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:45:53,949 INFO [default] Running Valuation for N = 60
+2018-06-10 20:47:50,324 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:47:50,326 INFO [default] Running Valuation for N = 60
+2018-06-10 20:49:57,132 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:49:57,134 INFO [default] Running Valuation for N = 60
+2018-06-10 20:52:15,586 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:52:15,588 INFO [default] Running Valuation for N = 60
+2018-06-10 20:54:44,999 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:54:45,001 INFO [default] Running Valuation for N = 60
+2018-06-10 20:57:26,486 WARNING [default] Output disabled because of large matrix size
+2018-06-10 20:57:26,487 INFO [default] Running Valuation for N = 60
+2018-06-10 21:00:16,791 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:00:16,792 INFO [default] Running Valuation for N = 60
+2018-06-10 21:03:17,953 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:03:17,954 INFO [default] Running Valuation for N = 60
+2018-06-10 21:06:30,567 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:06:30,568 INFO [default] Running Valuation for N = 60
+2018-06-10 21:09:54,957 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:09:54,958 INFO [default] Running Valuation for N = 60
+2018-06-10 21:13:30,989 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:13:30,991 INFO [default] Running Valuation for N = 60
+2018-06-10 21:17:16,491 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:17:16,496 INFO [default] Running Valuation for N = 60
+2018-06-10 21:21:14,250 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:21:14,251 INFO [default] Running Valuation for N = 60
+2018-06-10 21:25:20,895 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:25:20,897 INFO [default] Running Valuation for N = 60
+2018-06-10 21:29:36,250 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:29:36,251 INFO [default] Running Valuation for N = 60
+2018-06-10 21:34:03,306 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:34:03,307 INFO [default] Running Valuation for N = 60
+2018-06-10 21:38:40,836 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:38:40,838 INFO [default] Running Valuation for N = 60
+2018-06-10 21:43:29,747 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:43:29,749 INFO [default] Running Valuation for N = 60
+2018-06-10 21:48:31,479 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:48:31,481 INFO [default] Running Valuation for N = 60
+2018-06-10 21:53:45,125 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:53:45,127 INFO [default] Running Valuation for N = 60
+2018-06-10 21:59:09,253 WARNING [default] Output disabled because of large matrix size
+2018-06-10 21:59:09,255 INFO [default] Running Valuation for N = 60
+2018-06-10 22:04:42,323 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:04:42,325 INFO [default] Running Valuation for N = 60
+2018-06-10 22:10:24,990 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:10:24,992 INFO [default] Running Valuation for N = 60
+2018-06-10 22:16:19,098 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:16:19,099 INFO [default] Running Valuation for N = 60
+2018-06-10 22:22:23,801 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:22:23,803 INFO [default] Running Valuation for N = 60
+2018-06-10 22:28:39,059 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:28:39,060 INFO [default] Running Valuation for N = 60
+2018-06-10 22:35:06,678 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:35:06,679 INFO [default] Running Valuation for N = 60
+2018-06-10 22:41:45,021 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:41:45,022 INFO [default] Running Valuation for N = 60
+2018-06-10 22:48:35,806 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:48:35,808 INFO [default] Running Valuation for N = 60
+2018-06-10 22:55:37,173 WARNING [default] Output disabled because of large matrix size
+2018-06-10 22:55:37,175 INFO [default] Running Valuation for N = 60
+2018-06-10 23:02:51,560 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:02:51,565 INFO [default] Running Valuation for N = 65
+2018-06-10 23:03:04,571 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:03:04,573 INFO [default] Running Valuation for N = 65
+2018-06-10 23:03:31,093 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:03:31,095 INFO [default] Running Valuation for N = 65
+2018-06-10 23:04:10,568 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:04:10,569 INFO [default] Running Valuation for N = 65
+2018-06-10 23:05:03,105 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:05:03,107 INFO [default] Running Valuation for N = 65
+2018-06-10 23:06:08,770 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:06:08,772 INFO [default] Running Valuation for N = 65
+2018-06-10 23:07:27,867 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:07:27,869 INFO [default] Running Valuation for N = 65
+2018-06-10 23:09:00,122 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:09:00,124 INFO [default] Running Valuation for N = 65
+2018-06-10 23:10:45,028 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:10:45,030 INFO [default] Running Valuation for N = 65
+2018-06-10 23:12:42,883 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:12:42,885 INFO [default] Running Valuation for N = 65
+2018-06-10 23:14:54,251 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:14:54,255 INFO [default] Running Valuation for N = 65
+2018-06-10 23:17:18,992 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:17:18,994 INFO [default] Running Valuation for N = 65
+2018-06-10 23:19:56,999 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:19:57,001 INFO [default] Running Valuation for N = 65
+2018-06-10 23:22:49,398 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:22:49,400 INFO [default] Running Valuation for N = 65
+2018-06-10 23:25:55,184 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:25:55,186 INFO [default] Running Valuation for N = 65
+2018-06-10 23:29:14,801 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:29:14,803 INFO [default] Running Valuation for N = 65
+2018-06-10 23:32:48,375 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:32:48,377 INFO [default] Running Valuation for N = 65
+2018-06-10 23:36:34,448 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:36:34,450 INFO [default] Running Valuation for N = 65
+2018-06-10 23:40:34,679 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:40:34,681 INFO [default] Running Valuation for N = 65
+2018-06-10 23:44:48,318 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:44:48,320 INFO [default] Running Valuation for N = 65
+2018-06-10 23:49:15,513 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:49:15,514 INFO [default] Running Valuation for N = 65
+2018-06-10 23:53:55,811 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:53:55,816 INFO [default] Running Valuation for N = 65
+2018-06-10 23:58:49,365 WARNING [default] Output disabled because of large matrix size
+2018-06-10 23:58:49,367 INFO [default] Running Valuation for N = 65
+2018-06-11 00:03:59,250 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:03:59,252 INFO [default] Running Valuation for N = 65
+2018-06-11 00:09:23,456 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:09:23,458 INFO [default] Running Valuation for N = 65
+2018-06-11 00:14:57,663 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:14:57,665 INFO [default] Running Valuation for N = 65
+2018-06-11 00:20:48,038 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:20:48,040 INFO [default] Running Valuation for N = 65
+2018-06-11 00:26:50,240 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:26:50,242 INFO [default] Running Valuation for N = 65
+2018-06-11 00:33:04,495 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:33:04,497 INFO [default] Running Valuation for N = 65
+2018-06-11 00:39:30,414 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:39:30,416 INFO [default] Running Valuation for N = 65
+2018-06-11 00:46:11,009 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:46:11,011 INFO [default] Running Valuation for N = 65
+2018-06-11 00:53:05,582 WARNING [default] Output disabled because of large matrix size
+2018-06-11 00:53:05,584 INFO [default] Running Valuation for N = 65
+2018-06-11 01:00:13,715 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:00:13,717 INFO [default] Running Valuation for N = 65
+2018-06-11 01:07:35,832 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:07:35,834 INFO [default] Running Valuation for N = 65
+2018-06-11 01:15:10,318 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:15:10,320 INFO [default] Running Valuation for N = 65
+2018-06-11 01:22:59,363 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:22:59,365 INFO [default] Running Valuation for N = 65
+2018-06-11 01:31:02,262 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:31:02,264 INFO [default] Running Valuation for N = 65
+2018-06-11 01:39:17,054 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:39:17,056 INFO [default] Running Valuation for N = 65
+2018-06-11 01:47:46,093 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:47:46,095 INFO [default] Running Valuation for N = 65
+2018-06-11 01:56:28,643 WARNING [default] Output disabled because of large matrix size
+2018-06-11 01:56:28,645 INFO [default] Running Valuation for N = 65
+2018-06-11 02:05:25,525 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:05:25,532 INFO [default] Running Valuation for N = 70
+2018-06-11 02:05:41,291 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:05:41,293 INFO [default] Running Valuation for N = 70
+2018-06-11 02:06:13,251 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:06:13,254 INFO [default] Running Valuation for N = 70
+2018-06-11 02:07:01,086 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:07:01,088 INFO [default] Running Valuation for N = 70
+2018-06-11 02:08:05,278 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:08:05,280 INFO [default] Running Valuation for N = 70
+2018-06-11 02:09:25,426 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:09:25,428 INFO [default] Running Valuation for N = 70
+2018-06-11 02:11:01,385 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:11:01,387 INFO [default] Running Valuation for N = 70
+2018-06-11 02:12:53,260 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:12:53,262 INFO [default] Running Valuation for N = 70
+2018-06-11 02:15:01,390 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:15:01,392 INFO [default] Running Valuation for N = 70
+2018-06-11 02:17:26,287 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:17:26,289 INFO [default] Running Valuation for N = 70
+2018-06-11 02:20:07,800 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:20:07,804 INFO [default] Running Valuation for N = 70
+2018-06-11 02:23:05,719 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:23:05,721 INFO [default] Running Valuation for N = 70
+2018-06-11 02:26:19,835 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:26:19,837 INFO [default] Running Valuation for N = 70
+2018-06-11 02:29:50,359 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:29:50,362 INFO [default] Running Valuation for N = 70
+2018-06-11 02:33:37,459 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:33:37,461 INFO [default] Running Valuation for N = 70
+2018-06-11 02:37:40,944 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:37:40,946 INFO [default] Running Valuation for N = 70
+2018-06-11 02:42:01,265 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:42:01,267 INFO [default] Running Valuation for N = 70
+2018-06-11 02:46:37,570 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:46:37,572 INFO [default] Running Valuation for N = 70
+2018-06-11 02:51:30,461 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:51:30,464 INFO [default] Running Valuation for N = 70
+2018-06-11 02:56:40,398 WARNING [default] Output disabled because of large matrix size
+2018-06-11 02:56:40,401 INFO [default] Running Valuation for N = 70
+2018-06-11 03:02:06,507 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:02:06,509 INFO [default] Running Valuation for N = 70
+2018-06-11 03:07:49,353 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:07:49,360 INFO [default] Running Valuation for N = 70
+2018-06-11 03:13:47,609 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:13:47,612 INFO [default] Running Valuation for N = 70
+2018-06-11 03:20:02,207 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:20:02,209 INFO [default] Running Valuation for N = 70
+2018-06-11 03:26:33,332 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:26:33,334 INFO [default] Running Valuation for N = 70
+2018-06-11 03:33:20,552 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:33:20,554 INFO [default] Running Valuation for N = 70
+2018-06-11 03:40:24,009 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:40:24,011 INFO [default] Running Valuation for N = 70
+2018-06-11 03:47:43,298 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:47:43,300 INFO [default] Running Valuation for N = 70
+2018-06-11 03:55:18,835 WARNING [default] Output disabled because of large matrix size
+2018-06-11 03:55:18,837 INFO [default] Running Valuation for N = 70
+2018-06-11 04:03:10,534 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:03:10,536 INFO [default] Running Valuation for N = 70
+2018-06-11 04:11:19,438 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:11:19,441 INFO [default] Running Valuation for N = 70
+2018-06-11 04:19:45,542 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:19:45,544 INFO [default] Running Valuation for N = 70
+2018-06-11 04:28:27,521 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:28:27,523 INFO [default] Running Valuation for N = 70
+2018-06-11 04:37:26,341 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:37:26,343 INFO [default] Running Valuation for N = 70
+2018-06-11 04:46:39,229 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:46:39,231 INFO [default] Running Valuation for N = 70
+2018-06-11 04:56:10,133 WARNING [default] Output disabled because of large matrix size
+2018-06-11 04:56:10,135 INFO [default] Running Valuation for N = 70
+2018-06-11 05:05:57,245 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:05:57,247 INFO [default] Running Valuation for N = 70
+2018-06-11 05:15:59,798 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:15:59,801 INFO [default] Running Valuation for N = 70
+2018-06-11 05:26:19,691 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:26:19,693 INFO [default] Running Valuation for N = 70
+2018-06-11 05:36:56,275 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:36:56,277 INFO [default] Running Valuation for N = 70
+2018-06-11 05:47:48,866 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:47:48,873 INFO [default] Running Valuation for N = 75
+2018-06-11 05:48:07,773 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:48:07,776 INFO [default] Running Valuation for N = 75
+2018-06-11 05:48:46,335 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:48:46,338 INFO [default] Running Valuation for N = 75
+2018-06-11 05:49:44,081 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:49:44,083 INFO [default] Running Valuation for N = 75
+2018-06-11 05:51:01,084 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:51:01,087 INFO [default] Running Valuation for N = 75
+2018-06-11 05:52:37,583 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:52:37,587 INFO [default] Running Valuation for N = 75
+2018-06-11 05:54:33,771 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:54:33,773 INFO [default] Running Valuation for N = 75
+2018-06-11 05:56:49,559 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:56:49,561 INFO [default] Running Valuation for N = 75
+2018-06-11 05:59:25,012 WARNING [default] Output disabled because of large matrix size
+2018-06-11 05:59:25,015 INFO [default] Running Valuation for N = 75
+2018-06-11 06:02:20,439 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:02:20,442 INFO [default] Running Valuation for N = 75
+2018-06-11 06:05:35,072 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:05:35,076 INFO [default] Running Valuation for N = 75
+2018-06-11 06:09:10,826 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:09:10,829 INFO [default] Running Valuation for N = 75
+2018-06-11 06:13:05,984 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:13:05,986 INFO [default] Running Valuation for N = 75
+2018-06-11 06:17:20,553 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:17:20,555 INFO [default] Running Valuation for N = 75
+2018-06-11 06:21:56,230 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:21:56,233 INFO [default] Running Valuation for N = 75
+2018-06-11 06:26:50,050 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:26:50,052 INFO [default] Running Valuation for N = 75
+2018-06-11 06:32:03,890 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:32:03,892 INFO [default] Running Valuation for N = 75
+2018-06-11 06:37:36,862 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:37:36,865 INFO [default] Running Valuation for N = 75
+2018-06-11 06:43:28,941 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:43:28,944 INFO [default] Running Valuation for N = 75
+2018-06-11 06:49:41,492 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:49:41,495 INFO [default] Running Valuation for N = 75
+2018-06-11 06:56:13,701 WARNING [default] Output disabled because of large matrix size
+2018-06-11 06:56:13,704 INFO [default] Running Valuation for N = 75
+2018-06-11 07:03:05,710 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:03:05,717 INFO [default] Running Valuation for N = 75
+2018-06-11 07:10:16,924 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:10:16,927 INFO [default] Running Valuation for N = 75
+2018-06-11 07:17:48,879 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:17:48,881 INFO [default] Running Valuation for N = 75
+2018-06-11 07:25:40,390 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:25:40,393 INFO [default] Running Valuation for N = 75
+2018-06-11 07:33:51,849 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:33:51,851 INFO [default] Running Valuation for N = 75
+2018-06-11 07:42:21,747 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:42:21,750 INFO [default] Running Valuation for N = 75
+2018-06-11 07:51:10,936 WARNING [default] Output disabled because of large matrix size
+2018-06-11 07:51:10,938 INFO [default] Running Valuation for N = 75
+2018-06-11 08:00:24,681 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:00:24,684 INFO [default] Running Valuation for N = 75
+2018-06-11 08:09:55,383 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:09:55,386 INFO [default] Running Valuation for N = 75
+2018-06-11 08:19:46,321 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:19:46,324 INFO [default] Running Valuation for N = 75
+2018-06-11 08:29:54,048 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:29:54,051 INFO [default] Running Valuation for N = 75
+2018-06-11 08:40:21,804 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:40:21,807 INFO [default] Running Valuation for N = 75
+2018-06-11 08:51:09,464 WARNING [default] Output disabled because of large matrix size
+2018-06-11 08:51:09,466 INFO [default] Running Valuation for N = 75
+2018-06-11 09:02:18,890 WARNING [default] Output disabled because of large matrix size
+2018-06-11 09:02:18,892 INFO [default] Running Valuation for N = 75
+2018-06-11 09:13:45,594 WARNING [default] Output disabled because of large matrix size
+2018-06-11 09:13:45,597 INFO [default] Running Valuation for N = 75
+2018-06-11 09:25:37,254 WARNING [default] Output disabled because of large matrix size
+2018-06-11 09:25:37,256 INFO [default] Running Valuation for N = 75
+2018-06-11 09:38:07,354 WARNING [default] Output disabled because of large matrix size
+2018-06-11 09:38:07,357 INFO [default] Running Valuation for N = 75
+2018-06-11 09:50:41,656 WARNING [default] Output disabled because of large matrix size
+2018-06-11 09:50:41,659 INFO [default] Running Valuation for N = 75
+2018-06-11 10:03:31,103 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:03:31,106 INFO [default] Running Valuation for N = 75
+2018-06-11 10:16:39,598 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:16:39,606 INFO [default] Running Valuation for N = 80
+2018-06-11 10:38:34,158 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:38:34,161 INFO [default] Running Valuation for N = 80
+2018-06-11 10:39:22,755 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:39:22,758 INFO [default] Running Valuation for N = 80
+2018-06-11 10:40:41,458 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:40:41,461 INFO [default] Running Valuation for N = 80
+2018-06-11 10:42:31,101 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:42:31,104 INFO [default] Running Valuation for N = 80
+2018-06-11 10:44:38,180 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:44:38,184 INFO [default] Running Valuation for N = 80
+2018-06-11 10:47:01,690 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:47:01,693 INFO [default] Running Valuation for N = 80
+2018-06-11 10:49:47,338 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:49:47,342 INFO [default] Running Valuation for N = 80
+2018-06-11 10:53:00,212 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:53:00,216 INFO [default] Running Valuation for N = 80
+2018-06-11 10:54:32,989 INFO [default] Running Valuation for N = 100
+2018-06-11 10:55:23,683 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:55:44,428 INFO [default] Running Valuation for N = 100
+2018-06-11 10:56:02,703 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:56:02,709 INFO [default] Running Valuation for N = 100
+2018-06-11 10:56:49,417 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:56:49,420 INFO [default] Running Valuation for N = 80
+2018-06-11 10:57:03,976 INFO [default] Running Valuation for N = 80
+2018-06-11 10:57:13,771 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:57:13,774 INFO [default] Running Valuation for N = 80
+2018-06-11 10:57:33,820 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:57:33,823 INFO [default] Running Valuation for N = 80
+2018-06-11 10:58:07,406 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:58:07,411 INFO [default] Running Valuation for N = 80
+2018-06-11 10:59:02,927 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:59:02,930 INFO [default] Running Valuation for N = 80
+2018-06-11 10:59:56,794 WARNING [default] Output disabled because of large matrix size
+2018-06-11 10:59:56,798 INFO [default] Running Valuation for N = 80
+2018-06-11 11:01:17,063 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:01:17,067 INFO [default] Running Valuation for N = 80
+2018-06-11 11:01:52,090 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:01:52,096 INFO [default] Running Valuation for N = 80
+2018-06-11 11:02:53,731 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:02:53,734 INFO [default] Running Valuation for N = 80
+2018-06-11 11:04:53,338 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:04:53,345 INFO [default] Running Valuation for N = 80
+2018-06-11 11:06:53,277 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:06:53,282 INFO [default] Running Valuation for N = 80
+2018-06-11 11:08:13,045 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:08:13,049 INFO [default] Running Valuation for N = 80
+2018-06-11 11:09:01,438 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:09:01,444 INFO [default] Running Valuation for N = 80
+2018-06-11 11:11:19,272 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:11:19,275 INFO [default] Running Valuation for N = 80
+2018-06-11 11:13:28,137 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:13:28,141 INFO [default] Running Valuation for N = 80
+2018-06-11 11:14:03,670 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:14:03,677 INFO [default] Running Valuation for N = 80
+2018-06-11 11:15:49,426 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:15:49,429 INFO [default] Running Valuation for N = 80
+2018-06-11 11:18:12,810 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:18:12,813 INFO [default] Running Valuation for N = 80
+2018-06-11 11:20:06,864 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:20:06,868 INFO [default] Running Valuation for N = 80
+2018-06-11 11:21:18,912 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:21:18,916 INFO [default] Running Valuation for N = 80
+2018-06-11 11:24:02,489 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:24:02,492 INFO [default] Running Valuation for N = 80
+2018-06-11 11:26:27,445 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:26:27,449 INFO [default] Running Valuation for N = 80
+2018-06-11 11:27:11,462 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:27:11,466 INFO [default] Running Valuation for N = 80
+2018-06-11 11:30:21,482 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:30:21,485 INFO [default] Running Valuation for N = 80
+2018-06-11 11:33:15,123 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:33:15,127 INFO [default] Running Valuation for N = 80
+2018-06-11 11:33:56,359 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:33:56,362 INFO [default] Running Valuation for N = 80
+2018-06-11 11:37:42,950 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:40:33,750 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:40:33,753 INFO [default] Running Valuation for N = 80
+2018-06-11 11:47:25,748 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:47:25,751 INFO [default] Running Valuation for N = 80
+2018-06-11 11:54:36,335 WARNING [default] Output disabled because of large matrix size
+2018-06-11 11:54:36,338 INFO [default] Running Valuation for N = 80
+2018-06-11 12:02:09,413 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:02:09,416 INFO [default] Running Valuation for N = 80
+2018-06-11 12:10:06,402 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:10:06,405 INFO [default] Running Valuation for N = 80
+2018-06-11 12:18:28,355 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:18:28,364 INFO [default] Running Valuation for N = 80
+2018-06-11 12:27:14,181 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:27:14,184 INFO [default] Running Valuation for N = 80
+2018-06-11 12:36:48,967 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:36:48,970 INFO [default] Running Valuation for N = 80
+2018-06-11 12:46:40,890 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:46:40,893 INFO [default] Running Valuation for N = 80
+2018-06-11 12:56:54,683 WARNING [default] Output disabled because of large matrix size
+2018-06-11 12:56:54,686 INFO [default] Running Valuation for N = 80
+2018-06-11 13:07:33,901 WARNING [default] Output disabled because of large matrix size
+2018-06-11 13:07:33,904 INFO [default] Running Valuation for N = 80
+2018-06-11 13:18:36,524 WARNING [default] Output disabled because of large matrix size
+2018-06-11 13:18:36,527 INFO [default] Running Valuation for N = 80
+2018-06-11 13:30:22,989 WARNING [default] Output disabled because of large matrix size
+2018-06-11 13:30:22,993 INFO [default] Running Valuation for N = 80
+2018-06-11 13:42:09,736 WARNING [default] Output disabled because of large matrix size
+2018-06-11 13:42:09,739 INFO [default] Running Valuation for N = 80
+2018-06-11 13:54:25,003 WARNING [default] Output disabled because of large matrix size
+2018-06-11 13:54:25,006 INFO [default] Running Valuation for N = 80
+2018-06-11 14:07:26,583 WARNING [default] Output disabled because of large matrix size
+2018-06-11 14:07:26,587 INFO [default] Running Valuation for N = 80
+2018-06-11 14:20:55,495 WARNING [default] Output disabled because of large matrix size
+2018-06-11 14:20:55,499 INFO [default] Running Valuation for N = 80
+2018-06-11 14:34:21,114 WARNING [default] Output disabled because of large matrix size
+2018-06-11 14:34:21,117 INFO [default] Running Valuation for N = 80
+2018-06-11 14:48:30,236 WARNING [default] Output disabled because of large matrix size
+2018-06-11 14:48:30,241 INFO [default] Running Valuation for N = 80
+2018-06-11 15:02:58,899 WARNING [default] Output disabled because of large matrix size
+2018-06-11 15:02:58,902 INFO [default] Running Valuation for N = 80
+2018-06-11 15:17:43,946 WARNING [default] Output disabled because of large matrix size
+2018-06-11 15:17:43,949 INFO [default] Running Valuation for N = 80
+2018-06-11 15:32:56,448 WARNING [default] Output disabled because of large matrix size
+2018-06-11 15:32:56,451 INFO [default] Running Valuation for N = 80
+2018-06-11 15:49:20,318 WARNING [default] Output disabled because of large matrix size
+2018-06-11 15:49:20,323 INFO [default] Running Valuation for N = 80
+2018-06-11 16:08:17,473 WARNING [default] Output disabled because of large matrix size
+2018-06-11 16:08:17,477 INFO [default] Running Valuation for N = 80
+2018-06-12 10:51:09,728 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:14,601 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:20,337 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:27,094 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:34,937 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:43,926 INFO [default] Running Valuation for N = 25
+2018-06-12 10:51:54,470 INFO [default] Running Valuation for N = 25
+2018-06-12 10:52:06,122 INFO [default] Running Valuation for N = 25
+2018-06-12 10:52:19,467 INFO [default] Running Valuation for N = 25
+2018-06-12 10:52:33,781 INFO [default] Running Valuation for N = 25
+2018-06-12 10:52:49,393 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:04,416 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:06,741 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:09,585 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:12,845 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:16,614 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:20,954 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:25,834 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:31,281 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:37,185 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:43,603 INFO [default] Running Valuation for N = 25
+2018-06-12 10:54:50,684 INFO [default] Running Valuation for N = 75
+2018-06-12 10:54:59,569 INFO [default] Running Valuation for N = 75
+2018-06-12 10:55:18,157 INFO [default] Running Valuation for N = 75
+2018-06-12 10:56:19,218 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:19,630 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:20,451 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:21,691 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:23,324 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:25,365 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:27,837 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:30,751 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:34,132 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:37,868 INFO [default] Running Valuation for N = 25
+2018-06-12 10:56:41,994 INFO [default] Running Valuation for N = 75
+2018-06-12 10:56:49,271 INFO [default] Running Valuation for N = 75
+2018-06-12 10:57:03,627 INFO [default] Running Valuation for N = 75
+2018-06-12 10:57:25,045 INFO [default] Running Valuation for N = 75
+2018-06-12 10:57:53,748 INFO [default] Running Valuation for N = 75
+2018-06-12 10:58:30,580 INFO [default] Running Valuation for N = 75
+2018-06-12 10:59:20,207 INFO [default] Running Valuation for N = 75
+2018-06-12 11:00:19,367 INFO [default] Running Valuation for N = 75
+2018-06-12 11:01:22,836 INFO [default] Running Valuation for N = 75
+2018-06-12 11:02:30,374 INFO [default] Running Valuation for N = 75
+2018-06-12 14:01:20,076 INFO [default] Running Valuation for N = 25
+2018-06-12 14:02:01,501 INFO [default] Running Valuation for N = 25
+2018-06-12 14:03:26,886 INFO [default] Running Valuation for N = 25
+2018-06-12 14:05:40,788 INFO [default] Running Valuation for N = 25
+2018-06-12 14:08:30,425 INFO [default] Running Valuation for N = 25
+2018-06-12 14:12:01,954 INFO [default] Running Valuation for N = 25
+2018-06-12 14:16:08,940 INFO [default] Running Valuation for N = 25
+2018-06-12 14:20:58,451 INFO [default] Running Valuation for N = 25
+2018-06-12 14:26:37,006 INFO [default] Running Valuation for N = 50
+2018-06-12 14:30:49,342 INFO [default] Running Valuation for N = 50
+2018-06-12 14:39:13,302 INFO [default] Running Valuation for N = 50
+2018-06-12 14:51:15,703 INFO [default] Running Valuation for N = 50
+2018-06-12 15:07:23,760 INFO [default] Running Valuation for N = 50
+2018-06-12 15:27:12,687 INFO [default] Running Valuation for N = 50
+2018-06-12 15:50:33,564 INFO [default] Running Valuation for N = 50
+2018-06-12 16:17:50,911 INFO [default] Running Valuation for N = 50
+2018-06-13 11:34:25,164 INFO [default] Running Valuation for N = 100
+2018-06-13 11:36:56,171 INFO [default] Running Valuation for N = 70

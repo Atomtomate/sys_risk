@@ -16,8 +16,9 @@
 #define EIGEN_NO_STATIC_ASSERT
 #endif
 
-#define ELPP_NO_DEFAULT_LOG_FILE
-#define ELPP_STL_LOGGING
+
+#define ELPP_NO_DEFAULT_LOG_FILE 1
+#define ELPP_STL_LOGGING 1
 #include "easylogging++.h"
 
 #include <string>

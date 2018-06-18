@@ -34,9 +34,9 @@ namespace MCUtil
      */
 enum class StatType : unsigned char {
     MEAN = 0,
-    VARIANCE  = 1,
-    SKEWNESS = 2,
-    KURTOSIS = 3
+    VARIANCE  = 1
+    //,SKEWNESS = 2,
+    //KURTOSIS = 3
 };
 
 //use cache with sfinae to only define caching vector if needed
