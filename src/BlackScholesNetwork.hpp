@@ -182,52 +182,19 @@ public:
     const Vec get_valuation() {
         Vec res = (x.head(N) + x.tail(N));
         return res;
-        /*
-        std::vector<double> ret;
-        ret.resize(N);
-        Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
-        return ret;*/
     }
 
    const Vec get_solvent() {
         return solvent;
-    }
+   }
 
-    const Mat get_delta_v1() {
-        //TIMED_FUNC(timerObj);
-#ifdef USE_SPARSE_INTERNAL
-        J_a.setZero();
-        for(int i = 0; i < N; i++)
-        {
-            J_a.insert(i,i) = solvent(i);
-            J_a.insert(i+N,i) = (1.-solvent(i));
-        }
-        //PERFORMANCE_CHECKPOINT(timerObj);
-        //Jrs = Z*M;
-        J_a.makeCompressed();
-        //PERFORMANCE_CHECKPOINT(timerObj);
-        lu.compute(Id - J_a*M);
-        auto Jrs = lu.solve(Id);
-        //PERFORMANCE_CHECKPOINT(timerObj);
-        Eigen::MatrixXd res_eigen = exprt*(Jrs*J_a)*St.asDiagonal();
-        //PERFORMANCE_CHECKPOINT(timerObj);
-    #else
-        auto msol = 1-solvent.array();
-        J_a.diagonal(0) = solvent;
-        J_a.diagonal(-N) = msol;
-        //Jrs.topRows(N) = M.array().colwise() * solvent.array();
-        //Jrs.bottomRows(N) = M.array().colwise() * msol;
-        //Jrs = J_a*M;
-        auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - J_a*M).inverse()*J_a)*(St.asDiagonal());
-    #endif
-        return res_eigen;
-        //Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
-        //return res;
-    }
 
-    //get_v_out()
+    const Mat get_delta_v1();
+    /*
+    std::vector<double> ret;
+    ret.resize(N);
+    Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
+    return ret;*/
 
 };
-
-
-    #endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_
+#endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_

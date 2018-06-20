@@ -77,13 +77,15 @@ int main(int argc, char* argv[])
     //LOG(INFO) << pn.add(4,5);
     //pn.run_valuation(2, 0.7, 0.5, 2, 1, 0);
 
+
     //TODO: eigen matrix dimension missmatch on large size?!?!
-    for (int N : {10})
+    Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
+    for (int N : {50})
     { //, 8, 16, 32}) {
-        nNN.init_network(N, 0.05, 0.95, 2, 1.0, 0.0);
-        auto res = nNN.test_ER_valuation(N, 2000, 100);//10000, 500);
+        nNN.init_network(N, 2.0/N, 0.4, 2, 2.0, 0.0);
+        auto res = nNN.test_ER_valuation(N, 1000, 70);//10000, 500);
         for(const auto& el : res)
-            LOG(INFO) << el.first << ": " << el.second;
+            LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);

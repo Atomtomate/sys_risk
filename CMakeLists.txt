@@ -22,15 +22,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_BINARY_DIR}")
 
-#include(FindOpenMP)
-#if(OPENMP_FOUND)
-#	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-#	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-#	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-#else(OPENMP_FOUND)
-#	message("No OpenMP found.")
-#endif(OPENMP_FOUND)
-
 file(GLOB_RECURSE Valuation_SOURCES "src/*.c*")
 file(GLOB_RECURSE Valuation_HEADERS "src/*.hpp")
 #@TODO: include these for test target

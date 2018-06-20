@@ -26,6 +26,14 @@
 #include "StatAcc.hpp"
 #include "BlackScholesNetwork.hpp"
 
+struct Parameters
+{
+    long N;
+    int set_s_d_both;
+    double p;
+    double val;
+    //@TODO: finish, add log-norm params
+};
 
 class ER_Network {
     friend class Py_ER_Net;
@@ -39,13 +47,13 @@ private:
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;
 
-    unsigned int N;
+    long N;
     bool initialized;
     double T;              // maturity
     double r;              // interest
     double p;
     double val;
-    unsigned int setM;
+    int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
     BlackScholesNetwork* bsn;
@@ -69,7 +77,7 @@ private:
 
     // last result, returned by observe
 
-    void init_M_ER(double p, double val, unsigned int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
+    void init_M_ER(const double p, const double val, const int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
 
 public:
     /*!
@@ -79,8 +87,8 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void init_network(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T_new, const double r_new);
-    void init_network(unsigned int N, double p, double val, unsigned int which_to_set);
+    void init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new);
+    void init_network(long N, double p, double val, int which_to_set);
 
     virtual ~ER_Network(){
         if(bsn != nullptr)
@@ -121,10 +129,10 @@ ER_Network():
      */
 #ifdef USE_MPI
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
-               unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
+               long N, double p, double val, int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    ER_Network(unsigned int N, double p, double val, unsigned int which_to_set, const double T, const double r) :
+    ER_Network(long N, double p, double val, int which_to_set, const double T, const double r) :
 #endif
             T(T), r(r),
             Z_dist(&tmp[0][0], &tmp[1][1])
