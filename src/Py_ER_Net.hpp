@@ -38,7 +38,7 @@ public:
     void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks)
     {
         LOG(TRACE) << "Initializing network";
-        er_net.init_network(N, p, val, which_to_set, T, r);
+        er_net.test_init_network(N, p, val, which_to_set, T, r);
         LOG(TRACE) << "Network initialized";
         er_net.test_ER_valuation(N, iterations, N_networks);
     }

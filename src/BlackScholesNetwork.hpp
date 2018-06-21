@@ -9,7 +9,7 @@
 #ifndef SRC_BLACKSCHOLES_NETWORK_HPP_
 #define SRC_BLACKSCHOLES_NETWORK_HPP_
 
-#define USE_SPARSE_INTERNAL
+//#define USE_SPARSE_INTERNAL
 
 
 #include <stdexcept>
@@ -36,6 +36,13 @@
 #include "ValuationConfig.h"
 #include "StatAcc.hpp"
 
+struct BS_Parameters
+{
+    double T;
+    double r;
+
+};
+
 
 class BlackScholesNetwork
 {
@@ -61,7 +68,7 @@ private:
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Z;
 #else
     Mat M;
-    //Mat Jrs;
+    Mat Jrs;
     Mat J_a;
     Eigen::PartialPivLU<Eigen::MatrixXd> lu;
 #endif
@@ -126,9 +133,21 @@ public:
         St = st;
     }
 
-    inline void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
+    void re_init(const Eigen::Ref<const Mat>& M_new)
+    {
+        LOG(ERROR) << M_new;
+        if(M_new.rows() != S0.size()) throw std::logic_error("re-initialized with wrong M size!");
+#ifdef USE_SPARSE_INTERNAL
+        M = M_new.sparseView();
+        M.makeCompressed();
+#else
+        M = M_new;
+#endif
+    }
+
+    void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
         N = M_new.rows();
-        //Jrs.resize(2*N, 2*N);
+        Jrs.resize(2*N, 2*N);
         J_a.resize(2*N, N);
 #ifdef USE_SPARSE_INTERNAL
         M = M_new.sparseView();
@@ -157,6 +176,7 @@ public:
     }
 
     inline const Vec get_St() const {
+        LOG(WARNING) << "St does NOT contain S0!";
         return St;
     }
 
@@ -195,6 +215,8 @@ public:
     ret.resize(N);
     Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
     return ret;*/
+
+    void debug_print();
 
 };
 #endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_

@@ -34,10 +34,6 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen:
     //Jrs = Eigen::MatrixXd::Zero(2*N, 2*N);
     J_a = Eigen::MatrixXd::Zero(2*N, N);
 #endif
-
-    //EXPECT_EQ(M.cols(), 2*M.rows()) << "Dimensions for cross holding matrix invalid!";
-    //EXPECT_EQ(assets.rows(), debt.rows()) <<  "Dimensions of debts and asset vector do not match!";
-    //EXPECT_EQ(assets.rows(), M.rows()) << "Dimensions for assets vector and cross holding matrix to not match!";
 };
 
 
@@ -102,12 +98,27 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
     auto msol = 1-solvent.array();
         J_a.diagonal(0) = solvent;
         J_a.diagonal(-N) = msol;
-        //Jrs.topRows(N) = M.array().colwise() * solvent.array();
-        //Jrs.bottomRows(N) = M.array().colwise() * msol;
+        Jrs.topRows(N) = M.array().colwise() * solvent.array();
+        Jrs.bottomRows(N) = M.array().colwise() * msol;
         //Jrs = J_a*M;
-        auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - J_a*M).inverse()*J_a)*(St.asDiagonal());
+        auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - Jrs).inverse()*J_a)*(St.asDiagonal());
 #endif
     return res_eigen;
     //Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
     //return res;
+}
+
+void BlackScholesNetwork::debug_print()
+{
+    LOG(DEBUG) << "DEBUG PRINT BLACK SCHOLES NETWORK";
+    Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
+#ifdef USE_SPARSE_INTERNAL
+    LOG(DEBUG) << "initialized: " << initialized << ", N = " << N <<", T = " << T << ", r = " << r << ", exprt = " << exprt << "M: \n" << M.format(CleanFmt);
+#else
+    LOG(DEBUG) << "initialized: " << initialized << ", N = " << N <<", T = " << T << ", r = " << r << ", exprt = " << exprt;
+    LOG(DEBUG) << "M: \n" << Eigen::MatrixXd(M).format(CleanFmt);
+#endif
+    LOG(DEBUG) << "\nS0 \n" << S0;
+    LOG(DEBUG) << "\nSt: \n"  << St;
+    LOG(DEBUG) << "\ndebt: \n" << debt;
 }

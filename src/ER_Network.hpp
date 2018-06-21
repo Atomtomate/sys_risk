@@ -61,13 +61,17 @@ private:
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
     MCUtil::Sampler<Eigen::MatrixXd> S;
+    Eigen::VectorXd S0;
+    Eigen::VectorXd debt;
 
     Eigen::MatrixXd mean_delta_jac;
+    Eigen::MatrixXd mean_delta_log;
     Eigen::MatrixXd mean_assets;
     Eigen::MatrixXd mean_rs;
     Eigen::MatrixXd mean_solvent;
     Eigen::MatrixXd mean_valuation;
     Eigen::MatrixXd var_delta_jac;
+    Eigen::MatrixXd var_delta_log;
     Eigen::MatrixXd var_assets;
     Eigen::MatrixXd var_rs;
     Eigen::MatrixXd var_solvent;
@@ -76,8 +80,9 @@ private:
 
 
     // last result, returned by observe
+    void test_init_network();
 
-    void init_M_ER(const double p, const double val, const int which_to_set, const Eigen::VectorXd& s0, const Eigen::VectorXd& debt);
+    void init_M_ER(const double p, const double val, const int which_to_set);
 
 public:
     /*!
@@ -87,8 +92,7 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new);
-    void init_network(long N, double p, double val, int which_to_set);
+    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new);
 
     virtual ~ER_Network(){
         if(bsn != nullptr)
@@ -132,21 +136,14 @@ ER_Network():
                long N, double p, double val, int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    ER_Network(long N, double p, double val, int which_to_set, const double T, const double r) :
+    ER_Network(long N_, double p_, double val_, int which_to_set, const double T_, const double r_) :
 #endif
-            T(T), r(r),
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
         gen_u.seed();
-        bsn = new BlackScholesNetwork(T, r);
-        //@TODO: better Z_dist init
-        //@TODO: assertions here, move expect to tests
-        //EXPECT_GT(p, 0) << "p is not a probability";
-        //EXPECT_LE(p, 1) << "p is not a probability";
-        //EXPECT_GT(val, 0) << "val is not a probability";
-        //EXPECT_LE(val, 1) << "val is not a probability";
-        init_network(N, p, val, which_to_set);
-        }
+        bsn = nullptr;
+        test_init_network(N_, p_, val_, which_to_set, T_, r_);
+    }
 
 
 
@@ -196,10 +193,12 @@ ER_Network():
         auto v_o = bsn->get_valuation();
         auto s_o = bsn->get_solvent();
         std::cout << "output after sample: " << std::endl;
-        for(int i=0; i < v_o.size(); i++)
-            std::cout << v_o[i] << "\t" << s_o[i] << std::endl;
+        LOG(INFO) << "Valuation: \n" << v_o;
+        LOG(INFO) << "solvent: \n" << s_o;
+        LOG(INFO) << "St: \n" << bsn->get_assets();
+        LOG(INFO) << "debt: \n" << bsn->get_debt();
         std::cout << "------" << std::endl;
-        std::vector<double> out {0.};
+        Eigen::MatrixXd out = Eigen::MatrixXd::Constant(1,1,0);
         return out;
     }
 

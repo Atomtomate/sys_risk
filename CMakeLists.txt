@@ -114,8 +114,8 @@ target_link_libraries(${PROJECT_NAME} libgtest trng4 Threads::Threads m ${EXTRA_
 # =         as a Python module.
 # =
 
-find_package(pybind11 REQUIRED)
-pybind11_add_module(PyVal MODULE py_interface/PythonInterface.cpp ${Valuation_SOURCES})
-set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
-target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS} ${PROJECT_EXTERNAL}/include ${Boost_INCLUDE_DIRS})
-target_link_libraries(PyVal PUBLIC libgtest trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${Boost_LIBRARIES} ${LIBS}) #
+#find_package(pybind11 REQUIRED)
+#pybind11_add_module(PyVal MODULE py_interface/PythonInterface.cpp ${Valuation_SOURCES})
+#set_target_properties(PyVal PROPERTIES OUTPUT_NAME PyVal)
+#target_include_directories(PyVal PUBLIC ${Valuation_INCLUDE_DIRS} ${PROJECT_EXTERNAL}/include ${Boost_INCLUDE_DIRS})
+#target_link_libraries(PyVal PUBLIC libgtest trng4 Threads::Threads m ${EXTRA_LIBRARIES} ${Boost_LIBRARIES} ${LIBS}) #
