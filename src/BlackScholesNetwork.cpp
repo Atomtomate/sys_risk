@@ -55,14 +55,12 @@ const Eigen::MatrixXd BlackScholesNetwork::run_valuation(unsigned int iterations
     double dist = 99.;
     Eigen::MatrixXd a = S0.array()*St.array();
     while(dist > 1.0e-12)
-    { //for(unsigned int r = 0; r < iterations; r++) {
+    {
         auto tmp = (a + M*x);
         x_old = x;
         x.head(N) = (tmp - debt).array().max(0.);
         x.tail(N) = tmp.cwiseMin(debt);
-        dist = (x_old - x).norm();
-        //if(dist < 1.0e-12)
-        //    break;
+        dist = (x_old - x).norm(); //.lpNorm<Eigen::Infinity>();//
     }
     set_solvent();
     return x;
@@ -98,9 +96,9 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
     auto msol = 1-solvent.array();
         J_a.diagonal(0) = solvent;
         J_a.diagonal(-N) = msol;
-        Jrs.topRows(N) = M.array().colwise() * solvent.array();
-        Jrs.bottomRows(N) = M.array().colwise() * msol;
-        //Jrs = J_a*M;
+        //Jrs.topRows(N) = M.array().colwise() * solvent.array();
+        //Jrs.bottomRows(N) = M.array().colwise() * msol;
+        Jrs = J_a*M;
         auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - Jrs).inverse()*J_a)*(St.asDiagonal());
 #endif
     return res_eigen;

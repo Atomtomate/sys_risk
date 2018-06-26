@@ -15,6 +15,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "Utils.hpp"
+
 #ifdef USE_MPI
 
 #include <boost/mpi/environment.hpp>
@@ -28,11 +30,13 @@
 
 struct Parameters
 {
-    long N;
-    int set_s_d_both;
-    double p;
-    double val;
+    long N;                 // M.rows()
+    int set_s_d_both;       //
+    double p;               // P(M_ij = 1)
+    double val;             // sum_j M_ij
     //@TODO: finish, add log-norm params
+
+
 };
 
 class ER_Network {

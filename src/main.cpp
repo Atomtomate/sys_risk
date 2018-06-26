@@ -80,10 +80,10 @@ int main(int argc, char* argv[])
 
     //TODO: eigen matrix dimension missmatch on large size?!?!
     Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
-    for (int N : {8})
+    for (int N : {80})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, 0.8/N, 0.4, 2, 2.0, 0.0);
-        auto res = nNN.test_ER_valuation(N, 50000, 1);//10000, 500);
+        auto res = nNN.test_ER_valuation(N, 1000, 1);//10000, 500);
         for(const auto& el : res)
             LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);
     }

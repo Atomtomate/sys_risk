@@ -67,20 +67,24 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) {this->run(x); };
 
     // ===== Defining observables =====
-    //std::function<const Eigen::MatrixXd(void)> assets_obs    = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };
-    //S.register_observer(assets_obs, assets_str, N, 1);
-    //std::function<const Eigen::MatrixXd(void)> rs_obs        = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
-    //S.register_observer(rs_obs, rs_str, 2*N, 1);
-    std::function<const Eigen::MatrixXd(void)> sol_obs       = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
+    auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };
+    auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
+    auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
+    auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
+    std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
+    S.register_observer(assets_obs, assets_str, N, 1);
+    std::function<const Eigen::MatrixXd(void)> rs_obs(std::ref(rs_obs_lambda));
+    S.register_observer(rs_obs, rs_str, 2*N, 1);
+    std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
     S.register_observer(sol_obs, solvent_str, N, 1);
     //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
     //S.register_observer(valuation_obs, val_str, N, 1);
-    std::function<const Eigen::MatrixXd(void)> deltav1_obs   = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
+    std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
     S.register_observer(deltav1_obs, delta1_str, 2 * N , N);
-    std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
-    S.register_observer(deltav2_obs, delta2_str, 2 * N , N);
-    std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
-    S.register_observer(out_obs, "Debug Out" ,1, 1);
+    //std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
+    //S.register_observer(deltav2_obs, delta2_str, 2 * N , N);
+    //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
+    //S.register_observer(out_obs, "Debug Out" ,1, 1);
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val << "\n";
     std::cout << "Preparing to run"<< std::flush ;
@@ -149,19 +153,21 @@ void ER_Network::init_M_ER(const double p, const double val, int which_to_set)
                 }
             }
         }
-        auto sum_j = M.rowwise().sum();
-        /*auto sum_i = M.colwise().sum();
-        for(int ii = 0; ii < 2*N; ii++)
-        {
-            if(sum_i(ii) > 0)
-                M.col(ii) = M.col(ii)/sum_i(ii);
-        }*/
+        //@TODO: implement S sums
+        auto sum_d_j = M.rightCols(N).rowwise().sum();
+        auto sum_s_j = M.leftCols(N).rowwise().sum();
+        auto sum_i = M.colwise().sum();
+        //for(int ii = 0; ii < 2*N; ii++)
+        //{
+        //    if(sum_i(ii) > 0)
+        //       M.col(ii) = M.col(ii)/sum_i(ii);
+        //}
         for(int ii = 0; ii < N; ii++)
         {
-            if(sum_j(ii) > 0)
-                M.row(ii) = (val/sum_j(ii))*M.row(ii);
+            if(sum_d_j(ii) > 0)
+                M.row(ii) = (val/sum_d_j(ii))*M.row(ii);
         }
-        if(i > 20000)
+        if(i > 50000)
         {
             Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "[", "]");
             LOG(WARNING)<<"\n" << M.format(CleanFmt) << "\n\n";
