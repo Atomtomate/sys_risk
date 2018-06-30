@@ -38,6 +38,7 @@ public:
     void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks)
     {
         LOG(TRACE) << "Initializing network";
+        LOG(ERROR) << "init. p = " << p << " val = " << val << ", r = " << r << " T = " << T << " it = "  << iterations;
         er_net.test_init_network(N, p, val, which_to_set, T, r);
         LOG(TRACE) << "Network initialized";
         er_net.test_ER_valuation(N, iterations, N_networks);
@@ -45,9 +46,12 @@ public:
 
     Eigen::MatrixXd get_M() const
     {
-        return (er_net.bsn)->get_M();
+        return er_net.mean_M;
     }
 
+    Eigen::MatrixXd get_M_var() const {
+        return er_net.var_M;
+    }
 
     Eigen::MatrixXd get_rs() const {
         return er_net.mean_rs;

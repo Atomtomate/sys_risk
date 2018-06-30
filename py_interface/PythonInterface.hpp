@@ -13,6 +13,7 @@
 #include "../src/Py_ER_Net.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
+#include <pybind11/iostream.h>
 
 namespace py = pybind11;
 
@@ -28,10 +29,13 @@ PYBIND11_MODULE(PyVal, m) {
             .def("get_solvent", &Py_ER_Net::get_solvent) //, py::return_value_policy::reference_internal);
             .def("get_assets", &Py_ER_Net::get_assets) //, py::return_value_policy::reference_internal);
             .def("get_delta_jacobians", &Py_ER_Net::get_delta_jac) //, py::return_value_policy::reference_internal);
+            .def("get_M_var", &Py_ER_Net::get_M_var)  //, py::return_value_policy::reference_internal)
             .def("get_rs_var", &Py_ER_Net::get_rs_var) // , py::return_value_policy::reference_internal)
             .def("get_solvent_var", &Py_ER_Net::get_solvent_var) //, py::return_value_policy::reference_internal);
             .def("get_assets_var", &Py_ER_Net::get_assets_var) //, py::return_value_policy::reference_internal);
             .def("get_delta_jacobians_var", &Py_ER_Net::get_delta_jac_var); //, py::return_value_policy::reference_internal);
+
+    py::add_ostream_redirect(m, "ostream_redirect");
 
 }
 

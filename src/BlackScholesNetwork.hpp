@@ -149,6 +149,8 @@ public:
         N = M_new.rows();
         Jrs.resize(2*N, 2*N);
         J_a.resize(2*N, N);
+        x.resize(2*N);
+        x = Eigen::VectorXd::Zero(2*N);
 #ifdef USE_SPARSE_INTERNAL
         M = M_new.sparseView();
         M.makeCompressed();

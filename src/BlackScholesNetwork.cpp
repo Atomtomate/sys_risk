@@ -21,6 +21,7 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen:
         N(M_.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T))
 {
     initialized = true;
+    x = Eigen::VectorXd::Zero(2*N);
 #ifdef USE_SPARSE_INTERNAL
     Id.resize(2*N, 2*N);
     Id.setIdentity();
@@ -33,6 +34,7 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen:
     lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
     //Jrs = Eigen::MatrixXd::Zero(2*N, 2*N);
     J_a = Eigen::MatrixXd::Zero(2*N, N);
+    x = Eigen::VectorXd::Zero(2*N);
 #endif
 };
 
@@ -99,6 +101,7 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
         //Jrs.topRows(N) = M.array().colwise() * solvent.array();
         //Jrs.bottomRows(N) = M.array().colwise() * msol;
         Jrs = J_a*M;
+        if(Jrs.isIdentity(0.001)) return Eigen::MatrixXd::Zero(2*N, N);
         auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - Jrs).inverse()*J_a)*(St.asDiagonal());
 #endif
     return res_eigen;

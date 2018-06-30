@@ -72,12 +72,14 @@ private:
     Eigen::MatrixXd mean_delta_log;
     Eigen::MatrixXd mean_assets;
     Eigen::MatrixXd mean_rs;
+    Eigen::MatrixXd mean_M;
     Eigen::MatrixXd mean_solvent;
     Eigen::MatrixXd mean_valuation;
     Eigen::MatrixXd var_delta_jac;
     Eigen::MatrixXd var_delta_log;
     Eigen::MatrixXd var_assets;
     Eigen::MatrixXd var_rs;
+    Eigen::MatrixXd var_M;
     Eigen::MatrixXd var_solvent;
     Eigen::MatrixXd var_valuation;
     double connectivity;

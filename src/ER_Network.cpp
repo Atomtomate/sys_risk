@@ -29,7 +29,7 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
 
     // ===== creating correlated normal distribution from Eigen Sigma =====
     double *sigma_arr = new double[N * N];
-    double sigma2d_arr[N][ N];
+    double sigma2d_arr[N][N];
     Eigen::MatrixXd::Map(sigma_arr, sigma.rows(), sigma.cols()) = sigma;
     memcpy(sigma2d_arr[0], sigma_arr, N*N*sizeof(double));
     Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
@@ -56,6 +56,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     test_init_network();
 
     const std::string rs_str("RS");
+    const std::string M_str("M");
     const std::string assets_str("Assets");
     const std::string solvent_str("Solvent");
     const std::string val_str("Valuation");
@@ -69,12 +70,15 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     // ===== Defining observables =====
     auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };
     auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
+    auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
     auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
     auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
     std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
     S.register_observer(assets_obs, assets_str, N, 1);
     std::function<const Eigen::MatrixXd(void)> rs_obs(std::ref(rs_obs_lambda));
     S.register_observer(rs_obs, rs_str, 2*N, 1);
+    std::function<const Eigen::MatrixXd(void)> M_obs(std::ref(M_obs_lambda));
+    S.register_observer(M_obs, M_str, N, 2*N);
     std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
     S.register_observer(sol_obs, solvent_str, N, 1);
     //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
@@ -105,6 +109,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     auto res_var = S.extract(MCUtil::StatType::VARIANCE);
     for (auto el : res_mean) {
         if(el.first.compare(rs_str) == 0){ mean_rs = el.second; res[rs_str] = el.second;}
+        else if(el.first.compare(M_str) == 0){ mean_M = el.second; res[M_str] = el.second;}
         else if(el.first.compare(assets_str) == 0){ mean_assets = el.second; res[assets_str] = el.second;}
         else if(el.first.compare(solvent_str) == 0){ mean_solvent = el.second; res[solvent_str] = el.second;}
         else if(el.first.compare(val_str) == 0){ mean_valuation = el.second; res[val_str] = el.second;}
@@ -114,6 +119,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     }
     for (auto el : res_var) {
         if(el.first.compare(rs_str) == 0){ var_rs = el.second; res["Variance "+rs_str] = el.second;}
+        else if(el.first.compare(M_str) == 0){ var_M = el.second; res["Variance "+M_str] = el.second;}
         else if(el.first.compare(assets_str) == 0){ var_assets = el.second; res["Variance "+assets_str] = el.second;}
         else if(el.first.compare(solvent_str) == 0){ var_solvent = el.second; res["Variance "+solvent_str] = el.second;}
         else if(el.first.compare(val_str) == 0){ var_valuation = el.second; res["Variance "+val_str] = el.second;}
@@ -195,5 +201,6 @@ const Eigen::MatrixXd ER_Network::draw_from_dist() {
         Z(d) = Z_dist(gen_z);
     }
     Eigen::VectorXd S_log = var_h + std::sqrt(T) * Z;
+    LOG(ERROR) << "var_h:\n" << var_h << "\n sqrt(T): " << std::sqrt(T)<< "\nS_log: \n" << S_log;
     return S_log.array().exp();
 }
