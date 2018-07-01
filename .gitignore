@@ -5,6 +5,8 @@ cmake-build-debug/
 *download/
 external/
 .idea/
+log/
+logs/
 *.png
 *.svg
 *.pdf
