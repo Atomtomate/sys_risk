@@ -78,12 +78,22 @@ int main(int argc, char* argv[])
     //pn.run_valuation(2, 0.7, 0.5, 2, 1, 0);
 
 
+
     //TODO: eigen matrix dimension missmatch on large size?!?!
     Eigen::IOFormat CleanFmt(4, 0, " ", "\n", "[", "]");
-    for (int N : {20})
+    std::cout << "N: ";
+    int N_;
+    std::cin >> N_;
+    std::cout << "conn: ";
+    double conn_;
+    std::cin >> conn_;
+    std::cout << "val: ";
+    double val_;
+    std::cin >> val_;
+    for (int N : {N_})
     { //, 8, 16, 32}) {
-        nNN.test_init_network(N, 0.02, 0.1, 2, 1.0, 0.0);
-        auto res = nNN.test_ER_valuation(N, 5, 1);//10000, 500);
+        nNN.test_init_network(N, conn_/static_cast<double>(N) , val_, 2, 1.0, 0.0);
+        auto res = nNN.test_ER_valuation(N, 100, 1000);//10000, 500);
         for(const auto& el : res)
             LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);
     }

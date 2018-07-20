@@ -9,14 +9,18 @@ option(USE_MPI "build with MPI" ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -flto -ftree-vectorize -march=native -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -flto -ftree-vectorize -march=x86-64 -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline
 set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 link_directories(${PROJECT_EXTERNAL}/lib)
 
 #@TODO: load and install pybind11 and check for consistent version
 # Project settings
 set (Valuation_VERSION_MAJOR 0)
-set (Valuation_VERSION_MINOR 2)
+set (Valuation_VERSION_MINOR 3)
+
+if(${BUILD_OFFLINE})
+    set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY EP_UPDATE_DISCONNECTED 1)
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 include_directories("${PROJECT_SOURCE_DIR}/src")

@@ -43,13 +43,20 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
     debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, 1.0/(1.0-val)).array();
     if(bsn != nullptr)
         delete bsn;
+    LOG(TRACE) << "Generating Model";
     LOG(TRACE) << "creating new Black Scholes Network";
     bsn = new BlackScholesNetwork(T, r);
     LOG(TRACE) << "Initializing random connectivity matrix";
-    init_M_ER(p, val, which_to_set);
-    LOG(TRACE) << "Generating Model";
+    try{
+        init_M_ER(p, val, which_to_set);
+        initialized = true;
+    }
+    catch (const std::runtime_error& e)
+    {
+        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val="<< val;
+        initialized = false;
+    }
 
-    initialized = true;
 }
 
 std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(const long N_in, const long N_Samples, const long N_networks) {
@@ -96,15 +103,15 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
         init_M_ER(p, val, setM);
-        if(!initialized) LOG(ERROR) << "attempting to run uninitialized network";
-        S.draw_samples(f_run, f_dist, N_Samples);
+        if(initialized)
+        {
+            S.draw_samples(f_run, f_dist, N_Samples);
+        } else {
+            LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
+        }
     }
     std::cout << "\r" << std::endl;
 
-    //LOG(ERROR) << "M: \n" << bsn->get_M();
-    //LOG(WARNING) << "=========================================";
-    //LOG(ERROR) << "debt: \n" << debt;
-    //@TODO: workaround for pybind11. A sane version of this would only use maps
     auto res_mean = S.extract(MCUtil::StatType::MEAN);
     auto res_var = S.extract(MCUtil::StatType::VARIANCE);
     for (auto el : res_mean) {
@@ -173,15 +180,15 @@ void ER_Network::init_M_ER(const double p, const double val, int which_to_set)
             if(sum_d_j(ii) > 0)
                 M.row(ii) = (val/sum_d_j(ii))*M.row(ii);
         }
-        if(i > 50000)
+        if(i > 100000)
         {
             Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "[", "]");
-            LOG(WARNING)<<"\n" << M.format(CleanFmt) << "\n\n";
+            //LOG(WARNING)<<"\n" << M.format(CleanFmt) << "\n\n";
             LOG(ERROR) << M.colwise().sum();
-            throw std::runtime_error("\n\nToo many rejections during generation of M!\n\n");
+            throw std::runtime_error("\n\nToo many rejections during generation of M! p="+std::to_string(p)+", n="+std::to_string(N)+"\n\n");
         }
         i++;
-    }while(M.colwise().sum().maxCoeff() >= 1);
+    } while(M.colwise().sum().maxCoeff() > 1);
     if(i > 500) LOG(WARNING) << "\rrejected " << i << " candidates for network matrix";
     bsn->re_init(M, S0, debt);
 }
@@ -201,6 +208,6 @@ const Eigen::MatrixXd ER_Network::draw_from_dist() {
         Z(d) = Z_dist(gen_z);
     }
     Eigen::VectorXd S_log = var_h + std::sqrt(T) * Z;
-    LOG(ERROR) << "var_h:\n" << var_h << "\n sqrt(T): " << std::sqrt(T)<< "\nS_log: \n" << S_log;
+    //LOG(ERROR) << "var_h:\n" << var_h << "\n sqrt(T): " << std::sqrt(T)<< "\nS_log: \n" << S_log;
     return S_log.array().exp();
 }

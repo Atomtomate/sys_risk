@@ -114,7 +114,7 @@ void BlackScholesNetwork::debug_print()
     LOG(DEBUG) << "DEBUG PRINT BLACK SCHOLES NETWORK";
     Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
 #ifdef USE_SPARSE_INTERNAL
-    LOG(DEBUG) << "initialized: " << initialized << ", N = " << N <<", T = " << T << ", r = " << r << ", exprt = " << exprt << "M: \n" << M.format(CleanFmt);
+    //LOG(DEBUG) << "initialized: " << initialized << ", N = " << N <<", T = " << T << ", r = " << r << ", exprt = " << exprt << "M: \n" << M.format(CleanFmt);
 #else
     LOG(DEBUG) << "initialized: " << initialized << ", N = " << N <<", T = " << T << ", r = " << r << ", exprt = " << exprt;
     LOG(DEBUG) << "M: \n" << Eigen::MatrixXd(M).format(CleanFmt);

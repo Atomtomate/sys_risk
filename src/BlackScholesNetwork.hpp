@@ -9,7 +9,7 @@
 #ifndef SRC_BLACKSCHOLES_NETWORK_HPP_
 #define SRC_BLACKSCHOLES_NETWORK_HPP_
 
-//#define USE_SPARSE_INTERNAL
+#define USE_SPARSE_INTERNAL
 
 
 #include <stdexcept>
