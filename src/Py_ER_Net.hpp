@@ -98,6 +98,14 @@ public:
         return er_net.var_valuation;
     }
 
+    Eigen::MatrixXd get_io_deg_dist() const {
+        return er_net.mean_io_deg_dist;
+    }
+
+    Eigen::MatrixXd get_io_deg_dist_var() const {
+        return er_net.var_io_deg_dist;
+    }
+
 };
 
 

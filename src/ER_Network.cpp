@@ -71,6 +71,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     const std::string val_str("Valuation");
     const std::string delta1_str("Delta using Jacobians");
     const std::string delta2_str("Delta using Log");
+    const std::string io_deg_str("In/Out degree distribution");
     std::unordered_map<std::string, Eigen::MatrixXd> res;
 
     auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
@@ -82,19 +83,22 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
     auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
     auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
+    auto io_deg_obs_lambda = [this]() -> Eigen::MatrixXd { return this->io_deg_dist; };
     if(S != nullptr)
         delete S;
     S = new MCUtil::Sampler<Eigen::MatrixXd>();
-    std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
+    std::function<const Eigen::MatrixXd(void)> assets_obs(std::cref(asset_obs_lambda));
     S->register_observer(assets_obs, assets_str, N, 1);
-    std::function<const Eigen::MatrixXd(void)> rs_obs(std::ref(rs_obs_lambda));
+    std::function<const Eigen::MatrixXd(void)> rs_obs(std::cref(rs_obs_lambda));
     S->register_observer(rs_obs, rs_str, 2*N, 1);
-    std::function<const Eigen::MatrixXd(void)> M_obs(std::ref(M_obs_lambda));
+    std::function<const Eigen::MatrixXd(void)> M_obs(std::cref(M_obs_lambda));
     S->register_observer(M_obs, M_str, N, 2*N);
     std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
     S->register_observer(sol_obs, solvent_str, N, 1);
     std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
     S->register_observer(deltav1_obs, delta1_str, 2 * N , N);
+    std::function<const Eigen::MatrixXd(void)> io_deg_obs(std::cref(io_deg_obs_lambda));
+    S->register_observer(io_deg_obs, io_deg_str, 2 , N);
 
     //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
     //S->register_observer(valuation_obs, val_str, N, 1);
@@ -134,6 +138,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
         else if(el.first.compare(val_str) == 0){ mean_valuation = el.second; res[val_str] = el.second;}
         else if(el.first.compare(delta1_str) == 0){ mean_delta_jac = el.second; res[delta1_str] = el.second;}
         else if(el.first.compare(delta2_str) == 0){ mean_delta_log = el.second; res[delta2_str] = el.second;}
+        else if(el.first.compare(io_deg_str) == 0){ mean_io_deg_dist = el.second; res[io_deg_str] = el.second;}
         else LOG(WARNING) << "result " << el.first << ", not saved";
     }
     for (auto el : res_var) {
@@ -144,6 +149,7 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
         else if(el.first.compare(val_str) == 0){ var_valuation = el.second; res["Variance "+val_str] = el.second;}
         else if(el.first.compare(delta1_str) == 0){ var_delta_jac= el.second; res["Variance "+delta1_str] = el.second;}
         else if(el.first.compare(delta2_str) == 0){ var_delta_log= el.second; res["Variance "+delta2_str] = el.second;}
+        else if(el.first.compare(io_deg_str) == 0){ var_io_deg_dist = el.second; res["Variance" + io_deg_str] = el.second;}
         else LOG(WARNING) << "result " << el.first << ", not saved";
     }
 
@@ -159,7 +165,32 @@ void ER_Network::init_M_ER(const double p, const double val, int which_to_set)
     connectivity = N*p;
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
 
-    Utils::gen_basic_rejection(&M, gen_u, p, val, which_to_set);
+    Utils::gen_sinkhorn(&M, gen_u, p, val, which_to_set);
+    io_deg_dist = in_out_degree(&M);
+    /*LOG(INFO) << "Using rejection sampling: ";
+    try{
+        Utils::gen_basic_rejection(&M, gen_u, p, val, which_to_set);
+        LOG(INFO) << in_out_degree(&M);
+    }catch (const std::runtime_error& e)
+    {
+        LOG(INFO) <<"rejection sampler failed";
+    }
+    auto io_deg = in_out_degree(&M);
+    LOG(INFO) << io_deg;
+    double in_avg = 0.;
+    double out_avg = 0.;
+    for(int i = 0; i < io_deg.cols(); i++)
+    {
+        in_avg += i*io_deg(0,i);
+        out_avg += i*io_deg(1,i);
+    }
+    in_avg /= io_deg.cols();
+    out_avg /= io_deg.cols();
+    LOG(INFO) << "avg in degree: " << in_avg << ", avg out degree: " << out_avg;
+
+    LOG(INFO) << "Using Sinkhorn Algorithm: ";
+    exit(0);
+    */
 
     bsn->re_init(M, S0, debt);
 }
@@ -181,4 +212,29 @@ const Eigen::MatrixXd ER_Network::draw_from_dist() {
     Eigen::VectorXd S_log = var_h + std::sqrt(T) * Z;
     //LOG(ERROR) << "var_h:\n" << var_h << "\n sqrt(T): " << std::sqrt(T)<< "\nS_log: \n" << S_log;
     return S_log.array().exp();
+}
+
+
+Eigen::MatrixXd ER_Network::in_out_degree(Eigen::MatrixXd* M)
+{
+    Eigen::MatrixXd in_out_deg = Eigen::MatrixXd::Zero(2, M->rows());
+    for(int i = 0; i < M->rows(); i++)
+    {
+        int in_deg = 0;
+        for(int j = 0; j < M->leftCols(N).cols(); j++)
+        {
+            in_deg += (int)((*M)(i,j+N) > 0);
+        }
+        in_out_deg(0,in_deg) += 1;
+    }
+    for(int i = 0; i < M->leftCols(N).cols(); i++)
+    {
+        int out_deg = 0;
+        for(int j = 0; j < M->rows(); j++)
+        {
+            out_deg += (int)((*M)(i,j+N) > 0);
+        }
+        in_out_deg(1,out_deg) += 1;
+    }
+    return in_out_deg;
 }

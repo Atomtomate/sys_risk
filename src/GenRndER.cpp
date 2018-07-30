@@ -9,14 +9,14 @@
 #include "GenRndER.hpp"
 
 namespace Utils {
+    constexpr double eps = 1e-9;
 
-    void gen_basic_rejection(Eigen::MatrixXd* M, trng::yarn2 gen_u, const double p,
+    void gen_basic_rejection(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p,
                              const double val, const int which_to_set)
     {
-        int N = M->rows();
+        const int N = M->rows();
         int i = 0;
         trng::uniform01_dist<> u_dist;
-
         do {
             M->setZero();
             //@TODO: use bin. dist. to generate vectorized,
@@ -40,11 +40,6 @@ namespace Utils {
             auto sum_d_j = M->rightCols(N).rowwise().sum();
             auto sum_s_j = M->leftCols(N).rowwise().sum();
             auto sum_i = M->colwise().sum();
-            //for(int ii = 0; ii < 2*N; ii++)
-            //{
-            //    if(sum_i(ii) > 0)
-            //       M.col(ii) = M.col(ii)/sum_i(ii);
-            //}
             for (int ii = 0; ii < N; ii++) {
                 if (sum_d_j(ii) > 0)
                     M->row(ii) = (val / sum_d_j(ii)) * M->row(ii);
@@ -57,6 +52,85 @@ namespace Utils {
             i++;
         } while (M->colwise().sum().maxCoeff() > 1);
         if (i > 500) LOG(WARNING) << "\rrejected " << i << " candidates for network matrix";
+    }
+
+
+
+
+
+
+    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+                      const int which_to_set) {
+        const int N = M->rows();
+        int it = 0;
+        trng::uniform01_dist<> u_dist;
+        M->setZero();
+        bool cols_ok = false;
+
+        //@TODO: use bin. dist. to generate vectorized,
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+                if (which_to_set == 1 || which_to_set == 0) {
+                    if (u_dist(gen_u) < p)
+                        (*M)(i, j) = 1.0;
+                    if (u_dist(gen_u) < p)
+                        (*M)(j, i) = 1.0;
+                }
+                if (which_to_set == 2 || which_to_set == 0) {
+                    if (u_dist(gen_u) < p)
+                        (*M)(i, j + N) = 1.0;
+                    if (u_dist(gen_u) < p)
+                        (*M)(j, i + N) = 1.0;
+                }
+            }
+        }
+        Eigen::VectorXd sum_i = M->colwise().sum();
+        do {
+            cols_ok = true;
+
+            for(int ii = 0; ii < 2*N; ii++)
+            {
+                if(sum_i(ii) > 0)
+                {
+                    M->col(ii) = M->col(ii)/sum_i(ii);
+                }
+            }
+
+            if (which_to_set == 1) {
+                Eigen::VectorXd sum_s_j = M->leftCols(N).rowwise().sum();
+                for (int ii = 0; ii < N; ii++) {
+                    if (sum_s_j(ii) > 0)
+                        M->leftCols(N).row(ii) = (val / sum_s_j(ii)) * M->leftCols(N).row(ii);
+                }
+            }
+            else if (which_to_set == 2 )
+            {
+                Eigen::VectorXd sum_d_j = M->rightCols(N).rowwise().sum();
+                for (int ii = N; ii < N; ii++) {
+                    if (sum_d_j(ii) > 0)
+                        M->rightCols(N).row(ii) = (val / sum_d_j(ii)) * M->rightCols(N).row(ii);
+                }
+            }
+            else if (which_to_set == 0)
+            {
+                Eigen::VectorXd sum_d_j = M->rowwise().sum();
+                for (int ii = N; ii < N; ii++) {
+                    if (sum_d_j(ii) > 0)
+                        M->row(ii) = (val / sum_d_j(ii)) * M->row(ii);
+                }
+            }
+            sum_i = M->colwise().sum();
+            for(int ii = 0; ii < 2*N; ii++)
+            {
+                if((sum_i(ii) > eps) && ((sum_i(ii) - val) > eps))
+                    cols_ok = false;
+            }
+            it++;
+        } while( !cols_ok && it < 100);
+        if(it > 100){
+            LOG(WARNING) << "Unsual long convergence! i = " << it;
+        }
+
     }
 
 }

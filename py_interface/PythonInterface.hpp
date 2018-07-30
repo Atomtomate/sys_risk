@@ -34,6 +34,8 @@ PYBIND11_MODULE(PyVal, m) {
             .def("get_rs_var", &Py_ER_Net::get_rs_var) // , py::return_value_policy::reference_internal)
             .def("get_solvent_var", &Py_ER_Net::get_solvent_var) //, py::return_value_policy::reference_internal);
             .def("get_assets_var", &Py_ER_Net::get_assets_var) //, py::return_value_policy::reference_internal);
+            .def("get_io_deg_dist", &Py_ER_Net::get_io_deg_dist)
+            .def("get_io_deg_dist_var", &Py_ER_Net::get_io_deg_dist_var)
             .def("get_delta_jacobians_var", &Py_ER_Net::get_delta_jac_var); //, py::return_value_policy::reference_internal);
 
     py::add_ostream_redirect(m, "ostream_redirect");

@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val_, 2, 1.0, 0.0);
-        auto res = nNN.test_ER_valuation(300, 1000);//10000, 500);
+        auto res = nNN.test_ER_valuation(300, 300);//10000, 500);
         LOG(INFO) << "results: ";
         for(const auto& el : res)
             LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);

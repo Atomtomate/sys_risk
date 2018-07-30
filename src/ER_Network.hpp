@@ -51,6 +51,7 @@ private:
     const bool isGenerator;
 #endif
     trng::yarn2 gen_u;
+    trng::uniform01_dist<> u_dist;
 
     long N;
     bool initialized;
@@ -68,6 +69,7 @@ private:
     MCUtil::Sampler<Eigen::MatrixXd>* S;
     Eigen::VectorXd S0;
     Eigen::VectorXd debt;
+    Eigen::MatrixXd io_deg_dist;
 
     Eigen::MatrixXd count;
     Eigen::MatrixXd mean_delta_jac;
@@ -77,6 +79,7 @@ private:
     Eigen::MatrixXd mean_M;
     Eigen::MatrixXd mean_solvent;
     Eigen::MatrixXd mean_valuation;
+    Eigen::MatrixXd mean_io_deg_dist;
     Eigen::MatrixXd var_delta_jac;
     Eigen::MatrixXd var_delta_log;
     Eigen::MatrixXd var_assets;
@@ -84,6 +87,7 @@ private:
     Eigen::MatrixXd var_M;
     Eigen::MatrixXd var_solvent;
     Eigen::MatrixXd var_valuation;
+    Eigen::MatrixXd var_io_deg_dist;
     double connectivity;
 
 
@@ -91,6 +95,8 @@ private:
     void test_init_network();
 
     void init_M_ER(const double p, const double val, const int which_to_set);
+
+    Eigen::MatrixXd in_out_degree(Eigen::MatrixXd* M);
 
 public:
     /*!

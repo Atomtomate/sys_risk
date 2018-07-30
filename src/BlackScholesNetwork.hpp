@@ -220,5 +220,6 @@ public:
 
     void debug_print();
 
+
 };
 #endif // SRC_MULTIVAR_BLACKSCHOLES_HPP_

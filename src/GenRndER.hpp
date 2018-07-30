@@ -22,18 +22,18 @@
 
 namespace Utils {
 
-    void gen_basic_rejection(Eigen::MatrixXd* M, trng::yarn2 gen_u, const double p,
+    void gen_basic_rejection(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p,
                              const double val, const int which_to_set);
 
 
-    void gen_perm(Eigen::Ref<Eigen::MatrixXd> &M, trng::yarn2 gen_u, const double p, const double val,
-                  int which_to_set);
+    void gen_perm(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+                  const int which_to_set);
 
-    void gen_sinkhorn(Eigen::Ref<Eigen::MatrixXd> &M, trng::yarn2 gen_u, const double p, const double val,
-                      int which_to_set);
+    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+                      const int which_to_set);
 
-    void gen_sinkhorn_2(Eigen::Ref<Eigen::MatrixXd> &M, trng::yarn2 gen_u, const double p, const double val,
-                        int which_to_set);
+    void gen_sinkhorn_2(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+                        const int which_to_set);
 
 }
 

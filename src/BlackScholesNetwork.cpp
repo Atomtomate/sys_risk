@@ -109,6 +109,9 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
     //return res;
 }
 
+
+
+
 void BlackScholesNetwork::debug_print()
 {
     LOG(DEBUG) << "DEBUG PRINT BLACK SCHOLES NETWORK";
@@ -123,3 +126,5 @@ void BlackScholesNetwork::debug_print()
     LOG(DEBUG) << "\nSt: \n"  << St;
     LOG(DEBUG) << "\ndebt: \n" << debt;
 }
+
+
