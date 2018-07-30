@@ -24,6 +24,7 @@ PYBIND11_MODULE(PyVal, m) {
     py::class_<Py_ER_Net>(m, "BS_Network")
             .def(py::init<>())
             .def("run", &Py_ER_Net::run_valuation)
+            .def("get_N_samples", &Py_ER_Net::get_N_samples)
             .def("get_M", &Py_ER_Net::get_M)  //, py::return_value_policy::reference_internal)
             .def("get_rs", &Py_ER_Net::get_rs) // , py::return_value_policy::reference_internal)
             .def("get_solvent", &Py_ER_Net::get_solvent) //, py::return_value_policy::reference_internal);

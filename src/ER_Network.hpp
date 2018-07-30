@@ -10,6 +10,7 @@
 #ifndef VALUATION_ER_NETWORK_HPP
 #define VALUATION_ER_NETWORK_HPP
 
+#include <cmath>
 #include <cstdlib>
 #include <type_traits>
 #include <string>
@@ -27,6 +28,7 @@
 #include "Sampler.hpp"
 #include "StatAcc.hpp"
 #include "BlackScholesNetwork.hpp"
+#include "GenRndER.hpp"
 
 struct Parameters
 {
@@ -49,7 +51,6 @@ private:
     const bool isGenerator;
 #endif
     trng::yarn2 gen_u;
-    trng::uniform01_dist<> u_dist;
 
     long N;
     bool initialized;
@@ -64,10 +65,11 @@ private:
     Eigen::MatrixXd itSigma;
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
-    MCUtil::Sampler<Eigen::MatrixXd> S;
+    MCUtil::Sampler<Eigen::MatrixXd>* S;
     Eigen::VectorXd S0;
     Eigen::VectorXd debt;
 
+    Eigen::MatrixXd count;
     Eigen::MatrixXd mean_delta_jac;
     Eigen::MatrixXd mean_delta_log;
     Eigen::MatrixXd mean_assets;
@@ -98,11 +100,13 @@ public:
      * @param val           Value of cross holding
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new);
+    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
 
     virtual ~ER_Network(){
         if(bsn != nullptr)
             delete bsn;
+        if(S != nullptr)
+            delete S;
     }
 
     /*!
@@ -115,11 +119,12 @@ public:
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
             local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
 #else
-ER_Network():
+    ER_Network():
             Z_dist(&tmp[0][0], &tmp[1][1]), initialized(false)
 #endif
     {
         bsn = nullptr;
+        S = new MCUtil::Sampler<Eigen::MatrixXd>();
         itSigma = Eigen::MatrixXd::Zero(1,1);
         Z = Eigen::VectorXd::Zero(1,1);
         var_h = Eigen::VectorXd::Zero(1,1);
@@ -148,18 +153,17 @@ ER_Network():
     {
         gen_u.seed();
         bsn = nullptr;
+        S = new MCUtil::Sampler<Eigen::MatrixXd>();
         test_init_network(N_, p_, val_, which_to_set, T_, r_);
     }
 
 
 
-    inline void test_ER_valuation() { test_ER_valuation(N); };
-
     /*!
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    std::unordered_map<std::string, Eigen::MatrixXd> test_ER_valuation(const long N_in, const long N_Samples = 2000, const long N_networks = 100);
+    std::unordered_map<std::string, Eigen::MatrixXd> test_ER_valuation(const long N_Samples = 2000, const long N_networks = 100);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution

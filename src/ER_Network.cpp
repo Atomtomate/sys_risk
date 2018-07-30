@@ -12,7 +12,7 @@ void ER_Network::test_init_network() {
     test_init_network(N, p, val, setM, T, r);
 }
 
-void ER_Network::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new) {
+void ER_Network::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
     // ===== Initialization of temporary variables =====
     T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
     Z.resize(N);
@@ -40,7 +40,7 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
 
     // ===== Generating Black Scholes Network =====
     S0 = Eigen::VectorXd::Constant(N,1.0).array() + T*sigma.diagonal().array()*sigma.diagonal().array()/2.0;            // <S_t> = S_0 - T*sigma^2/2 => This sets <S_t> ~ 1
-    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, 1.0/(1.0-val)).array();
+    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
     if(bsn != nullptr)
         delete bsn;
     LOG(TRACE) << "Generating Model";
@@ -59,9 +59,11 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
 
 }
 
-std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(const long N_in, const long N_Samples, const long N_networks) {
+
+std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(const long N_Samples, const long N_networks) {
     test_init_network();
 
+    const std::string count_str("#Samples");
     const std::string rs_str("RS");
     const std::string M_str("M");
     const std::string assets_str("Assets");
@@ -80,40 +82,50 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
     auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
     auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
+    if(S != nullptr)
+        delete S;
+    S = new MCUtil::Sampler<Eigen::MatrixXd>();
     std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
-    S.register_observer(assets_obs, assets_str, N, 1);
+    S->register_observer(assets_obs, assets_str, N, 1);
     std::function<const Eigen::MatrixXd(void)> rs_obs(std::ref(rs_obs_lambda));
-    S.register_observer(rs_obs, rs_str, 2*N, 1);
+    S->register_observer(rs_obs, rs_str, 2*N, 1);
     std::function<const Eigen::MatrixXd(void)> M_obs(std::ref(M_obs_lambda));
-    S.register_observer(M_obs, M_str, N, 2*N);
+    S->register_observer(M_obs, M_str, N, 2*N);
     std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
-    S.register_observer(sol_obs, solvent_str, N, 1);
-    //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
-    //S.register_observer(valuation_obs, val_str, N, 1);
+    S->register_observer(sol_obs, solvent_str, N, 1);
     std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
-    S.register_observer(deltav1_obs, delta1_str, 2 * N , N);
+    S->register_observer(deltav1_obs, delta1_str, 2 * N , N);
+
+    //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
+    //S->register_observer(valuation_obs, val_str, N, 1);
     //std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
-    //S.register_observer(deltav2_obs, delta2_str, 2 * N , N);
+    //S->register_observer(deltav2_obs, delta2_str, 2 * N , N);
     //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
-    //S.register_observer(out_obs, "Debug Out" ,1, 1);
+    //S->register_observer(out_obs, "Debug Out" ,1, 1);
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val << "\n";
     std::cout << "Preparing to run"<< std::flush ;
     for(int jj = 0; jj < N_networks; jj++)
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
-        init_M_ER(p, val, setM);
-        if(initialized)
+        try{
+            init_M_ER(p, val, setM);
+            S->draw_samples(f_run, f_dist, N_Samples);
+        } catch (const std::runtime_error& e)
         {
-            S.draw_samples(f_run, f_dist, N_Samples);
-        } else {
             LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
+            initialized = 0;
         }
     }
     std::cout << "\r" << std::endl;
 
-    auto res_mean = S.extract(MCUtil::StatType::MEAN);
-    auto res_var = S.extract(MCUtil::StatType::VARIANCE);
+    auto res_mean = S->extract(MCUtil::StatType::MEAN);
+    auto res_var = S->extract(MCUtil::StatType::VARIANCE);
+    count = Eigen::MatrixXd::Zero(2,1);
+    res["Variance " + count_str] = count;
+    count(0,0) = N_Samples*N_networks;
+    count(1,0)  = S->get_count();
+    res[count_str] = count;
     for (auto el : res_mean) {
         if(el.first.compare(rs_str) == 0){ mean_rs = el.second; res[rs_str] = el.second;}
         else if(el.first.compare(M_str) == 0){ mean_M = el.second; res[M_str] = el.second;}
@@ -141,55 +153,14 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
 
 void ER_Network::init_M_ER(const double p, const double val, int which_to_set)
 {
+
     if(val < 0 || val > 1) throw std::logic_error("Value is not in [0,1]");
     if(p < 0 || p > 1) throw std::logic_error("p is not a probability");
     connectivity = N*p;
-    int i = 0;
-    Eigen::MatrixXd M;
-    do {
-        M = Eigen::MatrixXd::Zero(N, 2*N);
-        //@TODO: use bin. dist. to generate vectorized,
-        //@TODO: this is terrifingly inefficient
-        for (unsigned int i = 0; i < N; i++) {
-            for (unsigned int j = i + 1; j < N; j++) {
-                if (which_to_set == 1 || which_to_set == 0) {
-                    if (u_dist(gen_u) < p)
-                        M(i, j) = 1.0;
-                    if (u_dist(gen_u) < p)
-                        M(j, i) = 1.0;
-                }
-                if (which_to_set == 2 || which_to_set == 0) {
-                    if (u_dist(gen_u) < p)
-                        M(i, j + N) = 1.0;
-                    if (u_dist(gen_u) < p)
-                        M(j, i + N) = 1.0;
-                }
-            }
-        }
-        //@TODO: implement S sums
-        auto sum_d_j = M.rightCols(N).rowwise().sum();
-        auto sum_s_j = M.leftCols(N).rowwise().sum();
-        auto sum_i = M.colwise().sum();
-        //for(int ii = 0; ii < 2*N; ii++)
-        //{
-        //    if(sum_i(ii) > 0)
-        //       M.col(ii) = M.col(ii)/sum_i(ii);
-        //}
-        for(int ii = 0; ii < N; ii++)
-        {
-            if(sum_d_j(ii) > 0)
-                M.row(ii) = (val/sum_d_j(ii))*M.row(ii);
-        }
-        if(i > 100000)
-        {
-            Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "[", "]");
-            //LOG(WARNING)<<"\n" << M.format(CleanFmt) << "\n\n";
-            LOG(ERROR) << M.colwise().sum();
-            throw std::runtime_error("\n\nToo many rejections during generation of M! p="+std::to_string(p)+", n="+std::to_string(N)+"\n\n");
-        }
-        i++;
-    } while(M.colwise().sum().maxCoeff() > 1);
-    if(i > 500) LOG(WARNING) << "\rrejected " << i << " candidates for network matrix";
+    Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
+
+    Utils::gen_basic_rejection(&M, gen_u, p, val, which_to_set);
+
     bsn->re_init(M, S0, debt);
 }
 

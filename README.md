@@ -20,7 +20,8 @@ Installation on ubuntu:
     - sudo apt-get update -qq
     - sudo apt-get install build-essential autotools-dev pybind11-dev mercurial libeigen3-dev libboost-all-dev libgtest-dev google-mock git libblas-dev liblapack-dev
     - mkdir build && cd build && cmake ..
-    - configure cmake as needed
+    - configure cmake as needed, for example:
+        -- CXX=clang++-7 cmake -DUSE_MPI=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_OFFLINE=OFF .. && make -j6 
     - make
 
 

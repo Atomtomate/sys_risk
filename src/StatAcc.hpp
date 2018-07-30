@@ -109,6 +109,7 @@ public:
         acc(val);
     }
 
+
     /*!
      * @brief       extracts statistic of accumulated quantity
      * @param st    Stat Type
@@ -169,9 +170,10 @@ public:
          * @param cols     Cols of matrices to be accumulated
          */
         StatAccEigen(int rows, int cols):
-                acc(std::vector<T>(rows*cols)), cache_used{0}, r(rows), c(cols) {
-            mapped.resize(cols*rows);
-            if(CACHE_SIZE)
+                acc(std::vector<T>(rows*cols)), cache_used{0}, r(rows), c(cols)
+        {
+                mapped.resize(cols*rows);
+                if(CACHE_SIZE)
                 cache.resize(CACHE_SIZE);
         }
 
@@ -192,6 +194,7 @@ public:
             }
             acc(mapped);
         }
+
 
         /*!
          * @brief       extracts statistic of accumulated quantity

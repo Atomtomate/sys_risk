@@ -93,13 +93,14 @@ int main(int argc, char* argv[])
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val_, 2, 1.0, 0.0);
-        auto res = nNN.test_ER_valuation(N, 100, 1000);//10000, 500);
+        auto res = nNN.test_ER_valuation(300, 1000);//10000, 500);
+        LOG(INFO) << "results: ";
         for(const auto& el : res)
             LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
-    //   nNN.test_ER_valuation(10);
+    //   nNN.test_ER_valuation();
     //}
 
     //@TODO: write test that expects equal sresults on equal seed

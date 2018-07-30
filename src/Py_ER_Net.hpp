@@ -35,13 +35,18 @@ public:
 #endif
 
 
-    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks)
+    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale = 1.0)
     {
         LOG(TRACE) << "Initializing network";
         LOG(ERROR) << "init. p = " << p << " val = " << val << ", r = " << r << " T = " << T << " it = "  << iterations;
-        er_net.test_init_network(N, p, val, which_to_set, T, r);
+        er_net.test_init_network(N, p, val, which_to_set, T, r, default_prob_scale);
         LOG(TRACE) << "Network initialized";
-        er_net.test_ER_valuation(N, iterations, N_networks);
+        er_net.test_ER_valuation(iterations, N_networks);
+    }
+
+    Eigen::MatrixXd get_N_samples() const
+    {
+        return er_net.count;
     }
 
     Eigen::MatrixXd get_M() const

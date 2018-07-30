@@ -9,6 +9,7 @@
 #ifndef VALUATION_SAMPLER_HPP
 #define VALUATION_SAMPLER_HPP
 
+#include <cmath>
 #include <iostream>
 #include <functional>
 #include <typeinfo>
@@ -28,6 +29,7 @@ namespace MCUtil {
     template<typename T>
     class Sampler {
     private:
+        int count;
         friend class boost::serialization::access;
         //@TODO: this needs to be dynamically adjustable between StatAcc and StatAccEigen. possibly overload StatAcc
         //std::vector<MCUtil::StatAcc<T, 100000>> accs;
@@ -68,10 +70,13 @@ namespace MCUtil {
 
         Sampler<T>(const Sampler<T> &) = delete;
 
+        int get_count() {return count;}
+
+
         /*!
          * @brief
          */
-        Sampler() = default;
+        Sampler(): count{0} {};
 
         /*!
          * @brief               Register a function to be called after each new sample is generated. Results will be accumulated and can be accessed using extract().
@@ -100,6 +105,7 @@ namespace MCUtil {
          */
         template<class Func, class DistT, typename... ArgTypes>
         void draw_samples(Func&& f, DistT&& draw_from_dist, unsigned int n, ArgTypes &&... f_args) {
+            count += n;
             for (unsigned int i = 0; i < n; i++) {
                 //@TODO: use curry for f with f_args. see: https://stackoverflow.com/questions/152005/how-can-currying-be-done-in-c
                 call_f(std::forward<Func>(f), draw_from_dist(), std::forward<ArgTypes>(f_args)...);
