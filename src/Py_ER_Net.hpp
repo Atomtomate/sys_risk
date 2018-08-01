@@ -35,11 +35,11 @@ public:
 #endif
 
 
-    void run_valuation(const unsigned int N, const double p, const double val, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale = 1.0)
+    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale = 1.0)
     {
         LOG(TRACE) << "Initializing network";
-        LOG(ERROR) << "init. p = " << p << " val = " << val << ", r = " << r << " T = " << T << " it = "  << iterations;
-        er_net.test_init_network(N, p, val, which_to_set, T, r, default_prob_scale);
+        LOG(ERROR) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
+        er_net.test_init_network(N, p, val_row, val_col, which_to_set, T, r, default_prob_scale);
         LOG(TRACE) << "Network initialized";
         er_net.test_ER_valuation(iterations, N_networks);
     }

@@ -26,14 +26,14 @@ namespace Utils {
                              const double val, const int which_to_set);
 
 
-    void gen_perm(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
-                  const int which_to_set);
+    void gen_perm(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val_row,
+                   const double val_col, const int which_to_set);
 
-    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
-                      const int which_to_set);
+    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val_row,
+                      const double val_col, const int which_to_set);
 
-    void gen_sinkhorn_2(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
-                        const int which_to_set);
+    void gen_sinkhorn_2(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val_row,
+                        const double val_col, const int which_to_set);
 
 }
 

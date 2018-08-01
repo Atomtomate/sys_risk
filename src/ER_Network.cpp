@@ -9,12 +9,12 @@
 
 #include "ER_Network.hpp"
 void ER_Network::test_init_network() {
-    test_init_network(N, p, val, setM, T, r);
+    test_init_network(N, p, val_row, val_col, setM, T, r);
 }
 
-void ER_Network::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
+void ER_Network::test_init_network(const long N_in, const double p_in, const double val_row_in, const double val_col_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
     // ===== Initialization of temporary variables =====
-    T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
+    T = T_new; r = r_new; N = N_in; p = p_in; val_row = val_row_in; val_col = val_col_in; setM = which_to_set;
     Z.resize(N);
     itSigma.resize(N, N);
     var_h.resize(N);
@@ -40,7 +40,7 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
 
     // ===== Generating Black Scholes Network =====
     S0 = Eigen::VectorXd::Constant(N,1.0).array() + T*sigma.diagonal().array()*sigma.diagonal().array()/2.0;            // <S_t> = S_0 - T*sigma^2/2 => This sets <S_t> ~ 1
-    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
+    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val_row)).array();
     if(bsn != nullptr)
         delete bsn;
     LOG(TRACE) << "Generating Model";
@@ -48,12 +48,12 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
     bsn = new BlackScholesNetwork(T, r);
     LOG(TRACE) << "Initializing random connectivity matrix";
     try{
-        init_M_ER(p, val, which_to_set);
+        init_M_ER(p, val_row, val_col, which_to_set);
         initialized = true;
     }
     catch (const std::runtime_error& e)
     {
-        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val="<< val;
+        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val_row="<< val_row;
         initialized = false;
     }
 
@@ -107,17 +107,17 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
     //S->register_observer(out_obs, "Debug Out" ,1, 1);
 
-    std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val << "\n";
+    std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val_row << ", sum_i M_ij = " << val_col  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
     for(int jj = 0; jj < N_networks; jj++)
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
         try{
-            init_M_ER(p, val, setM);
+            init_M_ER(p, val_row, val_col, setM);
             S->draw_samples(f_run, f_dist, N_Samples);
         } catch (const std::runtime_error& e)
         {
-            LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
+            LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val_row=" << val_row << ", val_col="<<val_col;
             initialized = 0;
         }
     }
@@ -157,19 +157,20 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     return res;
 }
 
-void ER_Network::init_M_ER(const double p, const double val, int which_to_set)
+void ER_Network::init_M_ER(const double p, const double val_row, const double val_col, int which_to_set)
 {
 
-    if(val < 0 || val > 1) throw std::logic_error("Value is not in [0,1]");
+    if(val_row < 0 || val_row > 1) throw std::logic_error("Row sum is not in [0,1]");
+    if(val_col < 0 || val_col > 1) throw std::logic_error("Col sum is not in [0,1]");
     if(p < 0 || p > 1) throw std::logic_error("p is not a probability");
     connectivity = N*p;
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2*N);
 
-    Utils::gen_sinkhorn(&M, gen_u, p, val, which_to_set);
+    Utils::gen_sinkhorn(&M, gen_u, p, val_row, val_col, which_to_set);
     io_deg_dist = in_out_degree(&M);
     /*LOG(INFO) << "Using rejection sampling: ";
     try{
-        Utils::gen_basic_rejection(&M, gen_u, p, val, which_to_set);
+        Utils::gen_basic_rejection(&M, gen_u, p, val_row, val_col, which_to_set);
         LOG(INFO) << in_out_degree(&M);
     }catch (const std::runtime_error& e)
     {

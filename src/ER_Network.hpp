@@ -35,7 +35,8 @@ struct Parameters
     long N;                 // M.rows()
     int set_s_d_both;       //
     double p;               // P(M_ij = 1)
-    double val;             // sum_j M_ij
+    double val_row;             // sum_j M_ij
+    double val_col;             // sum_j M_ij
     //@TODO: finish, add log-norm params
 
 
@@ -58,7 +59,8 @@ private:
     double T;              // maturity
     double r;              // interest
     double p;
-    double val;
+    double val_row;
+    double val_col;
     int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
@@ -94,7 +96,7 @@ private:
     // last result, returned by observe
     void test_init_network();
 
-    void init_M_ER(const double p, const double val, const int which_to_set);
+    void init_M_ER(const double p, const double val_row, const double val_col, const int which_to_set);
 
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd* M);
 
@@ -103,10 +105,11 @@ public:
      * @brief               (re-)initializes network to given parameters
      * @param N             Size of network
      * @param p             Probability of cross holding
-     * @param val           Value of cross holding
+     * @param val_row       total value in other firms
+     * @param val_col       total value being held by others
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
+    void test_init_network(const long N, const double p, const double val_row, const double val_col, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
 
     virtual ~ER_Network(){
         if(bsn != nullptr)
@@ -143,24 +146,25 @@ public:
      * @param isGenerator   Flag for generator/consumer ranks
      * @param N             Size of network
      * @param p             Probability of connection between firms
-     * @param val           Value of connection between firms
+     * @param val_row
+     * @param val_col
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      * @param T             maturity
      * @param r             interest rate
      */
 #ifdef USE_MPI
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
-               long N, double p, double val, int which_to_set, const double T, const double r) :
+               long N, double p, double val_row, double val_col, int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    ER_Network(long N_, double p_, double val_, int which_to_set, const double T_, const double r_) :
+    ER_Network(long N_, double p_, double val_row, double val_col, int which_to_set, const double T_, const double r_) :
 #endif
             Z_dist(&tmp[0][0], &tmp[1][1])
     {
         gen_u.seed();
         bsn = nullptr;
         S = new MCUtil::Sampler<Eigen::MatrixXd>();
-        test_init_network(N_, p_, val_, which_to_set, T_, r_);
+        test_init_network(N_, p_, val_row, val_col, which_to_set, T_, r_);
     }
 
 
@@ -202,6 +206,11 @@ public:
     std::vector<double> sumM() {
         std::vector<double> res{(bsn->get_M()).sum()};
         return res;
+    }
+
+    Eigen::MatrixXd get_M()
+    {
+        return bsn->get_M();
     }
 
     auto test_out()

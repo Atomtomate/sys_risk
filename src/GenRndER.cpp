@@ -59,13 +59,14 @@ namespace Utils {
 
 
 
-    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+    void gen_sinkhorn(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val_row, const double val_col,
                       const int which_to_set) {
         const int N = M->rows();
         int it = 0;
         trng::uniform01_dist<> u_dist;
         M->setZero();
         bool cols_ok = false;
+        bool rows_ok = false;
 
         //@TODO: use bin. dist. to generate vectorized,
         for (int i = 0; i < N; i++) {
@@ -84,50 +85,57 @@ namespace Utils {
                 }
             }
         }
-        Eigen::VectorXd sum_i = M->colwise().sum();
+        Eigen::VectorXd col_sums = M->colwise().sum();
         do {
             cols_ok = true;
+            rows_ok = true;
 
             for(int ii = 0; ii < 2*N; ii++)
             {
-                if(sum_i(ii) > 0)
-                {
-                    M->col(ii) = M->col(ii)/sum_i(ii);
-                }
+                if(col_sums(ii) > 0)
+                    M->col(ii) = (val_col/col_sums(ii))*M->col(ii);
             }
 
-            if (which_to_set == 1) {
-                Eigen::VectorXd sum_s_j = M->leftCols(N).rowwise().sum();
+            /*if (which_to_set == 1) {
+                Eigen::VectorXd row_sums_s = M->leftCols(N).rowwise().sum();
                 for (int ii = 0; ii < N; ii++) {
-                    if (sum_s_j(ii) > 0)
-                        M->leftCols(N).row(ii) = (val / sum_s_j(ii)) * M->leftCols(N).row(ii);
+                    if (row_sums_s(ii) > 0)
+                        M->leftCols(N).row(ii) = (val_row / row_sums_s(ii)) * M->leftCols(N).row(ii);
                 }
             }
             else if (which_to_set == 2 )
             {
-                Eigen::VectorXd sum_d_j = M->rightCols(N).rowwise().sum();
+                Eigen::VectorXd row_sums_d = M->rightCols(N).rowwise().sum();
                 for (int ii = N; ii < N; ii++) {
-                    if (sum_d_j(ii) > 0)
-                        M->rightCols(N).row(ii) = (val / sum_d_j(ii)) * M->rightCols(N).row(ii);
+                    if (row_sums_d(ii) > 0)
+                        M->rightCols(N).row(ii) = (val_row / row_sums_d(ii)) * M->rightCols(N).row(ii);
                 }
             }
             else if (which_to_set == 0)
-            {
-                Eigen::VectorXd sum_d_j = M->rowwise().sum();
-                for (int ii = N; ii < N; ii++) {
-                    if (sum_d_j(ii) > 0)
-                        M->row(ii) = (val / sum_d_j(ii)) * M->row(ii);
+            {*/
+                Eigen::VectorXd row_sums = M->rowwise().sum();
+                LOG(WARNING) << row_sums;
+                for (int ii = 0; ii < N; ii++) {
+                    if (row_sums(ii) > 0){
+                        M->row(ii) = (val_row / row_sums(ii)) * M->row(ii);
+                    }
                 }
-            }
-            sum_i = M->colwise().sum();
-            for(int ii = 0; ii < 2*N; ii++)
+            //}
+            col_sums = M->colwise().sum();
+            for(int ii = 0; (ii < 2*N) && cols_ok; ii++)
             {
-                if((sum_i(ii) > eps) && ((sum_i(ii) - val) > eps))
+                if((col_sums(ii) - val_col) > eps)
                     cols_ok = false;
             }
+            row_sums = M->rowwise().sum();
+            for(int ii = 0; (ii < N) && rows_ok; ii++)
+            {
+                if((row_sums(ii) - val_row) > eps)
+                    rows_ok = false;
+            }
             it++;
-        } while( !cols_ok && it < 100);
-        if(it > 100){
+        } while( (!cols_ok || !rows_ok) && it < 1000);
+        if(it > 200){
             LOG(WARNING) << "Unsual long convergence! i = " << it;
         }
 

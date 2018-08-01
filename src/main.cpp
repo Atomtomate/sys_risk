@@ -87,12 +87,21 @@ int main(int argc, char* argv[])
     std::cout << "conn: ";
     double conn_;
     std::cin >> conn_;
-    std::cout << "val: ";
-    double val_;
-    std::cin >> val_;
+    std::cout << "row sum: ";
+    double val_row;
+    double val_col;
+    std::cin >> val_row;
+    std::cout << "col sum: ";
+    std::cin >> val_col;
+    nNN.test_init_network(N_, conn_/static_cast<double>(N_) , val_row, val_col, 2, 1.0, 0.0);
+    Eigen::MatrixXd test = nNN.get_M();
+    LOG(INFO) << test;
+    LOG(INFO) << test.colwise().sum();
+    LOG(INFO) << test.rowwise().sum();
+    exit(0);
     for (int N : {N_})
     { //, 8, 16, 32}) {
-        nNN.test_init_network(N, conn_/static_cast<double>(N) , val_, 2, 1.0, 0.0);
+        nNN.test_init_network(N, conn_/static_cast<double>(N) , val_row, val_col, 2, 1.0, 0.0);
         auto res = nNN.test_ER_valuation(300, 300);//10000, 500);
         LOG(INFO) << "results: ";
         for(const auto& el : res)
