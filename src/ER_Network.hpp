@@ -28,7 +28,7 @@
 #include "Sampler.hpp"
 #include "StatAcc.hpp"
 #include "BlackScholesNetwork.hpp"
-#include "GenRndER.hpp"
+#include "RndGraphGen.hpp"
 
 struct Parameters
 {

@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 
 
     //TODO: eigen matrix dimension missmatch on large size?!?!
-    Eigen::IOFormat CleanFmt(4, 0, " ", "\n", "[", "]");
+    Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "[", "]");
     std::cout << "N: ";
     int N_;
     std::cin >> N_;
@@ -94,18 +94,18 @@ int main(int argc, char* argv[])
     std::cout << "col sum: ";
     std::cin >> val_col;
     nNN.test_init_network(N_, conn_/static_cast<double>(N_) , val_row, val_col, 2, 1.0, 0.0);
-    Eigen::MatrixXd test = nNN.get_M();
-    LOG(INFO) << test;
-    LOG(INFO) << test.colwise().sum();
-    LOG(INFO) << test.rowwise().sum();
-    exit(0);
+    //Eigen::MatrixXd test = nNN.get_M();
+    //LOG(INFO) << test;
+    //LOG(INFO) << test.colwise().sum();
+    //LOG(INFO) << test.rowwise().sum();
+    //exit(0);
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val_row, val_col, 2, 1.0, 0.0);
         auto res = nNN.test_ER_valuation(300, 300);//10000, 500);
-        LOG(INFO) << "results: ";
+        std::cout << "results: " << std::endl;
         for(const auto& el : res)
-            LOG(INFO) << el.first << ": " << el.second.format(CleanFmt);
+           std::cout << el.first << ": \n" << el.second.format(CleanFmt) << std::endl << " ===========" << std::endl;
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
