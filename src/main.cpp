@@ -93,12 +93,15 @@ int main(int argc, char* argv[])
     std::cin >> val_row;
     std::cout << "col sum: ";
     std::cin >> val_col;
-    nNN.test_init_network(N_, conn_/static_cast<double>(N_) , val_row, val_col, 2, 1.0, 0.0);
-    //Eigen::MatrixXd test = nNN.get_M();
-    //LOG(INFO) << test;
-    //LOG(INFO) << test.colwise().sum();
-    //LOG(INFO) << test.rowwise().sum();
-    //exit(0);
+    std::vector<double> plist {0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    for(auto p : plist) {
+        nNN.test_init_network(N_, p, val_row, val_col, 2, 1.0, 0.0);
+        Eigen::MatrixXd test = nNN.get_M();
+        LOG(INFO) << test;
+        LOG(INFO) << test.colwise().sum();
+        LOG(INFO) << test.rowwise().sum();
+    }
+    exit(0);
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val_row, val_col, 2, 1.0, 0.0);

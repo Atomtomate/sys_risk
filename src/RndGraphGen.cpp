@@ -61,7 +61,6 @@ namespace Utils {
         trng::uniform01_dist<> u_dist;
         int rej_it = 0;
         bool cols_ok = false;
-        bool rows_ok = false;
         do {
             int it = 0;
             M->setZero();
@@ -85,7 +84,6 @@ namespace Utils {
             Eigen::VectorXd col_sums = M->colwise().sum();
             do {
                 cols_ok = true;
-                rows_ok = true;
 
                 for (int ii = 0; ii < 2 * N; ii++) {
                     if (col_sums(ii) > 0)
@@ -99,18 +97,13 @@ namespace Utils {
 
                 col_sums = M->colwise().sum();
                 for (int ii = 0; (ii < 2 * N) && cols_ok; ii++) {
-                    if ((col_sums(ii) - val_col) > eps)
+                    if(col_sums(ii) > eps && (std::abs(col_sums(ii) - val_col) > eps))
                         cols_ok = false;
                 }
-                row_sums = M->rowwise().sum();
-                for (int ii = 0; (ii < N) && rows_ok; ii++) {
-                    if ((row_sums(ii) - val_row) > eps)
-                        rows_ok = false;
-                }
                 it++;
-            } while ((!cols_ok || !rows_ok) && it < 1000);
+            } while (!cols_ok && it < 1000);
             rej_it++;
-        } while ((!cols_ok || !rows_ok) && rej_it < 1000);
+        } while (!cols_ok && rej_it < 1000);
         if (rej_it > 999) {
             LOG(ERROR) << (*M);
             LOG(ERROR) << M->colwise().sum();
@@ -119,53 +112,84 @@ namespace Utils {
                     "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
                     std::to_string(N) + "\n\n");
         }
-        LOG(ERROR) << rej_it;
     }
 
     // TODO: in and out degree
     void gen_fixed_degree_internal(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const int degree, const double val,
                                    const int which_to_set, int offs) {
         bool gen_ok = true;
+        bool force_on_diag = false;
+        int rej_it = 0;
         do {
-            int rej_it = 0;
+            gen_ok = true;
+            force_on_diag = false;
             int N = M->rows();
             if (N < degree) throw std::logic_error("Degree larger than size of network");
             trng::uniform01_dist<> u_dist;
             M->setZero();
-            std::vector<int> possible_indices(N);
+            std::vector<int> possible_indices(N);       // not yet filled
+            std::vector<int> forced_indices(N, degree); // must be filled <=> filled all zeros: if arr[i] <=0, M(ri,i) must be set to val
             for (int ii = 0; ii < N; ii++)
-                possible_indices[ii] = ii;
-            std::vector<int> used_indices(N, degree);
+                possible_indices[ii] = ii;              // all indeces possible at the start
+            std::vector<int> used_indices(N, degree);   // every index can be used >degree< times
 
             for (int ri = 0; ri < N; ri++) {
+                int n_forced = 0;
+                // insert forced elements
+                for(int jj = 0; jj < N; jj++)
+                {
+                    if( ((N-ri) - used_indices[jj] < 1) )                           // remaining rows minus number of remaining positions
+                    {
+                        if(jj == ri)
+                        {
+                            force_on_diag = true;
+                        }
+                        (*M)(ri, jj + offs) = val / static_cast<double>(degree);
+                        for(unsigned long k = 0; k < possible_indices.size(); k++)
+                        {
+                            if(possible_indices[k] == jj)
+                                possible_indices.erase(possible_indices.begin() + k);
+                        }
+                        n_forced += 1;
+                    }
+                }
                 std::vector<int> possible_indices_copy(possible_indices);
                 for (unsigned long jj = 0; jj < possible_indices_copy.size(); jj++) {
                     if (possible_indices_copy[jj] == ri)
                         possible_indices_copy.erase(possible_indices_copy.begin() + jj);
                 }
-                for (int i = 0; i < degree; i++) {
-                    if (possible_indices_copy.size() == 0)
+
+                // distribute the rest randomly
+                for (int i = 0; i < degree - n_forced; i++) {
+                    if (possible_indices_copy.size() == 0)                                      // continue if no more elements can be placed
                         continue;
+
+                    // randomly select index under possible indices and set to val
                     int sub_index = std::floor(u_dist(gen_u) * (possible_indices_copy.size()));
                     int index = possible_indices_copy[sub_index];
                     (*M)(ri, index + offs) = val / static_cast<double>(degree);
+
+                    // book keeping
                     if (used_indices[index] == 1) {
                         for (unsigned long jj = 0; jj < possible_indices.size(); jj++) {
                             if (possible_indices[jj] == index)
                                 possible_indices.erase(possible_indices.begin() + jj);
                         }
                     }
-                    used_indices[index] -= 1;
-                    possible_indices_copy.erase(possible_indices_copy.begin() + sub_index);
+                    used_indices[index] -= 1;                                                   // upper limit, remove from possible candidates if degree is reached
+                    possible_indices_copy.erase(possible_indices_copy.begin() + sub_index);     // in-line book keeping
                 }
             }
-            gen_ok = true;
             auto check = in_out_degree(M);
+            gen_ok = true;
             for (int i = 0; i < check.cols(); i++) {
                 if ((check(1, i) != 0 || check(0, i) != 0) && i != degree)
                     gen_ok = false;
             }
-        } while (!gen_ok);
+            rej_it++;
+        } while ((!gen_ok || force_on_diag) && rej_it < 10);
+        if(rej_it >= 10)
+            throw std::runtime_error("Too many rejections");
     }
 
 

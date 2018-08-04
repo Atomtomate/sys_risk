@@ -53,7 +53,7 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
     }
     catch (const std::runtime_error& e)
     {
-        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val_row="<< val_row;
+        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val_row="<< val_row<< "\nReason: " << e.what();
         initialized = false;
     }
 
@@ -159,17 +159,16 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
 
 void ER_Network::init_M_ER(const double p, const double val_row, const double val_col, int which_to_set) {
 
-    if (val_row < 0 || val_row > 1) throw std::logic_error("Row sum is not in [0,1]");
-    if (val_col < 0 || val_col > 1) throw std::logic_error("Col sum is not in [0,1]");
+    if (val_row < 0 || val_row >= 1) throw std::logic_error("Row sum is not in [0,1)");
+    if (val_col < 0 || val_col >= 1) throw std::logic_error("Col sum is not in [0,1)");
     if (p < 0 || p > 1) throw std::logic_error("p is not a probability");
     connectivity = N * p;
     Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2 * N);
 
-    //Utils::gen_sinkhorn(&M, gen_u, p, val_row, val_col, which_to_set);
-    int degree = std::floor(p * N);
-
-        Utils::gen_fixed_degree(&M, gen_u, degree, val_col, which_to_set);
-        io_deg_dist = Utils::in_out_degree(&M);
+    //int degree = std::floor(p * N);
+    //Utils::gen_fixed_degree(&M, gen_u, degree, val_col, which_to_set);
+    Utils::gen_sinkhorn(&M, gen_u, p, val_row, val_col, which_to_set);
+    io_deg_dist = Utils::in_out_degree(&M);
 
     /*LOG(INFO) << "Using rejection sampling: ";
     try{
