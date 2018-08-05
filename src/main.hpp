@@ -43,7 +43,7 @@
 #include "Config.hpp"
 #include "Sampler.hpp"
 //#include "N2_network.hpp"
-#include "ER_Network.hpp"
+#include "NetwSim.hpp"
 //#include "KarlFischerPaper.hpp"
 #include "IOHelper.hpp"
 //#include "PythonInterface.hpp"

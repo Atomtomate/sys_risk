@@ -9,7 +9,7 @@
 #ifndef VALUATION_PY_ER_NET_HPP
 #define VALUATION_PY_ER_NET_HPP
 
-#include "ER_Network.hpp"
+#include "NetwSim.hpp"
 
 class Py_ER_Net
 {
@@ -21,7 +21,7 @@ private:
     bool isGenerator;
     boost::mpi::communicator local;
 #endif
-    ER_Network er_net;
+    NetwSim er_net;
 
 public:
 
@@ -38,10 +38,12 @@ public:
     void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale = 1.0)
     {
         LOG(TRACE) << "Initializing network";
-        LOG(ERROR) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
-        er_net.test_init_network(N, p, val_row, val_col, which_to_set, T, r, default_prob_scale);
+        LOG(INFO) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
+        if(val_row != val_col)
+            LOG(WARNING) << "ignoring column sum value! for not val_col == val_row is required";
+        er_net.test_init_network(N, p, val_row, which_to_set, T, r, default_prob_scale);
         LOG(TRACE) << "Network initialized";
-        er_net.test_ER_valuation(iterations, N_networks);
+        er_net.run_valuation(iterations, N_networks);
     }
 
     Eigen::MatrixXd get_N_samples() const

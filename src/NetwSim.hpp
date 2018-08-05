@@ -7,8 +7,8 @@
  */
 
 
-#ifndef VALUATION_ER_NETWORK_HPP
-#define VALUATION_ER_NETWORK_HPP
+#ifndef VALUATION_NETWORK_SIM_HPP
+#define VALUATION_NETWORK_SIM_HPP
 
 #include <cmath>
 #include <cstdlib>
@@ -35,14 +35,13 @@ struct Parameters
     long N;                 // M.rows()
     int set_s_d_both;       //
     double p;               // P(M_ij = 1)
-    double val_row;             // sum_j M_ij
-    double val_col;             // sum_j M_ij
+    double val;             // sum_j M_ij = sum_i M_ij
     //@TODO: finish, add log-norm params
 
 
 };
 
-class ER_Network {
+class NetwSim {
     friend class Py_ER_Net;
 private:
 
@@ -59,8 +58,7 @@ private:
     double T;              // maturity
     double r;              // interest
     double p;
-    double val_row;
-    double val_col;
+    double val;
     int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
@@ -96,22 +94,33 @@ private:
     // last result, returned by observe
     void test_init_network();
 
-    void init_M_ER(const double p, const double val_row, const double val_col, const int which_to_set);
-
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd* M);
+
+    template <typename F>
+    void init_M(F gen_function) {
+        if (val < 0 || val >= 1) throw std::logic_error("Row sum is not in [0,1)");
+        if (p < 0 || p > 1) throw std::logic_error("p is not a probability");
+        connectivity = N * p;
+        Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2 * N);
+
+        gen_function(&M, gen_u, p, val, setM);
+        //Utils::gen_fixed_degree(&M, gen_u, p, val, which_to_set);
+        io_deg_dist = Utils::in_out_degree(&M);
+        bsn->re_init(M, S0, debt);
+    }
+
 
 public:
     /*!
      * @brief               (re-)initializes network to given parameters
      * @param N             Size of network
      * @param p             Probability of cross holding
-     * @param val_row       total value in other firms
-     * @param val_col       total value being held by others
+     * @param val           total value in/being held by other firms
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void test_init_network(const long N, const double p, const double val_row, const double val_col, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
+    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
 
-    virtual ~ER_Network(){
+    virtual ~NetwSim(){
         if(bsn != nullptr)
             delete bsn;
         if(S != nullptr)
@@ -128,7 +137,7 @@ public:
     ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
             local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1])
 #else
-    ER_Network():
+    NetwSim():
             Z_dist(&tmp[0][0], &tmp[1][1]), initialized(false)
 #endif
     {
@@ -146,25 +155,24 @@ public:
      * @param isGenerator   Flag for generator/consumer ranks
      * @param N             Size of network
      * @param p             Probability of connection between firms
-     * @param val_row
-     * @param val_col
+     * @param val
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      * @param T             maturity
      * @param r             interest rate
      */
 #ifdef USE_MPI
-    ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
-               long N, double p, double val_row, double val_col, int which_to_set, const double T, const double r) :
+    NetwSim(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
+               long N, double p, double val, int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    ER_Network(long N_, double p_, double val_row, double val_col, int which_to_set, const double T_, const double r_) :
+    NetwSim(long N_, double p_, double val, int which_to_set, const double T_, const double r_) :
 #endif
-            Z_dist(&tmp[0][0], &tmp[1][1])
+            val(val), T(T_), r(r_), Z_dist(&tmp[0][0], &tmp[1][1])
     {
         gen_u.seed();
         bsn = nullptr;
         S = new MCUtil::Sampler<Eigen::MatrixXd>();
-        test_init_network(N_, p_, val_row, val_col, which_to_set, T_, r_);
+        test_init_network(N_, p_, val, which_to_set, T_, r_);
     }
 
 
@@ -173,7 +181,8 @@ public:
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    std::unordered_map<std::string, Eigen::MatrixXd> test_ER_valuation(const long N_Samples = 2000, const long N_networks = 100);
+    std::unordered_map<std::string, Eigen::MatrixXd> run_valuation(const long N_Samples = 2000,
+                                                                   const long N_networks = 100);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution
@@ -236,4 +245,4 @@ private:
 };
 
 
-#endif //VALUATION_ER_NETWORK_HPP
+#endif //VALUATION_NETWORK_SIM_HPP

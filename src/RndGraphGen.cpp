@@ -54,13 +54,13 @@ namespace Utils {
     }
 
 
-    void
-    gen_sinkhorn(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const double p, const double val_row, const double val_col,
+    void gen_sinkhorn(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const double p, const double val,
                  const int which_to_set) {
         const int N = M->rows();
         trng::uniform01_dist<> u_dist;
         int rej_it = 0;
         bool cols_ok = false;
+        if(which_to_set != 2) LOG(ERROR) << "mode 0 and 1 for M generation not yet implemented!";
         do {
             int it = 0;
             M->setZero();
@@ -81,29 +81,31 @@ namespace Utils {
                     }
                 }
             }
-            Eigen::VectorXd col_sums = M->colwise().sum();
+
+
+            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
             do {
                 cols_ok = true;
 
-                for (int ii = 0; ii < 2 * N; ii++) {
+                for (int ii = 0; ii < N; ii++) {
                     if (col_sums(ii) > 0)
-                        M->col(ii) = (val_col / col_sums(ii)) * M->col(ii);
+                        M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
                 }
-                Eigen::VectorXd row_sums = M->rowwise().sum();
+                Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
                 for (int ii = 0; ii < N; ii++) {
                     if (row_sums(ii) > 0)
-                        M->row(ii) = (val_row / row_sums(ii)) * M->row(ii);
+                        M->rightCols(N).row(ii) = (val/ row_sums(ii)) * M->rightCols(N).row(ii);
                 }
 
-                col_sums = M->colwise().sum();
+                col_sums = M->rightCols(N).colwise().sum();
                 for (int ii = 0; (ii < 2 * N) && cols_ok; ii++) {
-                    if(col_sums(ii) > eps && (std::abs(col_sums(ii) - val_col) > eps))
+                    if(col_sums(ii) > eps && (std::abs(col_sums(ii) - val) > eps))
                         cols_ok = false;
                 }
                 it++;
             } while (!cols_ok && it < 1000);
             rej_it++;
-        } while (!cols_ok && rej_it < 1000);
+        } while (!cols_ok && rej_it < 10);
         if (rej_it > 999) {
             LOG(ERROR) << (*M);
             LOG(ERROR) << M->colwise().sum();
@@ -193,8 +195,9 @@ namespace Utils {
     }
 
 
-    void gen_fixed_degree(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const int degree, const double val,
+    void gen_fixed_degree(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const double p, const double val,
                           const int which_to_set) {
+        int degree = std::floor(p * M->rows());
         if (which_to_set == 1 || which_to_set == 0) {
             gen_fixed_degree_internal(M, gen_u, degree, val, which_to_set, 0);
         }

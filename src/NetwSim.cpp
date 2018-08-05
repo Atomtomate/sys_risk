@@ -7,14 +7,14 @@
  */
 
 
-#include "ER_Network.hpp"
-void ER_Network::test_init_network() {
-    test_init_network(N, p, val_row, val_col, setM, T, r);
+#include "NetwSim.hpp"
+void NetwSim::test_init_network() {
+    test_init_network(N, p, val, setM, T, r);
 }
 
-void ER_Network::test_init_network(const long N_in, const double p_in, const double val_row_in, const double val_col_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
+void NetwSim::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
     // ===== Initialization of temporary variables =====
-    T = T_new; r = r_new; N = N_in; p = p_in; val_row = val_row_in; val_col = val_col_in; setM = which_to_set;
+    T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
     Z.resize(N);
     itSigma.resize(N, N);
     var_h.resize(N);
@@ -40,7 +40,7 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
 
     // ===== Generating Black Scholes Network =====
     S0 = Eigen::VectorXd::Constant(N,1.0).array() + T*sigma.diagonal().array()*sigma.diagonal().array()/2.0;            // <S_t> = S_0 - T*sigma^2/2 => This sets <S_t> ~ 1
-    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val_row)).array();
+    debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
     if(bsn != nullptr)
         delete bsn;
     LOG(TRACE) << "Generating Model";
@@ -48,19 +48,19 @@ void ER_Network::test_init_network(const long N_in, const double p_in, const dou
     bsn = new BlackScholesNetwork(T, r);
     LOG(TRACE) << "Initializing random connectivity matrix";
     try{
-        init_M_ER(p, val_row, val_col, which_to_set);
+        init_M(Utils::gen_sinkhorn);
         initialized = true;
     }
     catch (const std::runtime_error& e)
     {
-        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val_row="<< val_row<< "\nReason: " << e.what();
+        LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val="<< val << "\nReason: " << e.what();
         initialized = false;
     }
 
 }
 
 
-std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(const long N_Samples, const long N_networks) {
+std::unordered_map<std::string, Eigen::MatrixXd> NetwSim::run_valuation(const long N_Samples, const long N_networks) {
     test_init_network();
 
     const std::string count_str("#Samples");
@@ -107,17 +107,17 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
     //S->register_observer(out_obs, "Debug Out" ,1, 1);
 
-    std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val_row << ", sum_i M_ij = " << val_col  << "\n";
+    std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
     for(int jj = 0; jj < N_networks; jj++)
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
         try{
-            init_M_ER(p, val_row, val_col, setM);
+            init_M(Utils::gen_sinkhorn );
             S->draw_samples(f_run, f_dist, N_Samples);
         } catch (const std::runtime_error& e)
         {
-            LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val_row=" << val_row << ", val_col="<<val_col;
+            LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
             initialized = 0;
         }
     }
@@ -157,49 +157,9 @@ std::unordered_map<std::string, Eigen::MatrixXd> ER_Network::test_ER_valuation(c
     return res;
 }
 
-void ER_Network::init_M_ER(const double p, const double val_row, const double val_col, int which_to_set) {
-
-    if (val_row < 0 || val_row >= 1) throw std::logic_error("Row sum is not in [0,1)");
-    if (val_col < 0 || val_col >= 1) throw std::logic_error("Col sum is not in [0,1)");
-    if (p < 0 || p > 1) throw std::logic_error("p is not a probability");
-    connectivity = N * p;
-    Eigen::MatrixXd M = Eigen::MatrixXd::Zero(N, 2 * N);
-
-    //int degree = std::floor(p * N);
-    //Utils::gen_fixed_degree(&M, gen_u, degree, val_col, which_to_set);
-    Utils::gen_sinkhorn(&M, gen_u, p, val_row, val_col, which_to_set);
-    io_deg_dist = Utils::in_out_degree(&M);
-
-    /*LOG(INFO) << "Using rejection sampling: ";
-    try{
-        Utils::gen_basic_rejection(&M, gen_u, p, val_row, val_col, which_to_set);
-        LOG(INFO) << in_out_degree(&M);
-    }catch (const std::runtime_error& e)
-    {
-        LOG(INFO) <<"rejection sampler failed";
-    }
-    auto io_deg = in_out_degree(&M);
-    LOG(INFO) << io_deg;
-    double in_avg = 0.;
-    double out_avg = 0.;
-    for(int i = 0; i < io_deg.cols(); i++)
-    {
-        in_avg += i*io_deg(0,i);
-        out_avg += i*io_deg(1,i);
-    }
-    in_avg /= io_deg.cols();
-    out_avg /= io_deg.cols();
-    LOG(INFO) << "avg in degree: " << in_avg << ", avg out degree: " << out_avg;
-
-    LOG(INFO) << "Using Sinkhorn Algorithm: ";
-    exit(0);
-    */
-
-    bsn->re_init(M, S0, debt);
-}
 
 
-const Eigen::MatrixXd ER_Network::delta_v2() {
+const Eigen::MatrixXd NetwSim::delta_v2() {
     //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
     Eigen::VectorXd ln_fac = (itSigma * Z).array() / (bsn->get_S0()).array();
     Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs()).transpose()).transpose();
@@ -208,12 +168,11 @@ const Eigen::MatrixXd ER_Network::delta_v2() {
 }
 
 
-const Eigen::MatrixXd ER_Network::draw_from_dist() {
+const Eigen::MatrixXd NetwSim::draw_from_dist() {
     for (long d = 0; d < N; d++) {
         Z(d) = Z_dist(gen_z);
     }
     Eigen::VectorXd S_log = var_h + std::sqrt(T) * Z;
-    //LOG(ERROR) << "var_h:\n" << var_h << "\n sqrt(T): " << std::sqrt(T)<< "\nS_log: \n" << S_log;
     return S_log.array().exp();
 }
 

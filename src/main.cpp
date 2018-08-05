@@ -53,10 +53,10 @@ int main(int argc, char* argv[])
     boost::mpi::communicator world;
     bool isGenerator = (world.size() > 1) ? (world.rank() > 0) : 1;
     boost::mpi::communicator local = world.split(isGenerator ? 0 : 1);
-    ER_Network nNN(local, world, true);
+    NetwSim nNN(local, world, true);
 #else
     LOG(INFO) << "SETTINGS: not using MPI";
-    ER_Network nNN;
+    NetwSim nNN;
 #endif
 
 #ifdef NDEBUG
@@ -88,31 +88,28 @@ int main(int argc, char* argv[])
     double conn_;
     std::cin >> conn_;
     std::cout << "row sum: ";
-    double val_row;
-    double val_col;
-    std::cin >> val_row;
-    std::cout << "col sum: ";
-    std::cin >> val_col;
+    double val;
+    std::cin >> val;
     std::vector<double> plist {0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     for(auto p : plist) {
-        nNN.test_init_network(N_, p, val_row, val_col, 2, 1.0, 0.0);
+        nNN.test_init_network(N_, p, val, 2, 1.0, 0.0, 1.0);
         Eigen::MatrixXd test = nNN.get_M();
-        LOG(INFO) << test;
-        LOG(INFO) << test.colwise().sum();
-        LOG(INFO) << test.rowwise().sum();
+        //LOG(INFO) << test;
+        //LOG(INFO) << test.colwise().sum();
+        //LOG(INFO) << test.rowwise().sum();
     }
     exit(0);
     for (int N : {N_})
     { //, 8, 16, 32}) {
-        nNN.test_init_network(N, conn_/static_cast<double>(N) , val_row, val_col, 2, 1.0, 0.0);
-        auto res = nNN.test_ER_valuation(300, 300);//10000, 500);
+        nNN.test_init_network(N, conn_/static_cast<double>(N) , val, 2, 1.0, 0.0, 1.0);
+        auto res = nNN.run_valuation(300, 300);//10000, 500);
         std::cout << "results: " << std::endl;
         for(const auto& el : res)
            std::cout << el.first << ": \n" << el.second.format(CleanFmt) << std::endl << " ===========" << std::endl;
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
-    //    ER_Network nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
-    //   nNN.test_ER_valuation();
+    //    NetwSim nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);
+    //   nNN.run_valuation();
     //}
 
     //@TODO: write test that expects equal sresults on equal seed
