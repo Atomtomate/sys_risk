@@ -9,7 +9,10 @@
 #include "RndGraphGen.hpp"
 
 namespace Utils {
-    constexpr double eps = 1e-5;
+    constexpr double eps = 1e-7;
+    constexpr bool check_suppression = true;
+    constexpr int max_it = 1000;
+    constexpr int max_rej_it = 1000;
 
     void gen_basic_rejection(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const double p,
                              const double val, const int which_to_set) {
@@ -59,8 +62,10 @@ namespace Utils {
         const int N = M->rows();
         trng::uniform01_dist<> u_dist;
         int rej_it = 0;
+        const double smallest_el = val/static_cast<double>(N);
         bool cols_ok = false;
         if(which_to_set != 2) LOG(ERROR) << "mode 0 and 1 for M generation not yet implemented!";
+        Eigen::MatrixXd M_bak = (*M);
         do {
             int it = 0;
             M->setZero();
@@ -81,35 +86,65 @@ namespace Utils {
                     }
                 }
             }
+            //LOG(ERROR) << (*M);
 
 
             Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
             do {
                 cols_ok = true;
-
+                M_bak = (*M);
                 for (int ii = 0; ii < N; ii++) {
                     if (col_sums(ii) > 0)
                         M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
                 }
                 Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
-                for (int ii = 0; ii < N; ii++) {
+                for (int ii = 0; ii < row_sums.size(); ii++) {
                     if (row_sums(ii) > 0)
                         M->rightCols(N).row(ii) = (val/ row_sums(ii)) * M->rightCols(N).row(ii);
                 }
 
                 col_sums = M->rightCols(N).colwise().sum();
-                for (int ii = 0; (ii < 2 * N) && cols_ok; ii++) {
-                    if(col_sums(ii) > eps && (std::abs(col_sums(ii) - val) > eps))
+                for (int ii = 0; (ii < col_sums.size()) && cols_ok; ii++) {
+                    if((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
                         cols_ok = false;
+                        //LOG(WARNING) << (col_sums(ii) > eps)  << " && " << (col_sums(ii)) << "-" << val << " > " << eps <<" = " << (std::abs(col_sums(ii) - val) > eps) << " on col " << ii << ")";
+                        //LOG(WARNING) << "M:\n" << (*M);
+                    }
+                }
+
+                if(!cols_ok && M->isApprox(M_bak))      // oscillating
+                {
+                    cols_ok = false;
+                    it = max_it;
+                    //LOG(WARNING) << "found oscillation";
+                }
+
+                for(int ii = 0;check_suppression && it < max_it && ii < N; ii++)
+                {
+                    for(int jj = 0 ; jj < N; jj++)
+                    {
+                        if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
+                            cols_ok = false;
+                            it = max_it;
+                            //LOG(WARNING) << "found suppressed element at (" << ii << ", " << jj << ")";
+                        }
+                    }
                 }
                 it++;
-            } while (!cols_ok && it < 1000);
+            } while (!cols_ok && it < max_it);
             rej_it++;
-        } while (!cols_ok && rej_it < 10);
-        if (rej_it > 999) {
-            LOG(ERROR) << (*M);
+        } while (!cols_ok && rej_it < max_rej_it);
+        if (rej_it > max_rej_it - 1) {
+            /*LOG(ERROR) << (*M);
             LOG(ERROR) << M->colwise().sum();
             LOG(ERROR) << M->rowwise().sum();
+            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
+            for (int ii = 0; (ii < col_sums.size()); ii++) {
+                if((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
+                    LOG(WARNING) << (col_sums(ii) > eps)  << " && " << (col_sums(ii)) << "-" << val << " > " << eps <<" = " << (std::abs(col_sums(ii) - val) > eps) << " on col " << ii << ")";
+                    LOG(WARNING) << "M:\n" << (*M);
+                }
+            }*/
             throw std::runtime_error(
                     "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
                     std::to_string(N) + "\n\n");

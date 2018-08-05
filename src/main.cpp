@@ -92,11 +92,12 @@ int main(int argc, char* argv[])
     std::cin >> val;
     std::vector<double> plist {0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     for(auto p : plist) {
+        LOG(INFO) << "Generating for p " << p;
         nNN.test_init_network(N_, p, val, 2, 1.0, 0.0, 1.0);
         Eigen::MatrixXd test = nNN.get_M();
-        //LOG(INFO) << test;
-        //LOG(INFO) << test.colwise().sum();
-        //LOG(INFO) << test.rowwise().sum();
+        LOG(INFO) <<"\n" << test.rightCols(N_);
+        LOG(INFO) << test.rightCols(N_).colwise().sum();
+        LOG(INFO) << test.rightCols(N_).rowwise().sum();
     }
     exit(0);
     for (int N : {N_})
