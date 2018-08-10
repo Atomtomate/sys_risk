@@ -9,10 +9,13 @@
 #include "RndGraphGen.hpp"
 
 namespace Utils {
-    constexpr double eps = 1e-7;
-    constexpr bool check_suppression = true;
-    constexpr int max_it = 1000;
-    constexpr int max_rej_it = 1000;
+    constexpr double eps = 1e-5;
+    constexpr bool allow_unnormalized_cols = false;
+    constexpr bool check_suppression = false;
+    constexpr bool check_selfloop = true;
+    constexpr bool check_multiedge = true;
+    constexpr int max_it = 3000;
+    constexpr int max_rej_it = 10000;
 
     void gen_basic_rejection(Eigen::MatrixXd *M, trng::yarn2 &gen_u, const double p,
                              const double val, const int which_to_set) {
@@ -86,9 +89,6 @@ namespace Utils {
                     }
                 }
             }
-            //LOG(ERROR) << (*M);
-
-
             Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
             do {
                 cols_ok = true;
@@ -119,13 +119,17 @@ namespace Utils {
                     //LOG(WARNING) << "found oscillation";
                 }
 
-                for(int ii = 0;check_suppression && it < max_it && ii < N; ii++)
+                for(int ii = 0;it < max_it && ii < N; ii++)
                 {
                     for(int jj = 0 ; jj < N; jj++)
                     {
                         if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
-                            cols_ok = false;
-                            it = max_it;
+                            if(check_suppression){
+                                cols_ok = false;
+                                it = max_it;
+                            } else {
+                                (*M)(ii,jj+N) = 0;
+                            }
                             //LOG(WARNING) << "found suppressed element at (" << ii << ", " << jj << ")";
                         }
                     }
@@ -134,17 +138,7 @@ namespace Utils {
             } while (!cols_ok && it < max_it);
             rej_it++;
         } while (!cols_ok && rej_it < max_rej_it);
-        if (rej_it > max_rej_it - 1) {
-            /*LOG(ERROR) << (*M);
-            LOG(ERROR) << M->colwise().sum();
-            LOG(ERROR) << M->rowwise().sum();
-            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
-            for (int ii = 0; (ii < col_sums.size()); ii++) {
-                if((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
-                    LOG(WARNING) << (col_sums(ii) > eps)  << " && " << (col_sums(ii)) << "-" << val << " > " << eps <<" = " << (std::abs(col_sums(ii) - val) > eps) << " on col " << ii << ")";
-                    LOG(WARNING) << "M:\n" << (*M);
-                }
-            }*/
+        if (!allow_unnormalized_cols && (rej_it > max_rej_it - 1)) {
             throw std::runtime_error(
                     "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
                     std::to_string(N) + "\n\n");
@@ -160,7 +154,7 @@ namespace Utils {
         do {
             gen_ok = true;
             force_on_diag = false;
-            int N = M->rows();
+            const int N = M->rows();
             if (N < degree) throw std::logic_error("Degree larger than size of network");
             trng::uniform01_dist<> u_dist;
             M->setZero();
@@ -242,25 +236,157 @@ namespace Utils {
     }
 
 
+    void gen_configuration_model(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val,
+                                 const int which_to_set)
+    {
+        const int N = M->rows();
+        const int degree = std::floor(p*N);
+        const double smallest_el = val/static_cast<double>(N);
+        int rej_it = 0;
+        bool cols_ok = false;
+        if(which_to_set != 2) LOG(ERROR) << "mode 0 and 1 for M generation not yet implemented!";
+
+        do {
+            int it = 0;
+            M->setZero();
+            M->setZero();
+            std::vector<int> in(N*degree);
+            for(int i = 0; i < N; i++)
+                std::fill(in.begin()+degree*i, in.begin()+degree*(i+1), i);
+            std::random_shuffle(in.begin(), in.end());
+            for(int i = 0; i < N*degree; i++)
+            {
+                const int row = (int)(i/degree);
+                const int col = in[i];
+                if(row == col)
+                    continue;
+                (*M)(row, col + N) += 1;
+            }
+
+            Eigen::MatrixXd M_bak = (*M);
+            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
+            do {
+                cols_ok = true;
+                M_bak = (*M);
+                for (int ii = 0; ii < N; ii++) {
+                    if (col_sums(ii) > 0)
+                        M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
+                }
+                Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
+                for (int ii = 0; ii < row_sums.size(); ii++) {
+                    if (row_sums(ii) > 0)
+                        M->rightCols(N).row(ii) = (val/ row_sums(ii)) * M->rightCols(N).row(ii);
+                }
+
+                col_sums = M->rightCols(N).colwise().sum();
+                for (int ii = 0; (ii < col_sums.size()) && cols_ok; ii++) {
+                    if((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps))
+                        cols_ok = false;
+                }
+
+                if(!cols_ok && M->isApprox(M_bak))      // oscillating
+                {
+                    cols_ok = false;
+                    it = max_it;
+                }
+
+                for(int ii = 0;it < max_it && ii < N; ii++)
+                {
+                    for(int jj = 0 ; jj < N; jj++)
+                    {
+                        if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
+                            if(check_suppression){
+                                cols_ok = false;
+                                it = max_it;
+                            } else {
+                                (*M)(ii,jj+N) = 0;
+                            }
+                        }
+                    }
+                }
+                it++;
+            } while (!cols_ok && it < max_it);
+            rej_it++;
+        } while (!cols_ok && rej_it < max_rej_it);
+        if (!allow_unnormalized_cols && (rej_it > max_rej_it - 1)) {
+            throw std::runtime_error(
+                    "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
+                    std::to_string(N) + "\n\n");
+        }
+    }
+
+
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd *M) {
         Eigen::MatrixXd in_out_deg = Eigen::MatrixXd::Zero(2, M->rows());
         int N = M->rows();
         for (int i = 0; i < M->rows(); i++) {
             int in_deg = 0;
             for (int j = 0; j < M->leftCols(N).cols(); j++) {
-                in_deg += (int) ((*M)(i, j + N) > 0);
+                in_deg += (int) ((*M)(i, j + N) > eps);
             }
             in_out_deg(0, in_deg) += 1;
         }
         for (int i = 0; i < M->leftCols(N).cols(); i++) {
             int out_deg = 0;
             for (int j = 0; j < M->rows(); j++) {
-                out_deg += (int) ((*M)(i, j + N) > 0);
+                out_deg += (int) ((*M)(i, j + N) > eps);
             }
             in_out_deg(1, out_deg) += 1;
+
         }
         in_out_deg = in_out_deg/N;
         return in_out_deg;
+    }
+
+    int fixed_degree(Eigen::MatrixXd* M)
+    {
+        int res = -1;
+        int N = M->rows();
+        for (int i = 0; i < M->rows(); i++) {
+            int in_deg = 0;
+            for (int j = 0; j < M->leftCols(N).cols(); j++) {
+                in_deg += (int) ((*M)(i, j + N) > eps);
+            }
+            if(res == -1)
+                res = in_deg;
+            else if(res != in_deg)
+                return -1;
+        }
+        for (int i = 0; i < M->leftCols(N).cols(); i++) {
+            int out_deg = 0;
+            for (int j = 0; j < M->rows(); j++) {
+                out_deg += (int) ((*M)(i, j + N) > eps);
+            }
+            if(res != out_deg)
+                return -1;
+        }
+        return res;
+    }
+
+
+    std::pair<double,double> avg_io_deg(Eigen::MatrixXd* M)
+    {
+        std::pair<double, double> res(0., 0.);
+        int N = M->rows();
+        int count  = 0;
+        for (int i = 0; i < M->rows(); i++) {
+            int in_deg = 0;
+            for (int j = 0; j < M->leftCols(N).cols(); j++) {
+                in_deg += (int) ((*M)(i, j + N) > eps);
+            }
+            res.first += in_deg;
+        }
+        res.first = res.first/N;
+        for (int i = 0; i < M->leftCols(N).cols(); i++) {
+            int out_deg = 0;
+            for (int j = 0; j < M->rows(); j++) {
+                out_deg += (int) ((*M)(i, j + N) > eps);
+            }
+            res.second += out_deg;
+        }
+        res.first = res.first/N;
+        res.second = res.second/N;
+        return res;
     }
 
 }

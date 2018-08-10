@@ -13,6 +13,17 @@ void NetwSim::test_init_network() {
 }
 
 void NetwSim::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
+    // ===== Reset Sampler =====
+    auto it = SamplerList.begin();
+    while(it != SamplerList.end())
+    {
+        if(it->second != nullptr)
+            delete it->second;
+        it++;
+    }
+    SamplerList.clear();
+    results.clear();
+
     // ===== Initialization of temporary variables =====
     T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
     Z.resize(N);
@@ -47,65 +58,25 @@ void NetwSim::test_init_network(const long N_in, const double p_in, const double
     LOG(TRACE) << "creating new Black Scholes Network";
     bsn = new BlackScholesNetwork(T, r);
     LOG(TRACE) << "Initializing random connectivity matrix";
-    try{
-        init_M(Utils::gen_sinkhorn);
+    /*try{
+        init_M(Utils::gen_configuration_model);
+        //init_M(Utils::gen_sinkhorn);
         initialized = true;
     }
     catch (const std::runtime_error& e)
     {
         LOG(ERROR) << "unable to create ER Model graph for N=" << N << ", p=" << p << ", val="<< val << "\nReason: " << e.what();
         initialized = false;
-    }
-
+    }*/
 }
 
 
-std::unordered_map<std::string, Eigen::MatrixXd> NetwSim::run_valuation(const long N_Samples, const long N_networks) {
-    test_init_network();
 
-    const std::string count_str("#Samples");
-    const std::string rs_str("RS");
-    const std::string M_str("M");
-    const std::string assets_str("Assets");
-    const std::string solvent_str("Solvent");
-    const std::string val_str("Valuation");
-    const std::string delta1_str("Delta using Jacobians");
-    const std::string delta2_str("Delta using Log");
-    const std::string io_deg_str("In/Out degree distribution");
-    std::unordered_map<std::string, Eigen::MatrixXd> res;
+std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_valuation(const long N_Samples, const long N_networks, const bool fix_degree) {
+    test_init_network();
 
     auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
     auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) {this->run(x); };
-
-    // ===== Defining observables =====
-    auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };
-    auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
-    auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
-    auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
-    auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
-    auto io_deg_obs_lambda = [this]() -> Eigen::MatrixXd { return this->io_deg_dist; };
-    if(S != nullptr)
-        delete S;
-    S = new MCUtil::Sampler<Eigen::MatrixXd>();
-    std::function<const Eigen::MatrixXd(void)> assets_obs(std::cref(asset_obs_lambda));
-    S->register_observer(assets_obs, assets_str, N, 1);
-    std::function<const Eigen::MatrixXd(void)> rs_obs(std::cref(rs_obs_lambda));
-    S->register_observer(rs_obs, rs_str, 2*N, 1);
-    std::function<const Eigen::MatrixXd(void)> M_obs(std::cref(M_obs_lambda));
-    S->register_observer(M_obs, M_str, N, 2*N);
-    std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
-    S->register_observer(sol_obs, solvent_str, N, 1);
-    std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
-    S->register_observer(deltav1_obs, delta1_str, 2 * N , N);
-    std::function<const Eigen::MatrixXd(void)> io_deg_obs(std::cref(io_deg_obs_lambda));
-    S->register_observer(io_deg_obs, io_deg_str, 2 , N);
-
-    //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
-    //S->register_observer(valuation_obs, val_str, N, 1);
-    //std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
-    //S->register_observer(deltav2_obs, delta2_str, 2 * N , N);
-    //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
-    //S->register_observer(out_obs, "Debug Out" ,1, 1);
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
@@ -113,8 +84,21 @@ std::unordered_map<std::string, Eigen::MatrixXd> NetwSim::run_valuation(const lo
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
         try{
-            init_M(Utils::gen_sinkhorn );
-            S->draw_samples(f_run, f_dist, N_Samples);
+            init_M(Utils::gen_configuration_model);
+            //init_M(Utils::gen_sinkhorn);
+
+            int degree = (int)std::round((avg_io_deg.first + avg_io_deg.second)/2.);
+            auto it = SamplerList.find(degree);
+            if(it != SamplerList.end())
+                (*it).second->draw_samples(f_run, f_dist, N_Samples);
+            else
+            {
+                MCUtil::Sampler<Eigen::MatrixXd>* S = new MCUtil::Sampler<Eigen::MatrixXd>();
+                register_observers<Eigen::MatrixXd>(S);
+                S->draw_samples(f_run, f_dist, N_Samples);
+                SamplerList.insert(std::pair(degree,S));
+            }
+
         } catch (const std::runtime_error& e)
         {
             LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
@@ -123,39 +107,20 @@ std::unordered_map<std::string, Eigen::MatrixXd> NetwSim::run_valuation(const lo
     }
     std::cout << "\r" << std::endl;
 
-    auto res_mean = S->extract(MCUtil::StatType::MEAN);
-    auto res_var = S->extract(MCUtil::StatType::VARIANCE);
-    count = Eigen::MatrixXd::Zero(2,1);
-    res["Variance " + count_str] = count;
-    count(0,0) = N_Samples*N_networks;
-    count(1,0)  = S->get_count();
-    res[count_str] = count;
-    for (auto el : res_mean) {
-        if(el.first.compare(rs_str) == 0){ mean_rs = el.second; res[rs_str] = el.second;}
-        else if(el.first.compare(M_str) == 0){ mean_M = el.second; res[M_str] = el.second;}
-        else if(el.first.compare(assets_str) == 0){ mean_assets = el.second; res[assets_str] = el.second;}
-        else if(el.first.compare(solvent_str) == 0){ mean_solvent = el.second; res[solvent_str] = el.second;}
-        else if(el.first.compare(val_str) == 0){ mean_valuation = el.second; res[val_str] = el.second;}
-        else if(el.first.compare(delta1_str) == 0){ mean_delta_jac = el.second; res[delta1_str] = el.second;}
-        else if(el.first.compare(delta2_str) == 0){ mean_delta_log = el.second; res[delta2_str] = el.second;}
-        else if(el.first.compare(io_deg_str) == 0){ mean_io_deg_dist = el.second; res[io_deg_str] = el.second;}
-        else LOG(WARNING) << "result " << el.first << ", not saved";
-    }
-    for (auto el : res_var) {
-        if(el.first.compare(rs_str) == 0){ var_rs = el.second; res["Variance "+rs_str] = el.second;}
-        else if(el.first.compare(M_str) == 0){ var_M = el.second; res["Variance "+M_str] = el.second;}
-        else if(el.first.compare(assets_str) == 0){ var_assets = el.second; res["Variance "+assets_str] = el.second;}
-        else if(el.first.compare(solvent_str) == 0){ var_solvent = el.second; res["Variance "+solvent_str] = el.second;}
-        else if(el.first.compare(val_str) == 0){ var_valuation = el.second; res["Variance "+val_str] = el.second;}
-        else if(el.first.compare(delta1_str) == 0){ var_delta_jac= el.second; res["Variance "+delta1_str] = el.second;}
-        else if(el.first.compare(delta2_str) == 0){ var_delta_log= el.second; res["Variance "+delta2_str] = el.second;}
-        else if(el.first.compare(io_deg_str) == 0){ var_io_deg_dist = el.second; res["Variance" + io_deg_str] = el.second;}
-        else LOG(WARNING) << "result " << el.first << ", not saved";
-    }
+
+    //auto io_deg_obs_lambda = [this]() -> Eigen::MatrixXd { return this->io_deg_dist; };
+    //std::function<const Eigen::MatrixXd(void)> io_deg_obs(std::cref(io_deg_obs_lambda));
+    //S->register_observer(io_deg_obs, io_deg_str, 2 , N);
 
     initialized = false;
-    return res;
+    std::map<int, std::unordered_map<std::string, Eigen::MatrixXd> > result;
+    for(auto el : SamplerList)
+    {
+        result.insert( std::pair(el.first, result_object<Eigen::MatrixXd>(el.first, el.second, N_Samples, N_networks)) );
+    }
+    return result;
 }
+
 
 
 

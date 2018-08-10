@@ -24,6 +24,7 @@ PYBIND11_MODULE(PyVal, m) {
     py::class_<Py_ER_Net>(m, "BS_Network")
             .def(py::init<>())
             .def("run", &Py_ER_Net::run_valuation)
+            .def("k_vals", &Py_ER_Net::get_k_vals)
             .def("get_N_samples", &Py_ER_Net::get_N_samples)
             .def("get_M", &Py_ER_Net::get_M)  //, py::return_value_policy::reference_internal)
             .def("get_rs", &Py_ER_Net::get_rs) // , py::return_value_policy::reference_internal)
@@ -34,8 +35,8 @@ PYBIND11_MODULE(PyVal, m) {
             .def("get_rs_var", &Py_ER_Net::get_rs_var) // , py::return_value_policy::reference_internal)
             .def("get_solvent_var", &Py_ER_Net::get_solvent_var) //, py::return_value_policy::reference_internal);
             .def("get_assets_var", &Py_ER_Net::get_assets_var) //, py::return_value_policy::reference_internal);
-            .def("get_io_deg_dist", &Py_ER_Net::get_io_deg_dist)
-            .def("get_io_deg_dist_var", &Py_ER_Net::get_io_deg_dist_var)
+            //.def("get_io_deg_dist", &Py_ER_Net::get_io_deg_dist)
+            //.def("get_io_deg_dist_var", &Py_ER_Net::get_io_deg_dist_var)
             .def("get_delta_jacobians_var", &Py_ER_Net::get_delta_jac_var); //, py::return_value_policy::reference_internal);
 
     py::add_ostream_redirect(m, "ostream_redirect");

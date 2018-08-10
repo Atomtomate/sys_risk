@@ -90,6 +90,7 @@ int main(int argc, char* argv[])
     std::cout << "row sum: ";
     double val;
     std::cin >> val;
+    /*
     std::vector<double> plist {0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     for(auto p : plist) {
         LOG(INFO) << "Generating for p " << p;
@@ -100,13 +101,18 @@ int main(int argc, char* argv[])
         LOG(INFO) << test.rightCols(N_).rowwise().sum();
     }
     exit(0);
+    */
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val, 2, 1.0, 0.0, 1.0);
-        auto res = nNN.run_valuation(300, 300);//10000, 500);
+        auto res = nNN.run_valuation(400, 800);//10000, 500);
         std::cout << "results: " << std::endl;
-        for(const auto& el : res)
-           std::cout << el.first << ": \n" << el.second.format(CleanFmt) << std::endl << " ===========" << std::endl;
+        for(auto res_el: res ) {
+            std::cout << " <k> = " << res_el.first << std::endl;
+            for (const auto &el : res_el.second)
+                std::cout << el.first << ": \n" << el.second.format(CleanFmt) << std::endl << " ==========="
+                          << std::endl;
+        }
     }
     //for (double p : {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}) {
     //    NetwSim nNN(local, world, true, 10, p, 0.95, 2, 1.0, 0.0);

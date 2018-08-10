@@ -35,6 +35,7 @@
 
 #include "ValuationConfig.h"
 #include "StatAcc.hpp"
+#include "RndGraphGen.hpp"
 
 struct BS_Parameters
 {
@@ -59,6 +60,7 @@ private:
     Vec debt;
     Vec solvent;
     double exprt;
+    Mat sigma;
 #ifdef USE_SPARSE_INTERNAL
     Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
     Eigen::SparseMatrix<double, Eigen::ColMajor> Id;

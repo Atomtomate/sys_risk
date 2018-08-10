@@ -35,7 +35,7 @@ public:
 #endif
 
 
-    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale = 1.0)
+    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale)
     {
         LOG(TRACE) << "Initializing network";
         LOG(INFO) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
@@ -46,67 +46,114 @@ public:
         er_net.run_valuation(iterations, N_networks);
     }
 
-    Eigen::MatrixXd get_N_samples() const
+    Eigen::MatrixXi get_k_vals() const
     {
-        return er_net.count;
+        if(er_net.results.size() == 0)
+            throw std::runtime_error("No results available!");
+        Eigen::MatrixXi res(1, er_net.results.size());
+        auto it = er_net.results.begin();
+        int i = 0;
+        while(it != er_net.results.end())
+        {
+            res(0,i) = (int)(it->first);
+            it++;
+            i++;
+        }
+        return res;
     }
 
-    Eigen::MatrixXd get_M() const
+    Eigen::MatrixXd get_N_samples(int k) const
     {
-        return er_net.mean_M;
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("#Samples")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_M_var() const {
-        return er_net.var_M;
+    Eigen::MatrixXd get_M(int k) const
+    {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("M")->second;//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_rs() const {
-        return er_net.mean_rs;
+    Eigen::MatrixXd get_M_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance M")->second;//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_rs_var() const {
-        return er_net.var_rs;
+    Eigen::MatrixXd get_rs(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("RS")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_solvent() const {
-        return er_net.mean_solvent;
+    Eigen::MatrixXd get_rs_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance RS")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_solvent_var() const {
-        return er_net.var_solvent;
+    Eigen::MatrixXd get_solvent(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Solvent")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_delta_jac() const {
-        return er_net.mean_delta_jac;
+    Eigen::MatrixXd get_solvent_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Solvent")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+    Eigen::MatrixXd get_delta_jac(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Delta using Jacobians")->second;//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_delta_jac_var() const {
-        return er_net.var_delta_jac;
+    Eigen::MatrixXd get_delta_jac_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Delta using Jacobians")->second;//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_assets() const {
-        return er_net.mean_assets;
+    Eigen::MatrixXd get_assets(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Assets")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_assets_var() const {
-        return er_net.var_assets;
+    Eigen::MatrixXd get_assets_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Assets")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_valuation() const {
-        return er_net.mean_valuation;
+    Eigen::MatrixXd get_valuation(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Valuation")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_valuation_var() const {
-        return er_net.var_valuation;
+    Eigen::MatrixXd get_valuation_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Valuation")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
     }
 
-    Eigen::MatrixXd get_io_deg_dist() const {
-        return er_net.mean_io_deg_dist;
-    }
-
-    Eigen::MatrixXd get_io_deg_dist_var() const {
-        return er_net.var_io_deg_dist;
-    }
 
 };
 
