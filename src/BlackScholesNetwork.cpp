@@ -9,24 +9,41 @@
 #include "BlackScholesNetwork.hpp"
 
 
-BlackScholesNetwork::BlackScholesNetwork(const double T, const double r):
+BlackScholesNetwork::BlackScholesNetwork(const double T, const double r, const Eigen::Ref<Mat>& Sigma):
         T(T), r(r), exprt(std::exp(-r * T))
 {
+    if(Sigma.rows()>0 && Sigma.cols() > 0)
+    {
+        sigma.resize(Sigma.rows(), Sigma.cols());
+        sigma = Sigma;
+    }
+    N = sigma.rows();
+    //sigma_diag.resize(2*N,N);
+    //sigma_diag.topRows(N) = Sigma;
+    //sigma_diag.bottomRows(N) = Sigma;
     initialized = false;
+    jacobian_set = false;
     //EXPECT_EQ(M.cols(), 2 * M.rows()) << "Dimensions for cross holding matrix invalid!";
 }
 
 
-BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r):
+BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Mat>& Sigma, const double T, const double r):
         N(M_.rows()), S0(S0), St(assets), debt(debt), T(T), r(r), exprt(std::exp(-r * T))
 {
+    N = M_.rows();
     initialized = true;
+    jacobian_set = false;
     x = Eigen::VectorXd::Zero(2*N);
+    sigma.resize(N, N);
+    //sigma_diag.resize(2*N,N);
+    sigma = Sigma;
+    //sigma_diag.topRows(N) = Sigma;
+    //sigma_diag.bottomRows(N) = Sigma;
 #ifdef USE_SPARSE_INTERNAL
     Id.resize(2*N, 2*N);
     Id.setIdentity();
     //Jrs.resize(2*N,2*N);
-    J_a.resize(2*N, N);
+    //J_a.resize(2*N, N);
     M = M_.sparseView();
     M.makeCompressed();
 #else
@@ -64,7 +81,8 @@ const Eigen::MatrixXd BlackScholesNetwork::run_valuation(unsigned int iterations
         x.tail(N) = tmp.cwiseMin(debt);
         dist = (x_old - x).norm(); //.lpNorm<Eigen::Infinity>();//
     }
-    set_solvent();
+    jacobian_set = false;
+    set_jacobian();
     return x;
 }
 
@@ -76,9 +94,15 @@ const Eigen::VectorXd BlackScholesNetwork::get_assets()
 }
 
 
-const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
+void BlackScholesNetwork::set_jacobian() {
+    set_solvent();
     //TIMED_FUNC(timerObj);
 #ifdef USE_SPARSE_INTERNAL
+    Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
+    J_a.resize(2*N, N);
+    Jrs.resize(2*N, 2*N);
+    GreekMat.resize(2*N, N);
     J_a.setZero();
     for(int i = 0; i < N; i++)
     {
@@ -90,9 +114,9 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
     J_a.makeCompressed();
     //PERFORMANCE_CHECKPOINT(timerObj);
     lu.compute(Id - J_a*M);
-    auto Jrs = lu.solve(Id);
+    Jrs = lu.solve(Id);
+    GreekMat = exprt * Jrs * J_a;
     //PERFORMANCE_CHECKPOINT(timerObj);
-    Eigen::MatrixXd res_eigen = exprt*(Jrs*J_a)*St.asDiagonal();
     //PERFORMANCE_CHECKPOINT(timerObj);
 #else
     auto msol = 1-solvent.array();
@@ -104,9 +128,48 @@ const Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() {
         if(Jrs.isIdentity(0.001)) return Eigen::MatrixXd::Zero(2*N, N);
         auto res_eigen =  exprt*(lu.compute(Eigen::MatrixXd::Identity(2*N, 2*N) - Jrs).inverse()*J_a)*(St.asDiagonal());
 #endif
-    return res_eigen;
     //Eigen::MatrixXd::Map(&res[0], res_eigen.rows(), res_eigen.cols()) = res_eigen;
     //return res;
+    jacobian_set = true;
+}
+
+
+
+Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() const
+{
+    //LOG(WARNING) << "====";
+    //LOG(ERROR) << GreekMat.rows();
+    //LOG(ERROR) << GreekMat.cols();
+    if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_delta";
+    const Eigen::MatrixXd res_eigen = GreekMat * St.asDiagonal();
+    return res_eigen;
+}
+
+//Eigen::MatrixXd BlackScholesNetwork::get_vega(const Eigen::VectorXd Z) const
+Eigen::MatrixXd BlackScholesNetwork::get_vega(const Eigen::MatrixXd Z) const
+{
+    if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_vega";
+    //LOG(INFO) << "1";
+    //LOG(INFO) << sigma;
+    //LOG(INFO) << (S0.array()* St.array()).matrix();
+    //LOG(WARNING) << Z;
+    const Eigen::MatrixXd res_eigen = exprt* (GreekMat * (Z - T*sigma)) * (S0.array()* St.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
+    //const Eigen::MatrixXd res_eigen = GreekMat * St.asDiagonal();
+    return res_eigen;
+}
+
+Eigen::MatrixXd BlackScholesNetwork::get_theta() const
+{
+    if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_theta";
+    Eigen::MatrixXd res_eigen = exprt* (GreekMat * sigma * (S0.array()* St.array()).matrix() - r*x);
+    return res_eigen;
+}
+
+Eigen::MatrixXd BlackScholesNetwork::get_rho() const
+{
+    if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_rho";
+    const Eigen::MatrixXd res_eigen = T*exprt* (GreekMat * (S0.array()* St.array()).matrix() - x);
+    return res_eigen;
 }
 
 

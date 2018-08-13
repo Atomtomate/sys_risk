@@ -31,6 +31,12 @@ PYBIND11_MODULE(PyVal, m) {
             .def("get_solvent", &Py_ER_Net::get_solvent) //, py::return_value_policy::reference_internal);
             .def("get_assets", &Py_ER_Net::get_assets) //, py::return_value_policy::reference_internal);
             .def("get_delta_jacobians", &Py_ER_Net::get_delta_jac) //, py::return_value_policy::reference_internal);
+            .def("get_vega", &Py_ER_Net::get_vega)
+            .def("get_vega_var", &Py_ER_Net::get_vega_var)
+            .def("get_theta", &Py_ER_Net::get_theta)
+            .def("get_theta_var", &Py_ER_Net::get_theta_var)
+            .def("get_rho", &Py_ER_Net::get_rho)
+            .def("get_rho_var", &Py_ER_Net::get_rho_var)
             .def("get_M_var", &Py_ER_Net::get_M_var)  //, py::return_value_policy::reference_internal)
             .def("get_rs_var", &Py_ER_Net::get_rs_var) // , py::return_value_policy::reference_internal)
             .def("get_solvent_var", &Py_ER_Net::get_solvent_var) //, py::return_value_policy::reference_internal);

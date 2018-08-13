@@ -122,28 +122,28 @@ public:
     Eigen::MatrixXd get_delta_jac_var(int k) const {
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
-            return  el->second.find("Variance Delta using Jacobians")->second;//['#Samples'];
+            return  el->second.find("Variance Delta using Jacobians")->second;
         throw std::runtime_error("Tried to extract invalid <k>");
     }
 
     Eigen::MatrixXd get_assets(int k) const {
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
-            return  el->second.find("Assets")->second.transpose();//['#Samples'];
+            return  el->second.find("Assets")->second.transpose();
         throw std::runtime_error("Tried to extract invalid <k>");
     }
 
     Eigen::MatrixXd get_assets_var(int k) const {
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
-            return  el->second.find("Variance Assets")->second.transpose();//['#Samples'];
+            return  el->second.find("Variance Assets")->second.transpose();
         throw std::runtime_error("Tried to extract invalid <k>");
     }
 
     Eigen::MatrixXd get_valuation(int k) const {
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
-            return  el->second.find("Valuation")->second.transpose();//['#Samples'];
+            return  el->second.find("Valuation")->second.transpose();
         throw std::runtime_error("Tried to extract invalid <k>");
     }
 
@@ -153,6 +153,51 @@ public:
             return  el->second.find("Variance Valuation")->second.transpose();//['#Samples'];
         throw std::runtime_error("Tried to extract invalid <k>");
     }
+
+
+    Eigen::MatrixXd get_vega(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Vega")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_vega_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Vega")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_theta(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Theta")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_theta_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Theta")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_rho(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Rho")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_rho_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Rho")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+
 
 
 };

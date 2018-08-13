@@ -90,6 +90,9 @@ int main(int argc, char* argv[])
     std::cout << "row sum: ";
     double val;
     std::cin >> val;
+    std::cout << "default scale: ";
+    double ds;
+    std::cin >> ds;
     /*
     std::vector<double> plist {0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     for(auto p : plist) {
@@ -104,8 +107,8 @@ int main(int argc, char* argv[])
     */
     for (int N : {N_})
     { //, 8, 16, 32}) {
-        nNN.test_init_network(N, conn_/static_cast<double>(N) , val, 2, 1.0, 0.0, 1.0);
-        auto res = nNN.run_valuation(400, 800);//10000, 500);
+        nNN.test_init_network(N, conn_/static_cast<double>(N) , val, 2, 1.0, 0.0, ds);
+        auto res = nNN.run_valuation(500, 1000);//10000, 500);
         std::cout << "results: " << std::endl;
         for(auto res_el: res ) {
             std::cout << " <k> = " << res_el.first << std::endl;

@@ -61,17 +61,21 @@ private:
     Vec solvent;
     double exprt;
     Mat sigma;
+    //Mat sigma_diag;
+    bool jacobian_set;
 #ifdef USE_SPARSE_INTERNAL
     Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
     Eigen::SparseMatrix<double, Eigen::ColMajor> Id;
     Eigen::SparseMatrix<double, Eigen::ColMajor> M;
-    Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
-    Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
+    //Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
+    //Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> GreekMat;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Z;
 #else
     Mat M;
-    Mat Jrs;
-    Mat J_a;
+    //Mat Jrs;
+    //Mat J_a;
+    Mat GreekMat;
     Eigen::PartialPivLU<Eigen::MatrixXd> lu;
 #endif
 
@@ -107,7 +111,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const double T,const double r);
+    BlackScholesNetwork(const double T,const double r, const Eigen::Ref<Mat>& Sigma);
 
     /**
      * @brief
@@ -117,7 +121,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const double T, const double r);
+    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Mat>& Sigma, const double T, const double r);
 
 
 
@@ -149,8 +153,8 @@ public:
 
     void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
         N = M_new.rows();
-        Jrs.resize(2*N, 2*N);
-        J_a.resize(2*N, N);
+        //Jrs.resize(2*N, 2*N);
+        //J_a.resize(2*N, N);
         x.resize(2*N);
         x = Eigen::VectorXd::Zero(2*N);
 #ifdef USE_SPARSE_INTERNAL
@@ -158,19 +162,21 @@ public:
         M.makeCompressed();
         Id.resize(2*N, 2*N);
         Id.setIdentity();
-        J_a.reserve(2*N);
-        Jrs.reserve(2*M.nonZeros());
+        //J_a.reserve(2*N);
+        //Jrs.reserve(2*M.nonZeros());
 #else
         M = M_new;
         lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
 #endif
-        St = s0;
+        St.resize(N);
+        St = Eigen::VectorXd::Constant(N, 1.0);
         if(s0.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
         S0 = s0;
         if(d.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and debts!");
         debt = d;
+        jacobian_set = false;
         initialized = true;
     }
 
@@ -213,7 +219,15 @@ public:
    }
 
 
-    const Mat get_delta_v1();
+    void set_jacobian();
+
+    Mat get_delta_v1() const;
+
+    Mat get_vega(const Eigen::MatrixXd Z) const;
+
+    Mat get_theta() const;
+
+    Mat get_rho() const;
     /*
     std::vector<double> ret;
     ret.resize(N);

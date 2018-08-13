@@ -41,6 +41,8 @@ struct Parameters
 
 };
 
+//const std::string io_deg_str("In/Out degree distribution");
+
 class NetwSim {
     friend class Py_ER_Net;
 private:
@@ -59,6 +61,7 @@ private:
     double r;              // interest
     double p;
     double val;
+    double default_prob_scale;
     int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
@@ -106,7 +109,7 @@ public:
      * @param val           total value in/being held by other firms
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      */
-    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale = 1.0);
+    void test_init_network(const long N, const double p, const double val, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale);
 
     virtual ~NetwSim(){
         if(bsn != nullptr)
@@ -158,13 +161,13 @@ public:
                long N, double p, double val, int which_to_set, const double T, const double r) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    NetwSim(long N_, double p_, double val, int which_to_set, const double T_, const double r_) :
+    NetwSim(long N_, double p_, double val, int which_to_set, const double T_, const double r_, const double default_scale_) :
 #endif
-            val(val), T(T_), r(r_), Z_dist(&tmp[0][0], &tmp[1][1])
+            val(val), T(T_), r(r_), default_prob_scale(default_scale_), Z_dist(&tmp[0][0], &tmp[1][1])
     {
         gen_u.seed();
         bsn = nullptr;
-        test_init_network(N_, p_, val, which_to_set, T_, r_);
+        test_init_network(N_, p_, val, which_to_set, T_, r_, default_scale_);
     }
 
 
@@ -238,10 +241,24 @@ private:
     std::unordered_map<std::string, Eigen::MatrixXd> result_object(const int k, MCUtil::Sampler<T>* S, const long N_Samples, const long N_networks)
     {
 
+const std::string count_str("#Samples");
+const std::string rs_str("RS");
+const std::string M_str("M");
+const std::string assets_str("Assets");
+const std::string solvent_str("Solvent");
+const std::string val_str("Valuation");
+const std::string delta1_str("Delta using Jacobians");
+const std::string delta2_str("Delta using Log");
+const std::string rho_str("Rho");
+const std::string theta_str("Theta");
+const std::string vega_str("Vega");
 
         Eigen::MatrixXd count;
         Eigen::MatrixXd mean_delta_jac;
         Eigen::MatrixXd mean_delta_log;
+        Eigen::MatrixXd mean_rho;
+        Eigen::MatrixXd mean_theta;
+        Eigen::MatrixXd mean_vega;
         Eigen::MatrixXd mean_assets;
         Eigen::MatrixXd mean_rs;
         Eigen::MatrixXd mean_M;
@@ -250,6 +267,9 @@ private:
         Eigen::MatrixXd mean_io_deg_dist;
         Eigen::MatrixXd var_delta_jac;
         Eigen::MatrixXd var_delta_log;
+        Eigen::MatrixXd var_rho;
+        Eigen::MatrixXd var_theta;
+        Eigen::MatrixXd var_vega;
         Eigen::MatrixXd var_assets;
         Eigen::MatrixXd var_rs;
         Eigen::MatrixXd var_M;
@@ -257,15 +277,6 @@ private:
         Eigen::MatrixXd var_valuation;
         Eigen::MatrixXd var_io_deg_dist;
 
-
-        const std::string count_str("#Samples");
-        const std::string rs_str("RS");
-        const std::string M_str("M");
-        const std::string assets_str("Assets");
-        const std::string solvent_str("Solvent");
-        const std::string val_str("Valuation");
-        const std::string delta1_str("Delta using Jacobians");
-        const std::string delta2_str("Delta using Log");
         //const std::string io_deg_str("In/Out degree distribution");
         std::unordered_map<std::string, Eigen::MatrixXd> res;
         auto res_mean = S->extract(MCUtil::StatType::MEAN);
@@ -283,6 +294,9 @@ private:
             else if(el.first.compare(val_str) == 0){ mean_valuation = el.second; res[val_str] = el.second;}
             else if(el.first.compare(delta1_str) == 0){ mean_delta_jac = el.second; res[delta1_str] = el.second;}
             else if(el.first.compare(delta2_str) == 0){ mean_delta_log = el.second; res[delta2_str] = el.second;}
+            else if(el.first.compare(rho_str) == 0){ mean_rho = el.second; res[rho_str] = el.second;}
+            else if(el.first.compare(theta_str) == 0){ mean_theta = el.second; res[theta_str] = el.second;}
+            else if(el.first.compare(vega_str) == 0){ mean_vega = el.second; res[vega_str] = el.second;}
             //else if(el.first.compare(io_deg_str) == 0){ mean_io_deg_dist = el.second; res[io_deg_str] = el.second;}
             else LOG(WARNING) << "result " << el.first << ", not saved";
         }
@@ -294,6 +308,9 @@ private:
             else if(el.first.compare(val_str) == 0){ var_valuation = el.second; res["Variance "+val_str] = el.second;}
             else if(el.first.compare(delta1_str) == 0){ var_delta_jac= el.second; res["Variance "+delta1_str] = el.second;}
             else if(el.first.compare(delta2_str) == 0){ var_delta_log= el.second; res["Variance "+delta2_str] = el.second;}
+            else if(el.first.compare(rho_str) == 0){ var_rho = el.second; res["Variance "+rho_str] = el.second;}
+            else if(el.first.compare(theta_str) == 0){ var_theta = el.second; res["Variance "+theta_str] = el.second;}
+            else if(el.first.compare(vega_str) == 0){ var_vega = el.second; res["Variance "+vega_str] = el.second;}
             //else if(el.first.compare(io_deg_str) == 0){ var_io_deg_dist = el.second; res["Variance" + io_deg_str] = el.second;}
             else LOG(WARNING) << "result " << el.first << ", not saved";
         }
@@ -304,15 +321,18 @@ private:
     template<typename T>
     void register_observers(MCUtil::Sampler<T>* S)
     {
-        const std::string count_str("#Samples");
-        const std::string rs_str("RS");
-        const std::string M_str("M");
-        const std::string assets_str("Assets");
-        const std::string solvent_str("Solvent");
-        const std::string val_str("Valuation");
-        const std::string delta1_str("Delta using Jacobians");
-        const std::string delta2_str("Delta using Log");
-        //const std::string io_deg_str("In/Out degree distribution");
+
+const std::string count_str("#Samples");
+const std::string rs_str("RS");
+const std::string M_str("M");
+const std::string assets_str("Assets");
+const std::string solvent_str("Solvent");
+const std::string val_str("Valuation");
+const std::string delta1_str("Delta using Jacobians");
+const std::string delta2_str("Delta using Log");
+const std::string rho_str("Rho");
+const std::string theta_str("Theta");
+const std::string vega_str("Vega");
 
         // ===== Defining observables =====
         auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_assets(); };
@@ -320,7 +340,10 @@ private:
         auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
         auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
         auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
-        std::function<const Eigen::MatrixXd(void)> assets_obs(std::cref(asset_obs_lambda));
+        auto rho_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rho();};
+        auto theta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_theta();};
+        auto vega_obs_lambda = [this]() -> Eigen::MatrixXd {Eigen::MatrixXd tmp = this->Z.asDiagonal(); return bsn->get_vega(tmp);}; //LOG(ERROR) << "a"; Eigen::MatrixXd t = Eigen::MatrixXd::Zero(2,2);
+        std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
         S->register_observer(assets_obs, assets_str, N, 1);
         std::function<const Eigen::MatrixXd(void)> rs_obs(std::cref(rs_obs_lambda));
         S->register_observer(rs_obs, rs_str, 2*N, 1);
@@ -330,6 +353,15 @@ private:
         S->register_observer(sol_obs, solvent_str, N, 1);
         std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
         S->register_observer(deltav1_obs, delta1_str, 2 * N , N);
+
+        std::function<const Eigen::MatrixXd(void)> rho_obs(std::cref(rho_obs_lambda));
+        S->register_observer(rho_obs, rho_str, 2*N , 1);
+
+        std::function<const Eigen::MatrixXd(void)> theta_obs(std::cref(theta_obs_lambda));
+        S->register_observer(theta_obs, theta_str, 2*N , 1);
+        std::function<const Eigen::MatrixXd(void)> vega_obs(std::cref(vega_obs_lambda));
+        S->register_observer(vega_obs, vega_str, 2*N , N);
+
         //std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
         //S->register_observer(deltav2_obs, delta2_str, 2 * N , N);
         //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};

@@ -9,10 +9,10 @@
 
 #include "NetwSim.hpp"
 void NetwSim::test_init_network() {
-    test_init_network(N, p, val, setM, T, r);
+    test_init_network(N, p, val, setM, T, r, default_prob_scale);
 }
 
-void NetwSim::test_init_network(const long N_in, const double p_in, const double val_in, const int which_to_set, const double T_new, const double r_new, const double default_prob_scale) {
+void NetwSim::test_init_network(const long N_, const double p_, const double val_, const int which_to_set, const double T_, const double r_, const double default_prob_scale_) {
     // ===== Reset Sampler =====
     auto it = SamplerList.begin();
     while(it != SamplerList.end())
@@ -25,12 +25,12 @@ void NetwSim::test_init_network(const long N_in, const double p_in, const double
     results.clear();
 
     // ===== Initialization of temporary variables =====
-    T = T_new; r = r_new; N = N_in; p = p_in; val = val_in; setM = which_to_set;
+    T = T_; r = r_; N = N_; p = p_; val = val_; setM = which_to_set; default_prob_scale = default_prob_scale_;
     Z.resize(N);
     itSigma.resize(N, N);
     var_h.resize(N);
-    S0 = Eigen::VectorXd::Zero(N);
-    debt = Eigen::VectorXd::Zero(N);
+    S0.resize(N);
+    debt.resize(N);
 
     // ===== Preparation of Log Normal Dist. =====
     double scale = 0.15; // volatility, higher -> prob to default increases
@@ -50,13 +50,14 @@ void NetwSim::test_init_network(const long N_in, const double p_in, const double
 
 
     // ===== Generating Black Scholes Network =====
+
     S0 = Eigen::VectorXd::Constant(N,1.0).array() + T*sigma.diagonal().array()*sigma.diagonal().array()/2.0;            // <S_t> = S_0 - T*sigma^2/2 => This sets <S_t> ~ 1
     debt = ((var_h + S0).array() - T*r)*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
     if(bsn != nullptr)
         delete bsn;
     LOG(TRACE) << "Generating Model";
     LOG(TRACE) << "creating new Black Scholes Network";
-    bsn = new BlackScholesNetwork(T, r);
+    bsn = new BlackScholesNetwork(T, r, sigma);
     LOG(TRACE) << "Initializing random connectivity matrix";
     /*try{
         init_M(Utils::gen_configuration_model);
@@ -76,7 +77,7 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
     test_init_network();
 
     auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
-    auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) {this->run(x); };
+    auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) { this->run(x); };
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
@@ -87,17 +88,21 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
             init_M(Utils::gen_configuration_model);
             //init_M(Utils::gen_sinkhorn);
 
-            int degree = (int)std::round((avg_io_deg.first + avg_io_deg.second)/2.);
+            int degree = (int)std::round(5.*(avg_io_deg.first + avg_io_deg.second)/2.);
             auto it = SamplerList.find(degree);
-            if(it != SamplerList.end())
-                (*it).second->draw_samples(f_run, f_dist, N_Samples);
-            else
+            if(it == SamplerList.end())
             {
                 MCUtil::Sampler<Eigen::MatrixXd>* S = new MCUtil::Sampler<Eigen::MatrixXd>();
                 register_observers<Eigen::MatrixXd>(S);
+                //LOG(INFO) << "aaaa";
+                //f_run(ttt);
+                //LOG(INFO) << "bbbb";
                 S->draw_samples(f_run, f_dist, N_Samples);
                 SamplerList.insert(std::pair(degree,S));
+                it = SamplerList.find(degree);
             }
+            else
+                (*it).second->draw_samples(f_run, f_dist, N_Samples);
 
         } catch (const std::runtime_error& e)
         {
