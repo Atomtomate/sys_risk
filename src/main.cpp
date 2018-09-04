@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     for (int N : {N_})
     { //, 8, 16, 32}) {
         nNN.test_init_network(N, conn_/static_cast<double>(N) , val, 2, 1.0, 0.0, ds);
-        auto res = nNN.run_valuation(500, 1000);//10000, 500);
+        auto res = nNN.run_valuation(1000, 2000);//10000, 500);
         std::cout << "results: " << std::endl;
         for(auto res_el: res ) {
             std::cout << " <k> = " << res_el.first << std::endl;

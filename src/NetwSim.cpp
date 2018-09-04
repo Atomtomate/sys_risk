@@ -85,8 +85,8 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
         try{
-            init_M(Utils::gen_configuration_model);
-            //init_M(Utils::gen_sinkhorn);
+            //init_M(Utils::gen_configuration_model);
+            init_M(Utils::gen_sinkhorn);
 
             int degree = (int)std::round(5.*(avg_io_deg.first + avg_io_deg.second)/2.);
             auto it = SamplerList.find(degree);

@@ -153,7 +153,7 @@ Eigen::MatrixXd BlackScholesNetwork::get_vega(const Eigen::MatrixXd Z) const
     //LOG(INFO) << sigma;
     //LOG(INFO) << (S0.array()* St.array()).matrix();
     //LOG(WARNING) << Z;
-    const Eigen::MatrixXd res_eigen = exprt* (GreekMat * (Z - T*sigma)) * (S0.array()* St.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
+    const Eigen::MatrixXd res_eigen = exprt* (GreekMat * (std::sqrt(T)*Z - T*sigma)) * (S0.array()* St.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
     //const Eigen::MatrixXd res_eigen = GreekMat * St.asDiagonal();
     return res_eigen;
 }

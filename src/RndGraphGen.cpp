@@ -10,7 +10,7 @@
 
 namespace Utils {
     constexpr double eps = 1e-5;
-    constexpr bool allow_unnormalized_cols = false;
+    constexpr bool allow_unnormalized_cols = true;
     constexpr bool check_suppression = false;
     constexpr bool check_selfloop = true;
     constexpr bool check_multiedge = true;
@@ -105,7 +105,11 @@ namespace Utils {
 
                 col_sums = M->rightCols(N).colwise().sum();
                 for (int ii = 0; (ii < col_sums.size()) && cols_ok; ii++) {
-                    if((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
+                    if (allow_unnormalized_cols)
+                    {
+                        if(col_sums(ii) >= 1.0)
+                            cols_ok = false;
+                    } else if ((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
                         cols_ok = false;
                         //LOG(WARNING) << (col_sums(ii) > eps)  << " && " << (col_sums(ii)) << "-" << val << " > " << eps <<" = " << (std::abs(col_sums(ii) - val) > eps) << " on col " << ii << ")";
                         //LOG(WARNING) << "M:\n" << (*M);
