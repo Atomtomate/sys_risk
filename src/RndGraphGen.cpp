@@ -10,7 +10,7 @@
 
 namespace Utils {
     constexpr double eps = 1e-5;
-    constexpr bool allow_unnormalized_cols = true;
+    constexpr bool allow_unnormalized_rows = true;
     constexpr bool check_suppression = false;
     constexpr bool check_selfloop = true;
     constexpr bool check_multiedge = true;
@@ -89,60 +89,57 @@ namespace Utils {
                     }
                 }
             }
-            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
+            Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
             do {
                 cols_ok = true;
                 M_bak = (*M);
-                for (int ii = 0; ii < N; ii++) {
-                    if (col_sums(ii) > 0)
-                        M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
-                }
-                Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
                 for (int ii = 0; ii < row_sums.size(); ii++) {
                     if (row_sums(ii) > 0)
-                        M->rightCols(N).row(ii) = (val/ row_sums(ii)) * M->rightCols(N).row(ii);
+                        M->rightCols(N).row(ii) = (val / row_sums(ii)) * M->rightCols(N).row(ii);
                 }
 
-                col_sums = M->rightCols(N).colwise().sum();
-                for (int ii = 0; (ii < col_sums.size()) && cols_ok; ii++) {
-                    if (allow_unnormalized_cols)
-                    {
-                        if(col_sums(ii) >= 1.0)
-                            cols_ok = false;
-                    } else if ((col_sums(ii) > eps) && (std::abs(col_sums(ii) - val) > eps)) {
-                        cols_ok = false;
-                        //LOG(WARNING) << (col_sums(ii) > eps)  << " && " << (col_sums(ii)) << "-" << val << " > " << eps <<" = " << (std::abs(col_sums(ii) - val) > eps) << " on col " << ii << ")";
-                        //LOG(WARNING) << "M:\n" << (*M);
+                if constexpr (!allow_unnormalized_rows) {
+                    row_sums = M->rightCols(N).rowwise().sum();
+                    Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
+                    for (int ii = 0; ii < N; ii++) {
+                        if (col_sums(ii) > 0)
+                            M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
                     }
-                }
 
-                if(!cols_ok && M->isApprox(M_bak))      // oscillating
-                {
-                    cols_ok = false;
-                    it = max_it;
-                    //LOG(WARNING) << "found oscillation";
-                }
-
-                for(int ii = 0;it < max_it && ii < N; ii++)
-                {
-                    for(int jj = 0 ; jj < N; jj++)
+                    for (int ii = 0; (ii < row_sums.size()) && cols_ok; ii++) {
+                        //if(row_sums(ii) >= 1.0)
+                        //    cols_ok = false;
+                        if ((row_sums(ii) > eps) && (std::abs(row_sums(ii) - val) > eps))
+                            cols_ok = false;
+                    }
+                    if(!cols_ok && M->isApprox(M_bak))      // oscillating
                     {
-                        if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
-                            if(check_suppression){
-                                cols_ok = false;
-                                it = max_it;
-                            } else {
-                                (*M)(ii,jj+N) = 0;
+                        cols_ok = false;
+                        it = max_it;
+                    }
+
+                    for(int ii = 0;it < max_it && ii < N; ii++)
+                    {
+                        for(int jj = 0 ; jj < N; jj++)
+                        {
+                            if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
+                                if constexpr (check_suppression){
+                                    cols_ok = false;
+                                    it = max_it;
+                                } else {
+                                    (*M)(ii,jj+N) = 0;
+                                }
+                                //LOG(WARNING) << "found suppressed element at (" << ii << ", " << jj << ")";
                             }
-                            //LOG(WARNING) << "found suppressed element at (" << ii << ", " << jj << ")";
                         }
                     }
+                    it++;
                 }
-                it++;
+
             } while (!cols_ok && it < max_it);
             rej_it++;
         } while (!cols_ok && rej_it < max_rej_it);
-        if (!allow_unnormalized_cols && (rej_it > max_rej_it - 1)) {
+        if (rej_it > max_rej_it - 1){
             throw std::runtime_error(
                     "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
                     std::to_string(N) + "\n\n");
@@ -299,7 +296,7 @@ namespace Utils {
                     for(int jj = 0 ; jj < N; jj++)
                     {
                         if((*M)(ii,jj+N) > 0 && (*M)(ii,jj+N) < smallest_el) {
-                            if(check_suppression){
+                            if constexpr (check_suppression){
                                 cols_ok = false;
                                 it = max_it;
                             } else {
@@ -312,7 +309,7 @@ namespace Utils {
             } while (!cols_ok && it < max_it);
             rej_it++;
         } while (!cols_ok && rej_it < max_rej_it);
-        if (!allow_unnormalized_cols && (rej_it > max_rej_it - 1)) {
+        if ((rej_it > max_rej_it - 1)) {
             throw std::runtime_error(
                     "\n\nToo many rejections during generation of M! p=" + std::to_string(p) + ", n=" +
                     std::to_string(N) + "\n\n");
@@ -321,24 +318,22 @@ namespace Utils {
 
 
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd *M) {
-        Eigen::MatrixXd in_out_deg = Eigen::MatrixXd::Zero(2, M->rows());
-        int N = M->rows();
+        Eigen::MatrixXd in_out_deg = Eigen::MatrixXd::Zero(2, M->cols());
         for (int i = 0; i < M->rows(); i++) {
             int in_deg = 0;
-            for (int j = 0; j < M->leftCols(N).cols(); j++) {
-                in_deg += (int) ((*M)(i, j + N) > eps);
+            for (int j = 0; j < M->cols(); j++) {
+                in_deg += (int) ((*M)(i, j) > eps);
             }
-            in_out_deg(0, in_deg) += 1;
+            in_out_deg(0, i) += in_deg;
         }
-        for (int i = 0; i < M->leftCols(N).cols(); i++) {
+        for (int i = 0; i < M->cols(); i++) {
             int out_deg = 0;
             for (int j = 0; j < M->rows(); j++) {
-                out_deg += (int) ((*M)(i, j + N) > eps);
+                out_deg += (int) ((*M)(j, i) > eps);
             }
-            in_out_deg(1, out_deg) += 1;
+            in_out_deg(1, i) += out_deg;
 
         }
-        in_out_deg = in_out_deg/N;
         return in_out_deg;
     }
 
@@ -367,12 +362,18 @@ namespace Utils {
         return res;
     }
 
+    Eigen::MatrixXd avg_row_col_sums(Eigen::MatrixXd* M)
+    {
+        Eigen::MatrixXd res = Eigen::MatrixXd::Zero(2, M->cols());
+        res.leftCols(M->rows()).topRows(1) = M->rowwise().sum();
+        res.bottomRows(1) = M->colwise().sum();
+        return res;
+    }
 
     std::pair<double,double> avg_io_deg(Eigen::MatrixXd* M)
     {
         std::pair<double, double> res(0., 0.);
         int N = M->rows();
-        int count  = 0;
         for (int i = 0; i < M->rows(); i++) {
             int in_deg = 0;
             for (int j = 0; j < M->leftCols(N).cols(); j++) {
@@ -380,7 +381,6 @@ namespace Utils {
             }
             res.first += in_deg;
         }
-        res.first = res.first/N;
         for (int i = 0; i < M->leftCols(N).cols(); i++) {
             int out_deg = 0;
             for (int j = 0; j < M->rows(); j++) {
@@ -391,6 +391,22 @@ namespace Utils {
         res.first = res.first/N;
         res.second = res.second/N;
         return res;
+    }
+
+
+    void fixed_2d(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set)
+    {
+        M->setZero();
+        if(which_to_set == 2 || which_to_set == 0) {
+            (*M)(0, 3) = val;
+            (*M)(1, 2) = val;
+        }
+        if( which_to_set == 1 || which_to_set == 0)
+        {
+            (*M)(0, 1) = val;
+            (*M)(1, 0) = val;
+        }
+
     }
 
 }

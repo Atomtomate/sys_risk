@@ -31,6 +31,9 @@
 
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/info_parser.hpp>
+
 
 #define EIGEN_DENSEBASE_PLUGIN "EigenDenseBaseAddons.hpp"
 #include <Eigen/Dense>

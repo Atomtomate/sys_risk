@@ -219,7 +219,7 @@ public:
                         break;
                         */
             }
-            Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> out =\
+            Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> out = \
                 Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>(&res[0], r, c);
             return out;
         }

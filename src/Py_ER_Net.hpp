@@ -35,15 +35,26 @@ public:
 #endif
 
 
-    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const long iterations, const long N_networks, const double default_prob_scale)
+    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const double S0, const double sigma, const long iterations, const long N_networks, const double default_prob_scale)
     {
         LOG(TRACE) << "Initializing network";
         LOG(INFO) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
         if(val_row != val_col)
             LOG(WARNING) << "ignoring column sum value! for not val_col == val_row is required";
-        er_net.test_init_network(N, p, val_row, which_to_set, T, r, default_prob_scale);
+        er_net.test_init_network(N, p, val_row, which_to_set, T, r, S0, sigma, default_prob_scale);
         LOG(TRACE) << "Network initialized";
         er_net.run_valuation(iterations, N_networks);
+    }
+
+
+    Eigen::MatrixXd get_io_deg_dist() const
+    {
+        return er_net.get_io_deg_dist();
+    }
+
+    Eigen::MatrixXd get_avg_row_col_sums() const
+    {
+        return er_net.get_avg_row_col_sums();
     }
 
     Eigen::MatrixXi get_k_vals() const
@@ -61,6 +72,7 @@ public:
         }
         return res;
     }
+
 
     Eigen::MatrixXd get_N_samples(int k) const
     {
@@ -194,6 +206,20 @@ public:
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
             return  el->second.find("Variance Rho")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_pi(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Pi")->second.transpose();//['#Samples'];
+        throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_pi_var(int k) const {
+        auto el = er_net.results.find(k);
+        if(el != er_net.results.end())
+            return  el->second.find("Variance Pi")->second.transpose();//['#Samples'];
         throw std::runtime_error("Tried to extract invalid <k>");
     }
 

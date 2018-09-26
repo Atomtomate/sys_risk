@@ -75,10 +75,15 @@ namespace Utils {
      * @return
      */
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd* M);
+    Eigen::MatrixXd avg_row_col_sums(Eigen::MatrixXd* M);
 
     int fixed_degree(Eigen::MatrixXd* M);
 
     std::pair<double,double> avg_io_deg(Eigen::MatrixXd* M);
+
+
+    void fixed_2d(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
+
 }
 
 #endif //VALUATION_GENRNDER_HPP

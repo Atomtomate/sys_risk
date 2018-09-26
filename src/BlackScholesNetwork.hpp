@@ -9,7 +9,7 @@
 #ifndef SRC_BLACKSCHOLES_NETWORK_HPP_
 #define SRC_BLACKSCHOLES_NETWORK_HPP_
 
-#define USE_SPARSE_INTERNAL
+#define USE_SPARSE_INTERNAL 1
 
 
 #include <stdexcept>
@@ -37,11 +37,17 @@
 #include "StatAcc.hpp"
 #include "RndGraphGen.hpp"
 
-struct BS_Parameters
+struct simulationParameters
 {
+    int N;
     double T;
     double r;
-
+    double sigma;
+    double S0;
+    double conn;
+    double colSums;
+    double defaultScale;
+    int which_to_set;
 };
 
 
@@ -57,25 +63,26 @@ private:
     Vec x;
     Vec S0;
     Vec St;
+    Vec St_full;
     Vec debt;
     Vec solvent;
+    Vec sigma;
     double exprt;
-    Mat sigma;
     //Mat sigma_diag;
     bool jacobian_set;
-#ifdef USE_SPARSE_INTERNAL
+#if USE_SPARSE_INTERNAL == 1
     Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
     Eigen::SparseMatrix<double, Eigen::ColMajor> Id;
     Eigen::SparseMatrix<double, Eigen::ColMajor> M;
+    Eigen::SparseMatrix<double, Eigen::ColMajor> GreekMat;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
-    Eigen::SparseMatrix<double, Eigen::ColMajor> GreekMat;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Z;
 #else
     Mat M;
-    //Mat Jrs;
     //Mat J_a;
     Mat GreekMat;
+    Mat Id;
     Eigen::PartialPivLU<Eigen::MatrixXd> lu;
 #endif
 
@@ -111,7 +118,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const double T,const double r, const Eigen::Ref<Mat>& Sigma);
+    BlackScholesNetwork(const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& Sigma, const double T,const double r);
 
     /**
      * @brief
@@ -121,7 +128,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Mat>& Sigma, const double T, const double r);
+    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& Sigma, const double T, const double r);
 
 
 
@@ -137,13 +144,13 @@ public:
         if(st.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets!");
         St = st;
+        St_full = S0.array()*St.array();
     }
 
     void re_init(const Eigen::Ref<const Mat>& M_new)
     {
-        LOG(ERROR) << M_new;
         if(M_new.rows() != S0.size()) throw std::logic_error("re-initialized with wrong M size!");
-#ifdef USE_SPARSE_INTERNAL
+#if USE_SPARSE_INTERNAL == 1
         M = M_new.sparseView();
         M.makeCompressed();
 #else
@@ -157,18 +164,19 @@ public:
         //J_a.resize(2*N, N);
         x.resize(2*N);
         x = Eigen::VectorXd::Zero(2*N);
-#ifdef USE_SPARSE_INTERNAL
+#if USE_SPARSE_INTERNAL == 1
         M = M_new.sparseView();
         M.makeCompressed();
         Id.resize(2*N, 2*N);
         Id.setIdentity();
-        //J_a.reserve(2*N);
-        //Jrs.reserve(2*M.nonZeros());
 #else
         M = M_new;
         lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
+        Id.resize(2*N, 2*N);
+        Id.setIdentity();
 #endif
         St.resize(N);
+        St_full.resize(N);
         St = Eigen::VectorXd::Constant(N, 1.0);
         if(s0.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
@@ -195,7 +203,7 @@ public:
     }
 
     inline const Mat get_M() const {
-#ifdef USE_SPARSE_INTERNAL
+#if USE_SPARSE_INTERNAL == 1
         return Eigen::MatrixXd(M);
 #else
         return M;
@@ -225,7 +233,7 @@ public:
 
     Mat get_vega(const Eigen::MatrixXd Z) const;
 
-    Mat get_theta() const;
+    Mat get_theta(const Eigen::MatrixXd Z) const;
 
     Mat get_rho() const;
     /*
@@ -233,6 +241,9 @@ public:
     ret.resize(N);
     Eigen::VectorXd::Map(&ret[0], N) = x.head(N) + x.tail(N);
     return ret;*/
+
+
+    Eigen::MatrixXd get_pi() const;
 
     void debug_print();
 
