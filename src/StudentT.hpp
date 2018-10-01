@@ -28,7 +28,7 @@ private:
 public:
     Student_t_dist(int deg_):deg(deg_) { initialized = false;}
 
-    Student_t_dist(Eigen::MatrixXd sigma_, Eigen::VectorXd mu_, int deg_):
+    Student_t_dist(Eigen::MatrixXd sigma_, Eigen::VectorXd mu_, double deg_):
             sigma(sigma_), mu(mu_), deg(deg_)
     {
         p = sigma_.rows();
@@ -37,7 +37,7 @@ public:
         initialized = true;
     }
 
-    Student_t_dist(Eigen::MatrixXd sigma_, int deg_):
+    Student_t_dist(Eigen::MatrixXd sigma_, double deg_):
             sigma(sigma_), deg(deg_)
     {
         p = sigma_.rows();
@@ -52,6 +52,7 @@ public:
         return log_prefactor - 0.5*(deg+p)*std::log(1.0 + xm/deg);
     }
 
+    /*
     double logpdf(Eigen::VectorXd mu, Eigen::VectorXd x)
     {
         Eigen::VectorXd xp = x - mu;
@@ -68,6 +69,7 @@ public:
         double xm = xp.transpose()*sigma_inv*xp;
         return log_pre - 0.5*(deg+p)*std::log(1.0 + xm/deg);
     }
+     */
 };
 
 

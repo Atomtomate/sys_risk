@@ -28,12 +28,12 @@ void NetwSim::test_init_network() {
     LOG(TRACE) << "Initializing random connectivity matrix";
 }
 
-void NetwSim::test_init_network(const long N_, const double p_, const double val_, const int which_to_set, const double T_, const double r_, const double S0_, const double sigma_, const double default_prob_scale_) {
+void NetwSim::test_init_network(const long N_, const double p_, const double val_, const int which_to_set, const double T_, const double r_, const double S0_, const double sdev, const double default_prob_scale_) {
 
     // ===== Initialization of temporary variables =====
     T = T_; r = r_; N = N_; p = p_; val = val_; S0scalar = S0_; setM = which_to_set; default_prob_scale = default_prob_scale_;
     Z.resize(N);
-    itSigma.resize(N, N);
+    iSigma.resize(N, N);
     var_h.resize(N);
     S0.resize(N);
     debt.resize(N);
@@ -44,26 +44,27 @@ void NetwSim::test_init_network(const long N_, const double p_, const double val
     avg_rc_sums = Eigen::MatrixXd::Zero(2, 2*N);
 
     // ===== Preparation of Log Normal Dist. =====
-    sigma = Eigen::VectorXd::Constant(N,sigma_*sigma_);
-    itSigma = (T * sigma.asDiagonal()).inverse();
-    var_h = T * r - T * sigma.array() * sigma.array() / 2.;
+    sigma = Eigen::VectorXd::Constant(N,sdev*sdev);
+    iSigma = (sigma.asDiagonal()).inverse();
+    var_h = T * r - T * sigma.array()/ 2.;
 
-    mvndist = Multivariate_Normal_Dist(sigma.asDiagonal(), var_h);
-    t_dist = Student_t_dist(sigma.asDiagonal(), var_h, deg_of_freedom);
+    //Eigen::MatrixXd unitMatrix = Eigen::MatrixXd::Identity(N,N);
+    //Eigen::VectorXd zeroVec = Eigen::VectorXd::Zero(N);
+    //mvndist = Multivariate_Normal_Dist(unitMatrix, zeroVec);
+    //t_dist = Student_t_dist(unitMatrix*4.0, zeroVec, deg_of_freedom);
+    //chi_dist = trng::chi_square_dist(deg_of_freedom);
 
     // ===== creating correlated normal distribution from Eigen Sigma =====
     //double *sigma_arr = new double[N * N];
     //double sigma2d_arr[N][N];
-    //Eigen::MatrixXd::Map(sigma_arr, sigma.rows(), sigma.cols()) = sigma;
     //memcpy(sigma2d_arr[0], sigma_arr, N*N*sizeof(double));
-    //Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
     //delete[] sigma_arr;
     double *unity_arr = new double[N * N];
     double unity2d_arr[N][N];
     Eigen::MatrixXd::Map(unity_arr, N, N) = Eigen::MatrixXd::Identity(N, N);
     memcpy(unity2d_arr[0], unity_arr, N*N*sizeof(double));
 
-    chi_dist = trng::chi_square_dist(deg_of_freedom);
+    //Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
     Z_dist = trng::correlated_normal_dist<>(&unity2d_arr[0][0], &unity2d_arr[N - 1][N - 1] + 1);
 
 
@@ -76,7 +77,7 @@ void NetwSim::test_init_network(const long N_, const double p_, const double val
 
 
     // ===== Generating Black Scholes Network =====
-    S0 = Eigen::VectorXd::Constant(N, S0scalar); // (T*sigma.diagonal().array()*sigma.diagonal().array()/2.0).exp()*Eigen::VectorXd::Constant(N,-r*T).array().exp();            // <S_t> = S_0 e^{rT} => This sets <S_t> ~ 1
+    S0 = Eigen::VectorXd::Constant(N, S0scalar);
     //debt = (S0.array())*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
     debt = Eigen::VectorXd::Constant(N, 1.0*default_prob_scale);
 
@@ -147,7 +148,7 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
 
 const Eigen::MatrixXd NetwSim::delta_v2() {
     //delta_lg = delta_lg + std::exp(-r*T)*(ln_fac*(rs.transpose())).transpose();
-    Eigen::VectorXd ln_fac = (itSigma * Z).array() / (bsn->get_S0()).array();
+    Eigen::VectorXd ln_fac = (iSigma * Z/T).array() / (bsn->get_S0()).array();
     Eigen::MatrixXd m = std::exp(-r * T) * (ln_fac * (bsn->get_rs()).transpose()).transpose();
     //Eigen::MatrixXd::Map(&res[0], m.rows(), m.cols()) = m;
     return m;
@@ -155,22 +156,22 @@ const Eigen::MatrixXd NetwSim::delta_v2() {
 
 void NetwSim::set_weight()
 {
-    auto a = mvndist.logpdf(Z);
-    auto b = t_dist.logpdf(Z);
-    double weight = std::exp(mvndist.logpdf(sigma.asDiagonal(), var_h, Z) - t_dist.logpdf(sigma.asDiagonal(), var_h, Z));
-    dbg_weights.push_back(weight);
+    double weight = 1.0;//std::exp(mvndist.logpdf(Z) - t_dist.logpdf(Z));
+    //dbg_weights.push_back(weight);
+    last_weight = weight;
 }
 
 
 const Eigen::MatrixXd NetwSim::draw_from_dist()
 {
-    double sw = 1.0;// std::sqrt(deg_of_freedom/chi_dist(gen_chi));
+    //double sw = std::sqrt(deg_of_freedom/chi_dist(gen_chi));
     for (int d = 0; d < N; d++) {
         Z(d) = Z_dist(gen_z);
     }
-    Z = var_h.array() + (sw * std::sqrt(T) * sigma.array().sqrt()).array() * Z.array();
-    Eigen::VectorXd S_log = Z;
-    set_weight();
+    //Z = sw*2.0*Z;
+
+    Eigen::VectorXd S_log = var_h.array() + (std::sqrt(T) * sigma.array().sqrt()).array() * Z.array();
+    //set_weight();
     return S_log.array().exp();
 }
 

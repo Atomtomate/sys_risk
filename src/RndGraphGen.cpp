@@ -89,22 +89,25 @@ namespace Utils {
                     }
                 }
             }
-            Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
+            Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
             do {
                 cols_ok = true;
-                M_bak = (*M);
-                for (int ii = 0; ii < row_sums.size(); ii++) {
-                    if (row_sums(ii) > 0)
-                        M->rightCols(N).row(ii) = (val / row_sums(ii)) * M->rightCols(N).row(ii);
+                //M_bak = (*M);
+                //        LOG(ERROR) << (*M);
+                for (int ii = 0; ii < N; ii++) {
+                    if (col_sums(ii) > 0)
+                        M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
                 }
+                //LOG(INFO) << (*M);
 
                 if constexpr (!allow_unnormalized_rows) {
-                    row_sums = M->rightCols(N).rowwise().sum();
-                    Eigen::VectorXd col_sums = M->rightCols(N).colwise().sum();
-                    for (int ii = 0; ii < N; ii++) {
-                        if (col_sums(ii) > 0)
-                            M->rightCols(N).col(ii) = (val / col_sums(ii)) * M->rightCols(N).col(ii);
+                    Eigen::VectorXd row_sums = M->rightCols(N).rowwise().sum();
+                    col_sums =  M->rightCols(N).colwise().sum();
+                    for (int ii = 0; ii < row_sums.size(); ii++) {
+                        if (row_sums(ii) > 0)
+                            M->rightCols(N).row(ii) = (val / row_sums(ii)) * M->rightCols(N).row(ii);
                     }
+
 
                     for (int ii = 0; (ii < row_sums.size()) && cols_ok; ii++) {
                         //if(row_sums(ii) >= 1.0)

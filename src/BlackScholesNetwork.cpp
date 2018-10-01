@@ -153,7 +153,7 @@ Eigen::MatrixXd BlackScholesNetwork::get_vega(const Eigen::MatrixXd Z) const
     //LOG(INFO) << "vvv2 \n" << T*sigma;
     //LOG(INFO) << (std::sqrt(T)*Z - T*sigma);
     //LOG(WARNING) << ((std::sqrt(T)*Z - T*sigma).array() * St_full.array());
-    const Eigen::MatrixXd res_eigen = exprt* GreekMat * ((std::sqrt(T)*Z - T*sigma).array() * St_full.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
+    const Eigen::MatrixXd res_eigen = exprt* GreekMat * ((std::sqrt(T)*Z.array() - T*sigma.array().sqrt()).array() * St_full.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
     //        LOG(ERROR) <<  res_eigen;
     //const Eigen::MatrixXd res_eigen = GreekMat * St.asDiagonal();
     return res_eigen;
@@ -164,10 +164,10 @@ Eigen::MatrixXd BlackScholesNetwork::get_theta(const Eigen::MatrixXd Z) const
     if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_theta";
     //LOG(INFO) << (r - sigma.array()*sigma.array()/2.0);
     //LOG(INFO) << sigma.array()*Z.array()/(2.0*std::sqrt(T));
-    Eigen::ArrayXd tmp_deriv = (r - sigma.array()*sigma.array()/2.0) +  sigma.array()*Z.array()/(2.0*std::sqrt(T));
+    Eigen::ArrayXd tmp_deriv = (r - sigma.array()/2.0) +  sigma.array().sqrt()*Z.array()/(2.0*std::sqrt(T));
     //LOG(INFO) << tmp_deriv;
     //LOG(ERROR) << St_full;
-    Eigen::MatrixXd res_eigen = exprt* GreekMat * (tmp_deriv.array() * St_full.array()).matrix()  - exprt*r*x;
+    Eigen::MatrixXd res_eigen = GreekMat * ( exprt*tmp_deriv.array() * St_full.array()).matrix()  - exprt*r*x;
     //LOG(INFO) << res_eigen;
     return res_eigen;
 }

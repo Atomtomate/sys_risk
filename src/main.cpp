@@ -183,11 +183,6 @@ int main(int argc, char* argv[])
         std::cout << " Avg IO weight distribution: " << std::endl;
         std::cout << nNN.get_avg_row_col_sums() << std::endl;
         std::cout << " =========================== " << std::endl;
-        std::cout << " Weights " << std::endl;
-        auto weights = nNN.get_dbg_weights();
-        for(auto el : weights)
-            std::cout << el << ", ";
-        std::cout << std::endl;
 
 
 

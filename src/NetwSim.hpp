@@ -48,7 +48,7 @@ struct Parameters
 
 };
 
-constexpr int deg_of_freedom = 4;
+constexpr int deg_of_freedom = 8;
 //const std::string io_deg_str("In/Out degree distribution");
 
 class NetwSim {
@@ -64,7 +64,8 @@ private:
     trng::uniform01_dist<> u_dist;
     Student_t_dist t_dist;
     Multivariate_Normal_Dist mvndist;
-    std::vector<double> dbg_weights;
+    //std::vector<double> dbg_weights;
+    double last_weight;
 
     long N;
     bool initialized;
@@ -79,7 +80,7 @@ private:
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
     BlackScholesNetwork* bsn;
-    Eigen::MatrixXd itSigma;
+    Eigen::MatrixXd iSigma;
     Eigen::VectorXd sigma;
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
@@ -152,7 +153,7 @@ public:
 #endif
     {
         bsn = nullptr;
-        itSigma = Eigen::MatrixXd::Zero(1,1);
+        iSigma = Eigen::MatrixXd::Zero(1,1);
         Z = Eigen::VectorXd::Zero(1,1);
         var_h = Eigen::VectorXd::Zero(1,1);
     }
@@ -242,6 +243,7 @@ public:
         LOG(INFO) << "solvent: \n" << s_o;
         LOG(INFO) << "St: \n" << bsn->get_assets();
         LOG(INFO) << "debt: \n" << bsn->get_debt();
+        LOG(INFO) << "M: \n" << bsn->get_M();
         std::cout << "------" << std::endl;
         Eigen::MatrixXd out = Eigen::MatrixXd::Constant(1,1,0);
         return out;
@@ -365,15 +367,15 @@ const std::string pi_str("Pi");
 
 
         // ===== Defining observables =====
-        auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return  this->dbg_weights.back()*bsn->get_assets(); };
-        auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_rs(); };
-        auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_M(); };
-        auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_solvent(); };
-        auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_delta_v1();};
-        auto rho_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_rho();};
-        auto theta_obs_lambda = [this]() -> Eigen::MatrixXd {Eigen::MatrixXd tmp = this->Z.asDiagonal(); return this->dbg_weights.back()*bsn->get_theta(Z);};
-        auto vega_obs_lambda = [this]() -> Eigen::MatrixXd {Eigen::MatrixXd tmp = this->Z.asDiagonal(); return this->dbg_weights.back()*bsn->get_vega(Z);}; //LOG(ERROR) << "a"; Eigen::MatrixXd t = Eigen::MatrixXd::Zero(2,2);
-        auto pi_obs_lambda = [this]() -> Eigen::MatrixXd { return this->dbg_weights.back()*bsn->get_pi();};
+        auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return  bsn->get_assets(); };
+        auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
+        auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
+        auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
+        auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
+        auto rho_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rho();};
+        auto theta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_theta(Z);};
+        auto vega_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_vega(Z);}; //LOG(ERROR) << "a"; Eigen::MatrixXd t = Eigen::MatrixXd::Zero(2,2);
+        auto pi_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_pi();};
         std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
         S->register_observer(assets_obs, assets_str, N, 1);
         std::function<const Eigen::MatrixXd(void)> rs_obs(std::cref(rs_obs_lambda));
@@ -416,10 +418,10 @@ public:
 
     void set_weight();
 
-    std::vector<double> get_dbg_weights() const
-    {
-        return dbg_weights;
-    }
+    //std::vector<double> get_dbg_weights() const
+    //{
+    //    return dbg_weights;
+    //}
 
 };
 
