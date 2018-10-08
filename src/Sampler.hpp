@@ -20,6 +20,7 @@
 #include "easylogging++.h"
 
 
+
 namespace MCUtil {
 
     /*!
@@ -32,10 +33,14 @@ namespace MCUtil {
         int count;
         friend class boost::serialization::access;
         //@TODO: this needs to be dynamically adjustable between StatAcc and StatAccEigen. possibly overload StatAcc
-        //std::vector<MCUtil::StatAcc<T, 100000>> accs;
+#if USE_EIGEN_ACC
         std::vector<MCUtil::StatAccEigen<double, 0>> accs;
+#else
+        std::vector<MCUtil::StatAcc<double, 0>> accs;
+#endif
         std::vector<std::function<T(void)>> observers;
         std::vector<std::string> descriptions;
+
 
         template<class Archive>
         void serialize(Archive & ar, const unsigned int version)
@@ -57,12 +62,15 @@ namespace MCUtil {
          */
         template<class Func, typename... ArgTypes>
         void call_f(Func f, ArgTypes &&... f_args) {
-            f(std::forward<ArgTypes>(f_args)...);
-            for (std::size_t i = 0; i < accs.size(); i++)
+            auto bsn = f(std::forward<ArgTypes>(f_args)...);
+            accs[0](bsn->get_scalar_allGreeks(std::forward<ArgTypes>(f_args)...));
+            /* TODO: fix this workaround
+             for (std::size_t i = 10; i < accs.size(); i++)
             {
-                auto res = observers[i]();
+                const auto res = observers[i]();
                 accs[i](res);//std::move(observers[i]()));
             }
+             */
         }
 
     public:
@@ -86,7 +94,7 @@ namespace MCUtil {
          * @param args          Arguments for the observer
          */
         template<typename Func, typename... ArgTypes>
-        void register_observer(Func f, std::string const &description, ArgTypes &&... args) {
+        void register_observer(Func f, const std::string &description, ArgTypes &&... args) {
             //static_assert(std::is_same<std::invoke_result_t<Func, ArgTypes... >, T>::value, "Return type of function and accumulation type do not match!");
             observers.push_back(std::move(f));
             descriptions.emplace_back(std::move(description));
@@ -140,6 +148,9 @@ namespace MCUtil {
             }
             return res;
         }
+
+
+
     };
 
 } // end namspace

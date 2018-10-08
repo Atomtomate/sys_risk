@@ -9,6 +9,8 @@
 #ifndef CONFIG_HPP_
 #define CONFIG_HPP_
 
+#define USE_EIGEN_ACC 1
+
 #include <string>
 
 #include <boost/filesystem.hpp>

@@ -70,21 +70,21 @@ private:
     double exprt;
     //Mat sigma_diag;
     bool jacobian_set;
-#if USE_SPARSE_INTERNAL == 1
+#if USE_SPARSE_INTERNAL
     Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
     Eigen::SparseMatrix<double, Eigen::ColMajor> Id;
     Eigen::SparseMatrix<double, Eigen::ColMajor> M;
-    Eigen::SparseMatrix<double, Eigen::ColMajor> GreekMat;
+    //Eigen::SparseMatrix<double, Eigen::ColMajor> GreekMat;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Jrs;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> J_a;
     //Eigen::SparseMatrix<double, Eigen::ColMajor> Z;
 #else
     Mat M;
     //Mat J_a;
-    Mat GreekMat;
     Mat Id;
     Eigen::PartialPivLU<Eigen::MatrixXd> lu;
 #endif
+    Mat GreekMat;
 
     void set_solvent();
 
@@ -118,7 +118,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& Sigma, const double T,const double r);
+    BlackScholesNetwork(const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& sigma_, const double T,const double r);
 
     /**
      * @brief
@@ -128,7 +128,7 @@ public:
      * @param T         maturity
      * @param r         interest rate
      */
-    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& Sigma, const double T, const double r);
+    BlackScholesNetwork(const Eigen::Ref<Mat>& M, const Eigen::Ref<Vec>& S0, const Eigen::Ref<Vec>& assets, const Eigen::Ref<Vec>& debt, const Eigen::Ref<Vec>& sigma_, const double T, const double r);
 
 
 
@@ -150,7 +150,7 @@ public:
     void re_init(const Eigen::Ref<const Mat>& M_new)
     {
         if(M_new.rows() != S0.size()) throw std::logic_error("re-initialized with wrong M size!");
-#if USE_SPARSE_INTERNAL == 1
+#if USE_SPARSE_INTERNAL
         M = M_new.sparseView();
         M.makeCompressed();
 #else
@@ -158,13 +158,13 @@ public:
 #endif
     }
 
-    void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d) {
+    void re_init(const Eigen::Ref<const Mat>& M_new, const Eigen::Ref<const Vec> &s0, const Eigen::Ref<const Vec> &d, const Eigen::Ref<const Vec> &sigma_) {
         N = M_new.rows();
         //Jrs.resize(2*N, 2*N);
         //J_a.resize(2*N, N);
         x.resize(2*N);
         x = Eigen::VectorXd::Zero(2*N);
-#if USE_SPARSE_INTERNAL == 1
+#if USE_SPARSE_INTERNAL
         M = M_new.sparseView();
         M.makeCompressed();
         Id.resize(2*N, 2*N);
@@ -181,6 +181,8 @@ public:
         if(s0.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and assets prefactor!");
         S0 = s0;
+        sigma.resize(N);
+        sigma = sigma_;
         if(d.size() != N)
             throw std::logic_error("Mismatch between cross ownership matrix and debts!");
         debt = d;
@@ -203,7 +205,7 @@ public:
     }
 
     inline const Mat get_M() const {
-#if USE_SPARSE_INTERNAL == 1
+#if USE_SPARSE_INTERNAL
         return Eigen::MatrixXd(M);
 #else
         return M;
@@ -244,6 +246,8 @@ public:
 
 
     Eigen::MatrixXd get_pi() const;
+
+    Eigen::MatrixXd get_scalar_allGreeks(const Eigen::Ref<const Mat>& Z) const;
 
     void debug_print();
 

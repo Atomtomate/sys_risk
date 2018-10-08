@@ -50,7 +50,7 @@
 //#include "KarlFischerPaper.hpp"
 #include "IOHelper.hpp"
 //#include "PythonInterface.hpp"
-
+#include "Config.hpp"
 
 
 INITIALIZE_EASYLOGGINGPP

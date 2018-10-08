@@ -144,7 +144,8 @@ int main(int argc, char* argv[])
             std::cout << "-=-=-=-=-=-=-=-=-=-=-=- <k> = " << res_el.first << " -=-=-=-=-=-=-=-=-=-=-=-" << std::endl;
             for (const auto &el : res_el.second)
             {
-                if(!runAvg)
+#if USE_EIGEN_ACC
+                if(!runAvg || !USE_EIGEN_ACC)
                 {
                     std::cout << ": " << std::endl << el.second.format(CleanFmt);
                     std::cout  << std::endl << " ===========" << std::endl;
@@ -174,6 +175,11 @@ int main(int argc, char* argv[])
                         std::cout << ": " << res.sum()/norm << std::endl;
                     }
                 }
+#else
+                std::cout << ": " << std::endl << el.second;
+                std::cout  << std::endl << " ===========" << std::endl;
+
+#endif
             }
         }
         std::cout << " Avg IO degree distribution: " << std::endl;

@@ -24,6 +24,7 @@ void NetwSim::test_init_network() {
         delete bsn;
     LOG(TRACE) << "Generating Model";
     LOG(TRACE) << "creating new Black Scholes Network";
+
     bsn = new BlackScholesNetwork(S0, debt, sigma, T, r);
     LOG(TRACE) << "Initializing random connectivity matrix";
 }
@@ -86,30 +87,42 @@ void NetwSim::test_init_network(const long N_, const double p_, const double val
 
 
 
-std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_valuation(const long N_Samples, const long N_networks, const bool fixed_M) {
+ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, const bool fixed_M) {
     test_init_network();
 
-    auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
+    const auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
     //auto f_weights = [this]() -> double { return this->get_weights(); };
-    auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) { this->run(x); };
+    const auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) -> BlackScholesNetwork* { this->run(x); return bsn; };
     int networks = 0;
+    const int conn = static_cast<int>(p*val);
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
+
+    MCUtil::Sampler<AccType>* S = new MCUtil::Sampler<AccType>();
+    register_observers<AccType>(S);
+
     for(int jj = 0; jj < N_networks; jj++)
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
+
+        init_BS(Utils::gen_sinkhorn);
+        f_run(f_dist());
+        bsn->get_scalar_allGreeks(Z);
+        S->draw_samples(f_run, f_dist, N_Samples);
+
+        /*
         try{
             //init_BS(Utils::gen_configuration_model);
             init_BS(Utils::gen_sinkhorn);
             //init_BS(Utils::fixed_2d);
-
-            int degree = (int)std::round(10.*(avg_io_deg.first + avg_io_deg.second)/2.);
+#if USE_ACTUAL_CONN
+            int degree = (int)std::round(5.*(avg_io_deg.first + avg_io_deg.second)/2.);
             auto it = SamplerList.find(degree);
             if(it == SamplerList.end())
             {
-                MCUtil::Sampler<Eigen::MatrixXd>* S = new MCUtil::Sampler<Eigen::MatrixXd>();
-                register_observers<Eigen::MatrixXd>(S);
+                MCUtil::Sampler<AccType>* S = new MCUtil::Sampler<AccType>();
+                register_observers<AccType>(S);
                 S->draw_samples(f_run, f_dist, N_Samples);
                 SamplerList.insert(std::pair(degree,S));
                 it = SamplerList.find(degree);
@@ -117,6 +130,7 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
             else {
                 (*it).second->draw_samples(f_run, f_dist, N_Samples);
             }
+#endif
             networks += 1;
         }
         catch (const std::runtime_error& e)
@@ -124,21 +138,22 @@ std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> NetwSim::run_val
             LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
             initialized = 0;
         }
+         */
     }
     std::cout << "\r" << std::endl;
+    //io_deg_dist /= networks;
+    //avg_rc_sums /= networks;
 
-    io_deg_dist /= networks;
-    avg_rc_sums /= networks;
 
     //auto io_deg_obs_lambda = [this]() -> Eigen::MatrixXd { return this->io_deg_dist; };
     //std::function<const Eigen::MatrixXd(void)> io_deg_obs(std::cref(io_deg_obs_lambda));
     //S->register_observer(io_deg_obs, io_deg_str, 2 , N);
 
     initialized = false;
-    std::map<int, std::unordered_map<std::string, Eigen::MatrixXd> > result;
+    ResultType result;
     for(auto el : SamplerList)
     {
-        result.insert( std::pair(el.first, result_object<Eigen::MatrixXd>(el.first, el.second, N_Samples, N_networks)) );
+        result.insert( std::pair(el.first, result_object<AccType>(el.first, el.second)) );
     }
     return result;
 }
