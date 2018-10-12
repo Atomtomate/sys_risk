@@ -11,7 +11,7 @@ float_max = 999
 #Z_t   # (S_t, F_t)
 #v_ij  # ratio of i's investment value in business asset V_j
 #f_ij  # ratio of debt valueheld by i to the total debt value of j
-#s_ij  # ratio of equity 
+#s_ij  # ratio of equity
 #z   # z = (s_ij, f_ij)
 #B     #face value
 # g(Z) = [np.max(v*V + z*Z - B, 0.), np.min(v*V + z*Z, B)]
@@ -43,5 +43,5 @@ class Test1:
             t1 = np.maximum(tmp - self.B, zero)
             t2 = np.minimum(tmp, self.B)
             Zl = np.hstack((t1, t2))
-            print Zl
+            print(Zl)
         self.Z = self.Z + Zl
