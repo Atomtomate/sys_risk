@@ -10,14 +10,6 @@
 #include "NetwSim.hpp"
 void NetwSim::test_init_network() {
     // ===== Reset Sampler =====
-    auto it = SamplerList.begin();
-    while(it != SamplerList.end())
-    {
-        if(it->second != nullptr)
-            delete it->second;
-        it++;
-    }
-    SamplerList.clear();
     results.clear();
 
     if(bsn != nullptr)
@@ -29,20 +21,18 @@ void NetwSim::test_init_network() {
     LOG(TRACE) << "Initializing random connectivity matrix";
 }
 
-void NetwSim::test_init_network(const long N_, const double p_, const double val_, const int which_to_set, const double T_, const double r_, const double S0_, const double sdev, const double default_prob_scale_) {
-
+void NetwSim::test_init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
+    const double r_, const double S0_, const double sdev, const double default_prob_scale_, const NetworkType net_t_)
+{
     // ===== Initialization of temporary variables =====
     T = T_; r = r_; N = N_; p = p_; val = val_; S0scalar = S0_; setM = which_to_set; default_prob_scale = default_prob_scale_;
+    net_t = net_t_;
     Z.resize(N);
     iSigma.resize(N, N);
     var_h.resize(N);
     S0.resize(N);
     debt.resize(N);
     sigma.resize(N);
-    io_deg_dist.resize(2, N);
-    avg_rc_sums.resize(2,N);
-    io_deg_dist = Eigen::MatrixXd::Zero(2, 2*N);
-    avg_rc_sums = Eigen::MatrixXd::Zero(2, 2*N);
 
     // ===== Preparation of Log Normal Dist. =====
     sigma = Eigen::VectorXd::Constant(N,sdev*sdev);
@@ -88,49 +78,61 @@ void NetwSim::test_init_network(const long N_, const double p_, const double val
 
 
 ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, const bool fixed_M) {
-    test_init_network();
 
-    const auto f_dist = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
+    std::map<int, std::unique_ptr<MCUtil::Sampler<AccType> > > SamplerList;
+    test_init_network();
+    Num_Samples = N_Samples;
+    Num_Networks = N_networks;
+    const auto f_dist_lambda = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
+    std::function<Eigen::MatrixXd (void)> f_dist(std::cref(f_dist_lambda));
     //auto f_weights = [this]() -> double { return this->get_weights(); };
-    const auto f_run =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) -> BlackScholesNetwork* { this->run(x); return bsn; };
+    const auto f_run_lambda =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) -> void {
+        this->run(x);
+        //this->bsn->get_scalar_allGreeks(this->Z);
+    };
+    std::function<void (Eigen::MatrixXd)> f_run(std::cref(f_run_lambda));
     int networks = 0;
     const int conn = static_cast<int>(p*val);
 
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
 
-    MCUtil::Sampler<AccType>* S = new MCUtil::Sampler<AccType>();
-    register_observers<AccType>(S);
 
-    for(int jj = 0; jj < N_networks; jj++)
+
+
+    for(int jj = 0; jj < N_networks; jj++) // N_networks
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
 
-        init_BS(Utils::gen_sinkhorn);
-        f_run(f_dist());
-        bsn->get_scalar_allGreeks(Z);
-        S->draw_samples(f_run, f_dist, N_Samples);
-
-        /*
         try{
-            //init_BS(Utils::gen_configuration_model);
-            init_BS(Utils::gen_sinkhorn);
-            //init_BS(Utils::fixed_2d);
-#if USE_ACTUAL_CONN
-            int degree = (int)std::round(5.*(avg_io_deg.first + avg_io_deg.second)/2.);
+            if(net_t == NetworkType::ER)
+                init_BS(Utils::gen_sinkhorn);
+            else if( net_t == NetworkType::Fixed2D)
+                init_BS(Utils::fixed_2d);
+            else if( net_t == NetworkType::STAR)
+                init_BS(Utils::gen_star);
+            else if( net_t == NetworkType::RING)
+                init_BS(Utils::gen_ring);
+            else if( net_t == NetworkType::ER_SCALED)
+                init_BS(Utils::gen_ring);
+            else if( net_t == NetworkType::UNIFORM)
+                init_BS(Utils::gen_uniform);
+
+            int degree = (int)std::round(COARSE_CONN*(avg_io_deg.first + avg_io_deg.second)/2.);
             auto it = SamplerList.find(degree);
             if(it == SamplerList.end())
             {
-                MCUtil::Sampler<AccType>* S = new MCUtil::Sampler<AccType>();
-                register_observers<AccType>(S);
+                std::unique_ptr<MCUtil::Sampler<AccType> > S = std::unique_ptr<MCUtil::Sampler<AccType> >(new MCUtil::Sampler<AccType>(N, bsn));
+                if(S == nullptr) LOG(ERROR) << "Sampler could not be created";
+                f_run(f_dist());
                 S->draw_samples(f_run, f_dist, N_Samples);
-                SamplerList.insert(std::pair(degree,S));
-                it = SamplerList.find(degree);
+                if ( !SamplerList.insert(std::make_pair(degree,std::move(S))).second ) {
+                    LOG(ERROR) << "Sampler for degree=" << degree << "already found!";
+                }
             }
             else {
-                (*it).second->draw_samples(f_run, f_dist, N_Samples);
+                it->second->draw_samples(f_run, f_dist, N_Samples);
             }
-#endif
             networks += 1;
         }
         catch (const std::runtime_error& e)
@@ -138,24 +140,19 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
             LOG(ERROR) << "Skipping uninitialized network for N = " << N << ", p=" << p << ", val=" << val;
             initialized = 0;
         }
-         */
     }
     std::cout << "\r" << std::endl;
-    //io_deg_dist /= networks;
-    //avg_rc_sums /= networks;
-
-
-    //auto io_deg_obs_lambda = [this]() -> Eigen::MatrixXd { return this->io_deg_dist; };
-    //std::function<const Eigen::MatrixXd(void)> io_deg_obs(std::cref(io_deg_obs_lambda));
-    //S->register_observer(io_deg_obs, io_deg_str, 2 , N);
 
     initialized = false;
-    ResultType result;
-    for(auto el : SamplerList)
+    for (auto it = SamplerList.begin(); it != SamplerList.end(); ++it)
     {
-        result.insert( std::pair(el.first, result_object<AccType>(el.first, el.second)) );
+        auto res = it->second->extract();
+        if ( !results.insert( std::make_pair( it->first, res ) ).second ) {
+            LOG(ERROR) << "result for <k>=" << it->first << "already found!";
+        }
     }
-    return result;
+    //SamplerList.clear();
+    return results;
 }
 
 

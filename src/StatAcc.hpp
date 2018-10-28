@@ -176,6 +176,23 @@ public:
                 if(CACHE_SIZE)
                 cache.resize(CACHE_SIZE);
         }
+        /*!
+         * @brief       Adds another sample to the accumulator
+         * @param val   Value of next sample
+         */
+        void new_sample(const Eigen::Ref<const Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>& val) {
+            Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>::Map(&mapped[0], val.rows(), val.cols()) = val;
+            if(CACHE_SIZE) {
+                if(cache_used < CACHE_SIZE) {
+                    cache.push_back(mapped);
+                    cache_used += 1;
+                } else {
+                    cache.pop_front();
+                    cache.push_back(mapped);
+                }
+            }
+            acc(mapped);
+        }
 
         /*!
          * @brief       Adds another sample to the accumulator

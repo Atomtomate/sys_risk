@@ -84,6 +84,11 @@ namespace Utils {
 
     void fixed_2d(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
 
+    void gen_ring(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
+
+    void gen_star(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
+
+    void gen_uniform(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
 }
 
 #endif //VALUATION_GENRNDER_HPP

@@ -35,16 +35,30 @@ public:
 #endif
 
 
-    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const double S0, const double sigma, const long iterations, const long N_networks, const double default_prob_scale)
+    void run_valuation(const unsigned int N, const double p, const double val_row, const double val_col, const unsigned int which_to_set, const double T, const double r, const double S0, const double sigma, const long iterations, const long N_networks, const double default_prob_scale, const int net_t)
     {
+        NetworkType nt = NetworkType::ER;
+        switch(net_t)
+        {
+            case 0: nt = NetworkType::ER; break;
+            case 1: nt = NetworkType::Fixed2D; break;
+            case 2: nt = NetworkType::STAR; break;
+            case 3: nt = NetworkType::RING; break;
+            case 4: nt = NetworkType::ER_SCALED; break;
+            case 5: nt = NetworkType::UNIFORM; break;
+            default:
+                LOG(ERROR) << "Network typ not intialized";
+                std::cout <<  "Network typ not intialized" << std::endl;
+        }
         LOG(TRACE) << "Initializing network";
         LOG(INFO) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
         if(val_row != val_col)
             LOG(WARNING) << "ignoring column sum value! for not val_col == val_row is required";
-        er_net.test_init_network(N, p, val_row, which_to_set, T, r, S0, sigma, default_prob_scale);
+        er_net.test_init_network(N, p, val_row, which_to_set, T, r, S0, sigma, default_prob_scale, nt);
         LOG(TRACE) << "Network initialized";
         er_net.run_valuation(iterations, N_networks);
     }
+
 
 
     Eigen::MatrixXd get_io_deg_dist() const
@@ -73,97 +87,72 @@ public:
         return res;
     }
 
-
-    Eigen::MatrixXd get_N_samples(int k) const
+    Eigen::MatrixXd get_Prop_k(int k, std::string s) const
     {
         auto el = er_net.results.find(k);
         if(el != er_net.results.end())
-            return  el->second.find("#Samples")->second.transpose();//['#Samples'];
+        {
+            auto el2 = el->second.find(s);
+            if(el2 != el->second.end()) {
+                return el2->second.transpose();//['#Samples'];
+            } else {
+                throw std::runtime_error("Number of Samples not available");
+            }
+        }
         throw std::runtime_error("Tried to extract invalid <k>");
+    }
+
+    Eigen::MatrixXd get_N_samples(int k) const
+    {
+        return get_Prop_k(k, count_str);
     }
 
     Eigen::MatrixXd get_M(int k) const
     {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("M")->second;//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, M_str);
     }
 
     Eigen::MatrixXd get_M_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance M")->second;//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + M_str);
     }
 
     Eigen::MatrixXd get_rs(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("RS")->second.transpose();//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, rs_str);
     }
 
     Eigen::MatrixXd get_rs_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance RS")->second.transpose();//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + rs_str);
     }
 
     Eigen::MatrixXd get_solvent(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Solvent")->second.transpose();//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, solvent_str);
     }
 
     Eigen::MatrixXd get_solvent_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance Solvent")->second.transpose();//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + solvent_str);
     }
     Eigen::MatrixXd get_delta_jac(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Delta using Jacobians")->second;//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, delta1_str);
     }
 
     Eigen::MatrixXd get_delta_jac_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance Delta using Jacobians")->second;
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + delta1_str);
     }
 
     Eigen::MatrixXd get_assets(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Assets")->second.transpose();
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, assets_str);
     }
 
     Eigen::MatrixXd get_assets_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance Assets")->second.transpose();
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + assets_str);
     }
 
     Eigen::MatrixXd get_valuation(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Valuation")->second.transpose();
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, val_str);
     }
 
     Eigen::MatrixXd get_valuation_var(int k) const {
-        auto el = er_net.results.find(k);
-        if(el != er_net.results.end())
-            return  el->second.find("Variance Valuation")->second.transpose();//['#Samples'];
-        throw std::runtime_error("Tried to extract invalid <k>");
+        return get_Prop_k(k, "Variance " + val_str);
     }
 
 

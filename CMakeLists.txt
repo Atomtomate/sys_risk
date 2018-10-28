@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 #llvm-profdata-8 merge --output=Valuation.profdata Valuation-*.profraw            -fprofile-instr-generate           -fprofile-sample-use=Valuation.profdata
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -pg -flto -ftree-vectorize -march=native -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline   -gline-tables-only
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wextra -O3 -pg -flto -ftree-vectorize -march=x86-64 -mfpmath=sse -Wno-unused-parameter") # -g3 -fno-inline   -gline-tables-only
 set(PROJECT_EXTERNAL "${CMAKE_SOURCE_DIR}/external")
 link_directories(${PROJECT_EXTERNAL}/lib)
 

@@ -12,6 +12,7 @@
 BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Vec>& S0_, const Eigen::Ref<Vec>& debt_, const Eigen::Ref<Vec>& sigma_, const double T_, const double r_):
         T(T_), r(r_), exprt(std::exp(-r_ * T_))
 {
+    if(T == 0.) LOG(ERROR) << "T == 0 found!";
     N = S0_.size();
     if(N == 0)
     {
@@ -20,9 +21,11 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Vec>& S0_, const Eigen
     S0.resize(N);
     debt.resize(N);
     sigma.resize(N);
+    St_full.resize(N);
     S0 = S0_;
     debt = debt_;
     sigma = sigma_;
+    GreekMat.resize(2*N, 2*N);
     //sigma_diag.resize(2*N,N);
     //sigma_diag.topRows(N) = Sigma;
     //sigma_diag.bottomRows(N) = Sigma;
@@ -35,17 +38,19 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Vec>& S0_, const Eigen
 BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen::Ref<Vec>& S0_, const Eigen::Ref<Vec>& assets_, const Eigen::Ref<Vec>& debt_, const Eigen::Ref<Vec>& sigma_, const double T, const double r):
         T(T), r(r), exprt(std::exp(-r * T))
 {
+    if(T == 0.) LOG(ERROR) << "T == 0 found!";
     N = M_.rows();
     initialized = true;
     jacobian_set = false;
+    x.resize(2*N);
     x = Eigen::VectorXd::Zero(2*N);
     S0.resize(N);
     debt.resize(N);
     sigma.resize(N);
     St_full.resize(N);
     St.resize(N);
+    GreekMat.resize(2*N, 2*N);
     S0 = S0_;
-    St = assets_;
     debt = debt_;
     sigma = sigma_;
     St_full = S0.array()*St.array();
@@ -59,7 +64,6 @@ BlackScholesNetwork::BlackScholesNetwork(const Eigen::Ref<Mat>& M_, const Eigen:
     lu = Eigen::PartialPivLU<Eigen::MatrixXd>(2*N);
     Id.resize(2*N, 2*N);
     Id.setIdentity();
-    x = Eigen::VectorXd::Zero(2*N);
 #endif
 };
 
@@ -151,7 +155,7 @@ Eigen::MatrixXd BlackScholesNetwork::get_delta_v1() const
 Eigen::MatrixXd BlackScholesNetwork::get_vega(const Eigen::MatrixXd Z) const
 {
     if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_vega";
-    const Eigen::MatrixXd res_eigen = exprt* GreekMat * (((std::sqrt(T)*Z.array() - T*sigma.array().sqrt()).array() * St_full.array()).matrix().asDiagonal());// * (S0.array()* St.array()).matrix().asDiagonal());
+    const Eigen::MatrixXd res_eigen = exprt* GreekMat * ((std::sqrt(T)*Z.array() - T*sigma.array().sqrt()).array() * St.array()).matrix().asDiagonal();// * (S0.array()* St.array()).matrix().asDiagonal());
     return res_eigen;
 }
 
@@ -159,7 +163,7 @@ Eigen::MatrixXd BlackScholesNetwork::get_theta(const Eigen::MatrixXd Z) const
 {
     if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling get_theta";
     Eigen::ArrayXd tmp_deriv = (r - sigma.array()/2.0) +  sigma.array().sqrt()*Z.array()/(2.0*std::sqrt(T));
-    Eigen::MatrixXd res_eigen = GreekMat * (( exprt*tmp_deriv.array() * St_full.array()).matrix().asDiagonal()) - exprt*r*x;
+    Eigen::MatrixXd res_eigen = GreekMat * (( exprt*tmp_deriv.array() * St.array()).matrix().asDiagonal()) - exprt*r*x;
     return res_eigen;
 }
 
@@ -180,13 +184,14 @@ Eigen::MatrixXd BlackScholesNetwork::get_pi() const
 
 Eigen::MatrixXd BlackScholesNetwork::get_scalar_allGreeks(const Eigen::Ref<const Eigen::MatrixXd>& Z) const
 {
+    if(!jacobian_set) LOG(ERROR) << "Jacobian not computed before calling Greeks";
     Eigen::MatrixXd res = Eigen::MatrixXd(4,2);
     Eigen::ArrayXd sigma_sqrt(sigma.size());
     sigma_sqrt = sigma.array().sqrt();
     const Eigen::MatrixXd res_delta =  (exprt * GreekMat * St.asDiagonal());
     const Eigen::MatrixXd res_vega = exprt* GreekMat * (((std::sqrt(T)*Z.array() - T*sigma_sqrt).array() * St_full.array()).matrix().asDiagonal());// * (S0.array()* St.array()).matrix().asDiagonal());
-    //const Eigen::ArrayXd tmp_deriv = (r - sigma.array()/2.0) +  sigma_sqrt*Z.array()/(2.0*std::sqrt(T));
-    const Eigen::MatrixXd res_theta = GreekMat * (( exprt*((r - sigma.array()/2.0) +  sigma_sqrt*Z.array()/(2.0*std::sqrt(T))).array() * St_full.array()).matrix().asDiagonal()) - exprt*r*x;
+    const Eigen::ArrayXd tmp_deriv = (r - sigma.array()/2.0) +  sigma_sqrt*Z.array()/(2.0*std::sqrt(T));
+    const Eigen::MatrixXd res_theta = GreekMat * (( exprt*tmp_deriv * St_full.array()).matrix().asDiagonal()) - exprt*r*x;
     const Eigen::MatrixXd res_rho = T*exprt* (GreekMat * (St_full).matrix() - x);
     res(0,0) = res_delta.topRows(N).sum();
     res(0,1) = res_delta.bottomRows(N).sum();

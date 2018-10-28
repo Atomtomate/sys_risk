@@ -412,4 +412,58 @@ namespace Utils {
 
     }
 
+
+    void gen_ring(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set)
+    {
+        M->setZero();
+        auto N = M->rows();
+        double v = val/(N-1);
+        if( which_to_set == 1 || which_to_set == 0)
+        {
+            M->diagonal(1) = Eigen::VectorXd::Constant(M->rows(), v);
+            (*M)(N-1,0) = v;
+        }
+        if(which_to_set == 2 || which_to_set == 0)
+        {
+            M->diagonal(M->rows()+1) = Eigen::VectorXd::Constant(M->rows(), v);
+            (*M)(N-1,N) = v;
+        }
+    }
+
+    void gen_star(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set)
+    {
+        M->setZero();
+        auto N = M->rows();
+        double v = val/(N-1);
+        if( which_to_set == 1 || which_to_set == 0)
+        {
+            M->col(0) = Eigen::VectorXd::Constant(N, v);
+            M->leftCols(N).row(0) = Eigen::VectorXd::Constant(N, v);
+            (*M)(0,0) = 0;
+        }
+        if(which_to_set == 2 || which_to_set == 0)
+        {
+            M->col(N) = Eigen::VectorXd::Constant(N, v);
+            M->rightCols(N).row(0) = Eigen::VectorXd::Constant(N, v);
+            (*M)(0,N) = 0;
+        }
+    }
+
+    void gen_uniform(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set)
+    {
+        M->setZero();
+        auto N = M->rows();
+        double v = val/(N-1);
+        if( which_to_set == 1 || which_to_set == 0)
+        {
+            M->leftCols(N) = Eigen::VectorXd::Constant(N,N, v);
+            M->diagonal() = Eigen::VectorXd::Constant(M->rows(), 0.);
+        }
+        if(which_to_set == 2 || which_to_set == 0)
+        {
+            M->rightCols(N) = Eigen::VectorXd::Constant(N,N, v);
+            M->diagonal(N) = Eigen::VectorXd::Constant(M->rows(), 0.);
+        }
+    }
+
 }

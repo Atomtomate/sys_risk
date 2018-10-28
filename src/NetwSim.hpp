@@ -46,22 +46,6 @@ typedef typename std::conditional<USE_EIGEN_ACC, Eigen::MatrixXd, double>::type 
 typedef typename std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> ResultType;
 
 
-const std::string count_str("#Samples");
-const std::string rs_str("RS");
-const std::string M_str("M");
-const std::string assets_str("Assets");
-const std::string solvent_str("Solvent");
-const std::string val_str("Valuation");
-const std::string delta1_str("Delta using Jacobians");
-const std::string delta2_str("Delta using Log");
-const std::string rho_str("Rho");
-const std::string theta_str("Theta");
-const std::string vega_str("Vega");
-const std::string pi_str("Pi");
-const std::string io_deg_str("In/Out degree distribution");
-const std::string io_weight_str("In/Out weight distribution");
-const std::string greeks_str("Greeks");
-
 struct Parameters
 {
     long N;                 // M.rows()
@@ -85,6 +69,7 @@ private:
     const boost::mpi::communicator world;
     const bool isGenerator;
 #endif
+
     trng::yarn2 gen_u;
     trng::uniform01_dist<> u_dist;
     Student_t_dist t_dist;
@@ -92,7 +77,8 @@ private:
     //std::vector<double> dbg_weights;
     double last_weight;
 
-    long N;
+    NetworkType net_t;
+    int N;
     bool initialized;
     double T;              // maturity
     double r;              // interest
@@ -104,12 +90,14 @@ private:
     int setM;
     const double tmp[2][2] = {{1, 0},
                               {0, 1}};
+    long Num_Samples;
+    long Num_Networks;
+
     BlackScholesNetwork* bsn;
     Eigen::MatrixXd iSigma;
     Eigen::VectorXd sigma;
     Eigen::VectorXd Z;                 // Multivariate normal, used to generate lognormal assets
     Eigen::VectorXd var_h;
-    std::map<int, MCUtil::Sampler<AccType>*> SamplerList;
     Eigen::VectorXd S0;
     Eigen::VectorXd debt;
     Eigen::MatrixXd io_deg_dist;
@@ -139,7 +127,7 @@ private:
         bsn->re_init(M, S0, debt, sigma);
     }
 
-
+//TODO: config struct
 public:
     /*!
      * @brief               (re-)initializes network to given parameters
@@ -147,20 +135,14 @@ public:
      * @param p             Probability of cross holding
      * @param val           total value in/being held by other firms
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
+     * @TODO: config struct
      */
-    void test_init_network(const long N_, const double p_, const double val_, const int which_to_set, const double T_, const double r_, const double S0_, const double sigma_, const double default_prob_scale_);
+    void test_init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
+        const double r_, const double S0_, const double sigma_, const double default_prob_scale_, const NetworkType net_t_);
 
     virtual ~NetwSim(){
         if(bsn != nullptr)
             delete bsn;
-        /*auto it = SamplerList.begin();
-        while(it != SamplerList.end())
-        {
-            if(it->second != nullptr)
-                delete it->second;
-        }
-        SamplerList.clear();
-         */
     }
 
     /*!
@@ -197,17 +179,17 @@ public:
      */
 #ifdef USE_MPI
     NetwSim(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator,
-               long N, double p, double val, int which_to_set, const double T, const double r, const double S0) :
+               long N, double p, double val, int which_to_set, const double T, const double r, const double S0, const NetworkType net_t_) :
             local(local), world(world), isGenerator(isGenerator),
 #else
-    NetwSim(long N_, double p_, double val, int which_to_set, const double T_, const double r_, const double S0_, const double sigma_, const double default_scale_) :
+    NetwSim(long N_, double p_, double val, int which_to_set, const double T_, const double r_, const double S0_, const double sigma_, const double default_scale_, const NetworkType net_t_) :
 #endif
             val(val), T(T_), r(r_), S0scalar(S0_), sigmaScalar(sigma_), default_prob_scale(default_scale_)\
-        , Z_dist(&tmp[0][0], &tmp[1][1]), chi_dist(deg_of_freedom), t_dist(deg_of_freedom)
+        , Z_dist(&tmp[0][0], &tmp[1][1]), chi_dist(deg_of_freedom), t_dist(deg_of_freedom), net_t(net_t_)
     {
         gen_u.seed();
         bsn = nullptr;
-        test_init_network(N_, p_, val, which_to_set, T_, r_, S0_, sigma_, default_scale_);
+        test_init_network(N_, p_, val, which_to_set, T_, r_, S0_, sigma_, default_scale_, net_t_);
     }
 
 
@@ -216,8 +198,7 @@ public:
      * @brief       Runs a series of example simulations
      * @param N_in  Size of network
      */
-    ResultType run_valuation(const long N_Samples = 2000,
-                                                                   const long N_networks = 100, const bool fix_degree = false);
+    ResultType run_valuation(const long N_Samples = 2000, const long N_networks = 100, const bool fix_degree = false);
 
     /*!
      * @brief   Draws a random number from a multivariate lognormal distribution
@@ -282,148 +263,6 @@ private:
     trng::chi_square_dist<double> chi_dist;
     trng::correlated_normal_dist<> Z_dist;
 
-    template<typename T>
-    std::unordered_map<std::string, Eigen::MatrixXd> result_object(const int k, MCUtil::Sampler<T>* S)
-    {
-
-
-        Eigen::MatrixXd count;
-
-        std::unordered_map<std::string, Eigen::MatrixXd> res;
-        auto res_mean = S->extract(MCUtil::StatType::MEAN);
-        auto res_var = S->extract(MCUtil::StatType::VARIANCE);
-        /*
-        count = Eigen::MatrixXd::Zero(2,1);
-        res["Variance " + count_str] = count;
-        count(0,0) = N_Samples*N_networks;
-        count(1,0)  = S->get_count();
-        res[count_str] = count;
-         */
-        for (auto el : res_mean) {
-#if USE_EIGEN_ACC
-            if(el.first.compare(greeks_str) == 0) { res[greeks_str] = el.second; }
-#else
-            Eigen::MatrixXd tmp = Eigen::MatrixXd(1,1);
-            tmp(0,0) = el.second;
-            if(el.first.compare(rs_str) == 0){  res[rs_str] = tmp;}
-            else if(el.first.compare(M_str) == 0){ res[M_str] = tmp;}
-            else if(el.first.compare(assets_str) == 0){ res[assets_str] = tmp;}
-            else if(el.first.compare(solvent_str) == 0){ res[solvent_str] = tmp;}
-            else if(el.first.compare(val_str) == 0){ res[val_str] = tmp;}
-            else if(el.first.compare(delta1_str) == 0){ res[delta1_str] = tmp;}
-            else if(el.first.compare(delta2_str) == 0){ res[delta2_str] = tmp;}
-            else if(el.first.compare(rho_str) == 0){ res[rho_str] = tmp;}
-            else if(el.first.compare(theta_str) == 0){ res[theta_str] = tmp;}
-            else if(el.first.compare(vega_str) == 0){ res[vega_str] = tmp;}
-            else if(el.first.compare(pi_str) == 0){ res[pi_str] = tmp;}
-            //else if(el.first.compare(io_deg_str) == 0){ res[io_deg_str] = el.second;}
-            //else if(el.first.compare(io_weight_str) == 0){ res[io_weight_str] = el.second;}
-            else LOG(WARNING) << "result " << el.first << ", not saved";
-#endif
-        }
-        for (auto el : res_var) {
-#if USE_EIGEN_ACC
-            if(el.first.compare(greeks_str) == 0) { res[greeks_str] = el.second; }
-#else
-            Eigen::MatrixXd tmp = Eigen::MatrixXd(1,1);
-            tmp(0,0) = el.second;
-            if(el.first.compare(rs_str) == 0){ res["Variance "+rs_str] = tmp;}
-            else if(el.first.compare(M_str) == 0){ res["Variance "+M_str] = tmp;}
-            else if(el.first.compare(assets_str) == 0){ res["Variance "+assets_str] = tmp;}
-            else if(el.first.compare(solvent_str) == 0){ res["Variance "+solvent_str] = tmp;}
-            else if(el.first.compare(val_str) == 0){ res["Variance "+val_str] = tmp;}
-            else if(el.first.compare(delta1_str) == 0){ res["Variance "+delta1_str] = tmp;}
-            else if(el.first.compare(delta2_str) == 0){ res["Variance "+delta2_str] = tmp;}
-            else if(el.first.compare(rho_str) == 0){ res["Variance "+rho_str] = tmp;}
-            else if(el.first.compare(theta_str) == 0){ res["Variance "+theta_str] = tmp;}
-            else if(el.first.compare(vega_str) == 0){ res["Variance "+vega_str] = tmp;}
-            else if(el.first.compare(pi_str) == 0){ res["Variance "+pi_str] = tmp;}
-            //else if(el.first.compare(io_deg_str) == 0){ res["Variance" + io_deg_str] = el.second;}
-            //else if(el.first.compare(io_weight_str) == 0){ res["Variance" + io_weight_str] = el.second;}
-            else LOG(WARNING) << "result " << el.first << ", not saved";
-#endif
-        }
-        results.insert(std::pair(k, res));
-        return res;
-    }
-
-    template<typename T>
-    void register_observers(MCUtil::Sampler<T>* S)
-    {
-#if USE_EIGEN_ACC
-        const auto greeks_lambda      = [this]() -> Eigen::MatrixXd { return this->bsn->get_scalar_allGreeks(this->Z);};
-        const std::function<Eigen::MatrixXd (void)> greeks_obs(std::cref(greeks_lambda));
-        S->register_observer(greeks_obs, greeks_str, 4, 2);
-#else
-        const auto asset_obs_lambda   = [this]() -> T { return bsn->get_assets().sum(); };
-        const auto rs_obs_lambda      = [this]() -> T { return bsn->get_rs().sum(); };
-        const auto M_obs_lambda       = [this]() -> T { return bsn->get_M().sum(); };
-        const auto sol_obs_lambda     = [this]() -> T { return bsn->get_solvent().sum(); };
-        const auto delta_obs_lambda   = [this]() -> T { return bsn->get_delta_v1().sum();};
-        const auto rho_obs_lambda     = [this]() -> T { return bsn->get_rho().sum();};
-        const auto theta_obs_lambda   = [this]() -> T { return bsn->get_theta(Z).sum();};
-        const auto vega_obs_lambda    = [this]() -> T { return bsn->get_vega(Z).sum();};
-        const auto pi_obs_lambda      = [this]() -> T { return bsn->get_pi().sum();};
-
-        const std::function<T(void)> assets_obs(std::ref(asset_obs_lambda));
-        //S->register_observer(assets_obs, assets_str);
-        const std::function<T(void)> rs_obs(std::cref(rs_obs_lambda));
-        //S->register_observer(rs_obs, rs_str);
-        const std::function<T(void)> M_obs(std::cref(M_obs_lambda));
-        //S->register_observer(M_obs, M_str);
-        const std::function<T(void)> sol_obs(std::cref(sol_obs_lambda));
-        //S->register_observer(sol_obs, solvent_str);
-        const std::function<T(void)> deltav1_obs(std::cref(delta_obs_lambda));
-        //S->register_observer(deltav1_obs, delta1_str);
-        const std::function<T(void)> rho_obs(std::cref(rho_obs_lambda));
-        //S->register_observer(rho_obs, rho_str);
-        const std::function<T(void)> theta_obs(std::cref(theta_obs_lambda));
-        //S->register_observer(theta_obs, theta_str);
-        const std::function<T(void)> vega_obs(std::cref(vega_obs_lambda));
-        //S->register_observer(vega_obs, vega_str);
-        const std::function<T(void)> pi_obs(std::cref(pi_obs_lambda));
-        //S->register_observer(pi_obs, pi_str);
-#endif
-
-        // ===== Defining observabEigen::MatrixXdles =====
-        /*
-        auto asset_obs_lambda = [this]() -> Eigen::MatrixXd { return  bsn->get_assets(); };
-        auto rs_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rs(); };
-        auto M_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_M(); };
-        auto sol_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_solvent(); };
-        auto delta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_delta_v1();};
-        auto rho_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_rho();};
-        auto theta_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_theta(Z);};
-        auto vega_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_vega(Z);}; //LOG(ERROR) << "a"; Eigen::MatrixXd t = Eigen::MatrixXd::Zero(2,2);
-        auto pi_obs_lambda = [this]() -> Eigen::MatrixXd { return bsn->get_pi();};
-        std::function<const Eigen::MatrixXd(void)> assets_obs(std::ref(asset_obs_lambda));
-        S->register_observer(assets_obs, assets_str, N, 1);
-        std::function<const Eigen::MatrixXd(void)> rs_obs(std::cref(rs_obs_lambda));
-        S->register_observer(rs_obs, rs_str, 2*N, 1);
-        std::function<const Eigen::MatrixXd(void)> M_obs(std::cref(M_obs_lambda));
-        S->register_observer(M_obs, M_str, N, 2*N);
-        std::function<const Eigen::MatrixXd(void)> sol_obs(std::cref(sol_obs_lambda));
-        S->register_observer(sol_obs, solvent_str, N, 1);
-        std::function<const Eigen::MatrixXd(void)> deltav1_obs(std::cref(delta_obs_lambda));
-        S->register_observer(deltav1_obs, delta1_str, 2 * N , N);
-        std::function<const Eigen::MatrixXd(void)> rho_obs(std::cref(rho_obs_lambda));
-        S->register_observer(rho_obs, rho_str, 2*N , 1);
-        std::function<const Eigen::MatrixXd(void)> theta_obs(std::cref(theta_obs_lambda));
-        S->register_observer(theta_obs, theta_str, 2*N , 1);
-        std::function<const Eigen::MatrixXd(void)> vega_obs(std::cref(vega_obs_lambda));
-        S->register_observer(vega_obs, vega_str, 2*N , N);
-        std::function<const Eigen::MatrixXd(void)> pi_obs(std::cref(pi_obs_lambda));
-        S->register_observer(pi_obs, pi_str, N , 1);
-        */
-        //std::function<const Eigen::MatrixXd(void)> deltav2_obs   = [this]() -> Eigen::MatrixXd { return this->delta_v2();};
-        //S->register_observer(deltav2_obs, delta2_str, 2 * N , N);
-        //std::function<const Eigen::MatrixXd(void)> out_obs =  [this]() -> Eigen::MatrixXd { return this->test_out();};
-        //S->register_observer(out_obs, "Debug Out" ,1, 1);
-
-        //std::function<const Eigen::MatrixXd(void)> valuation_obs = [this]() -> Eigen::MatrixXd { return bsn->get_valuation(); };
-        //S->register_observer(valuation_obs, val_str, N, 1);
-
-    }
 
 public:
     Eigen::MatrixXd get_io_deg_dist() const
@@ -437,10 +276,6 @@ public:
     }
 
     void set_weight();
-
-    //std::vector<double> get_dbg_weights() const
-    //{
-    //    return dbg_weights;
     //}
 
 };
