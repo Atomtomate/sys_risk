@@ -81,7 +81,7 @@ def reduce_to_scalars(df, N, conn_scale, nt = 0):
     #                            (cols == 'col sum') ))
     if nt == 1:
         cols =  np.array(['Network Type', 'N', 'r', 'T', 'M', 'default scale', 'S0', 'sigma',\
-		      'vs01', 'vs10', 'vr01', 'vr10', \
+                      'vs01', 'vs10', 'vr01', 'vr10', \
                       'Solvent', 'Solvent var', 'Assets', 'Assets var', 'R', 'S', \
                       'equity Delta', 'equity Delta var', 'debt Delta', 'debt Delta var',\
                       'equity Vega', 'equity Vega var', 'debt Vega', 'debt Vega var',\
@@ -101,11 +101,11 @@ def reduce_to_scalars(df, N, conn_scale, nt = 0):
     df2['Number Of Samples'] = df['Number Of Samples'].transform(lambda x: x[1])
     df2['S'] = df['RS'].transform(lambda x: np.average(x[:N]))
     df2['R'] = df['RS'].transform(lambda x: np.average(x[N:]))
-    df2['equity Delta'] = df['Delta'].transform(lambda x: np.sum(x[:N,:])/N)
-    df2['equity Delta var'] = df['Delta var'].transform(lambda x: np.sum(x[:N,:])/N)
-    df2['debt Delta'] = df['Delta'].transform(lambda x: np.sum(x[N:,:])/N)
-    df2['debt Delta var'] = df['Delta var'].transform(lambda x: np.sum(x[N:,:])/N)
-    for el in ['Vega', 'Rho', 'Theta']:
+    #df2['equity Delta'] = df['Delta'].transform(lambda x: np.sum(x[:N,:])/N)
+    #df2['equity Delta var'] = df['Delta var'].transform(lambda x: np.sum(x[:N,:])/N)
+    #df2['debt Delta'] = df['Delta'].transform(lambda x: np.sum(x[N:,:])/N)
+    #df2['debt Delta var'] = df['Delta var'].transform(lambda x: np.sum(x[N:,:])/N)
+    for el in ['Delta', 'Vega', 'Rho', 'Theta']:
         df2['equity ' + el] = df[el].transform(lambda x: np.sum(x[:,:N])/N)
         df2['equity ' +el+ ' var'] = df[el+' var'].transform(lambda x: np.sum(x[:,:N])/N)
         df2['debt ' + el] = df[el].transform(lambda x: np.sum(x[:,N:])/N)
@@ -140,6 +140,85 @@ def reduce_to_scalars(df, N, conn_scale, nt = 0):
     #df2['p'] = df['p']
     
     return (df2, df2_debug)
+
+    
+
+def run_fixed_sim(N_MC, N, T, r, S0, sigma, default_scale, vs01, vs10, vr01, vr10):
+    import numpy as np
+    import PyVal	
+    nw = PyVal.BS_Network()
+    print("Runing fixed")
+    nw.runFixed(vs01, vs10, vr01, vr10, T, r, S0, sigma, N_MC, default_scale)
+    k_list = nw.k_vals()[0]
+    res = []
+    print(k_list)
+    for k in k_list:
+        res.append({'Network Type': 1, 'N': N, 'Number Of Samples': nw.get_N_samples(k)[0], 'default scale': default_scale,\
+               'vs01': vs01,'vs10': vs10, 'vr01': vr01, 'vr10': vr10, \
+               'T':T, 'r': r , 'sigma': sigma, 'S0': S0, \
+               'M': nw.get_M(k), 'M var': nw.get_M_var(k),\
+               'Assets': np.array(nw.get_assets(k))[0], 'Assets var': np.array(nw.get_assets_var(k))[0],\
+               'RS': np.array(nw.get_rs(k))[0],  'RS var': np.array(nw.get_rs_var(k))[0],\
+               'Delta': nw.get_delta_jacobians(k),  'Delta var': nw.get_delta_jacobians_var(k),\
+               'Vega': np.array(nw.get_vega(k)),  'Vega var': np.array(nw.get_vega_var(k)),\
+               'Theta': np.array(nw.get_theta(k)),  'Theta var': np.array(nw.get_theta_var(k)),\
+               'Rho': np.array(nw.get_rho(k)),  'Rho var': np.array(nw.get_rho_var(k)),\
+               'Solvent': np.array(nw.get_solvent(k))[0], 'Solvent var': np.array(nw.get_solvent_var(k))[0],\
+               'Pi': np.array(nw.get_pi(k))[0],  'Pi var': np.array(nw.get_pi_var(k))[0]
+            #'IO Degree Distribution': np.array(nw.get_io_deg_dist())\
+                   })
+    return res
+
+
+def combine_2_results(dict1, dict2):
+    import copy
+    res = copy.deepcopy(dict1)
+    for k in tmp_cols:
+        if k in res:
+            res.pop(k)
+    index_ok = True
+    if dict1['Network Type'] == 1:
+        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
+    for ind in indices_internal:
+        if dict1[ind] != dict2[ind]:
+            index_ok = False
+    if index_ok:
+        res['Number Of Samples'] = dict1['Number Of Samples'] + dict2['Number Of Samples']
+        n1 = dict1['Number Of Samples'][1]
+        n2 = dict2['Number Of Samples'][1]
+        n_tot = n1 + n2
+        for el in col_names:
+            elv = el + ' var'
+            res[el] = (n1*dict1[el] + n2*dict2[el])/n_tot
+            res[elv] = (n1*(dict1[elv] + dict1[el]*dict1[el]) + n2*(dict2[elv] + dict2[el]*dict2[el]))/n_tot - res[el]*res[el]
+        return [res]
+    else:
+        return [dict1, dict2]
+
+    
+def results_to_df(results, netType = 0):
+    import copy
+    candidates = {}
+    df_list = []
+    if netType == 1:
+        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
+    for r_list in results:
+        for res in r_list:
+            key = tuple([res[ind] for ind in indices_internal])
+            if key in candidates:
+                candidates[key].append(res)
+            else:
+                candidates[key] = [res]
+    for key, value in candidates.items():
+        res_in = copy.deepcopy(value)
+        while len(res_in) > 1:
+            el1 = res_in.pop()
+            el2 = res_in.pop()
+            res_in = res_in + combine_2_results(el1, el2)
+        candidates[key] = res_in[0]
+        df_list.append(res_in[0])
+    #res.set_index(indices, inplace=True)
+    return pd.DataFrame(df_list)
 
 def reduce_to_scalars_old(df, conn_scale):
     for ix in df.index:
@@ -179,32 +258,6 @@ def reduce_to_scalars_old(df, conn_scale):
     df.drop(columns='M var', inplace=True)
  
 
-def run_fixed_sim(N_MC, N, T, r, S0, sigma, default_scale, vs01, vs10, vr01, vr10):
-    import numpy as np
-    import PyVal	
-    nw = PyVal.BS_Network()
-    print("Runing fixed")
-    nw.runFixed(vs01, vs10, vr01, vr10, T, r, S0, sigma, N_MC, default_scale)
-    k_list = nw.k_vals()[0]
-    res = []
-    print(k_list)
-    for k in k_list:
-        res.append({'Network Type': 1, 'N': N, 'Number Of Samples': nw.get_N_samples(k)[0], 'default scale': default_scale,\
-	       'vs01': vs01,'vs10': vs10, 'vr01': vr01, 'vr10': vr10, \
-               'T':T, 'r': r , 'sigma': sigma, 'S0': S0, \
-               'M': nw.get_M(k), 'M var': nw.get_M_var(k),\
-               'Assets': np.array(nw.get_assets(k))[0], 'Assets var': np.array(nw.get_assets_var(k))[0],\
-               'RS': np.array(nw.get_rs(k))[0],  'RS var': np.array(nw.get_rs_var(k))[0],\
-               'Delta': nw.get_delta_jacobians(k),  'Delta var': nw.get_delta_jacobians_var(k),\
-               'Vega': np.array(nw.get_vega(k)),  'Vega var': np.array(nw.get_vega_var(k)),\
-               'Theta': np.array(nw.get_theta(k)),  'Theta var': np.array(nw.get_theta_var(k)),\
-               'Rho': np.array(nw.get_rho(k)),  'Rho var': np.array(nw.get_rho_var(k)),\
-               'Solvent': np.array(nw.get_solvent(k))[0], 'Solvent var': np.array(nw.get_solvent_var(k))[0],\
-               'Pi': np.array(nw.get_pi(k))[0],  'Pi var': np.array(nw.get_pi_var(k))[0]
-            #'IO Degree Distribution': np.array(nw.get_io_deg_dist())\
-                   })
-    return res
-
 def run_sim(N, row_val, col_val, p, T, r, S0, sigma, default_scale, netType):
     import numpy as np
     import PyVal
@@ -235,56 +288,8 @@ def run_sim(N, row_val, col_val, p, T, r, S0, sigma, default_scale, netType):
     return res
 
 
-def combine_2_results(dict1, dict2):
-    import copy
-    res = copy.deepcopy(dict1)
-    for k in tmp_cols:
-        if k in res:
-            res.pop(k)
-    index_ok = True
-    if dict1['Network Type'] == 1:
-        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma',\
-				 'vs01', 'vs10', 'vr01', 'vr10']
-    for ind in indices_internal:
-        if dict1[ind] != dict2[ind]:
-            index_ok = False
-    if index_ok:
-        res['Number Of Samples'] = dict1['Number Of Samples'] + dict2['Number Of Samples']
-        n1 = dict1['Number Of Samples'][1]
-        n2 = dict2['Number Of Samples'][1]
-        n_tot = n1 + n2
-        for el in col_names:
-            elv = el + ' var'
-            res[el] = (n1*dict1[el] + n2*dict2[el])/n_tot
-            res[elv] = (n1*(dict1[elv] + dict1[el]*dict1[el]) + n2*(dict2[elv] + dict2[el]*dict2[el]))/n_tot - res[el]*res[el]
-        return [res]
-    else:
-        return [dict1, dict2]
 
-    
-def results_to_df(results, netType = 0):
-    import copy
-    candidates = {}
-    df_list = []
-    if netType == 1:
-        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma']
-    for r_list in results:
-        for res in r_list:
-            key = tuple([res[ind] for ind in indices_internal])
-            if key in candidates:
-                candidates[key].append(res)
-            else:
-                candidates[key] = [res]
-    for key, value in candidates.items():
-        res_in = copy.deepcopy(value)
-        while len(res_in) > 1:
-            el1 = res_in.pop()
-            el2 = res_in.pop()
-            res_in = res_in + combine_2_results(el1, el2)
-        candidates[key] = res_in[0]
-        df_list.append(res_in[0])
-    #res.set_index(indices, inplace=True)
-    return pd.DataFrame(df_list)
+
         
             
     

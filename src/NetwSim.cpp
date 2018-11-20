@@ -87,7 +87,7 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
     std::function<Eigen::MatrixXd (void)> f_dist(std::cref(f_dist_lambda));
     //auto f_weights = [this]() -> double { return this->get_weights(); };
     const auto f_run_lambda =  [this](const Eigen::Ref<const Eigen::MatrixXd>& x) -> void {
-        this->run(x);
+        this->run(transformZ(x));
         //this->bsn->get_scalar_allGreeks(this->Z);
     };
     std::function<void (Eigen::MatrixXd)> f_run(std::cref(f_run_lambda));
@@ -182,6 +182,11 @@ const Eigen::MatrixXd NetwSim::draw_from_dist()
     for (int d = 0; d < N; d++) {
         Z(d) = Z_dist(gen_z);
     }
+    return Z;
+}
+
+const Eigen::MatrixXd NetwSim::transformZ(const Eigen::Ref<const Eigen::MatrixXd>& Z) const
+{
     //Z = sw*2.0*Z;
     Eigen::VectorXd S_log = var_h.array() + (std::sqrt(T) * sigma.array().sqrt()).array() * Z.array();
     //set_weight();

@@ -218,6 +218,9 @@ public:
      */
     const Eigen::MatrixXd draw_from_dist();
 
+
+    const Eigen::MatrixXd transformZ(const Eigen::Ref<const Eigen::MatrixXd>& Z) const;
+
     double get_weight();
 
     /*!
