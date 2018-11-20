@@ -377,18 +377,14 @@ namespace Utils {
     {
         std::pair<double, double> res(0., 0.);
         int N = M->rows();
-        for (int i = 0; i < M->rows(); i++) {
+        for (int i = 0; i < N; i++) {
             int in_deg = 0;
-            for (int j = 0; j < M->leftCols(N).cols(); j++) {
-                in_deg += (int) ((*M)(i, j + N) > eps);
-            }
-            res.first += in_deg;
-        }
-        for (int i = 0; i < M->leftCols(N).cols(); i++) {
             int out_deg = 0;
-            for (int j = 0; j < M->rows(); j++) {
+            for (int j = 0; j < N; j++) {
+                in_deg += (int) ((*M)(j, i + N) > eps);
                 out_deg += (int) ((*M)(i, j + N) > eps);
             }
+            res.first += in_deg;
             res.second += out_deg;
         }
         res.first = res.first/N;
@@ -397,19 +393,13 @@ namespace Utils {
     }
 
 
-    void fixed_2d(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set)
+    void fixed_2d(Eigen::MatrixXd* M, const double vs01, const double vs10, const double vr01, const double vr10)
     {
         M->setZero();
-        if(which_to_set == 2 || which_to_set == 0) {
-            (*M)(0, 3) = val;
-            (*M)(1, 2) = val;
-        }
-        if( which_to_set == 1 || which_to_set == 0)
-        {
-            (*M)(0, 1) = val;
-            (*M)(1, 0) = val;
-        }
-
+        (*M)(0, 3) = vr01;
+        (*M)(1, 2) = vr10;
+        (*M)(0, 1) = vs01;
+        (*M)(1, 0) = vs10;
     }
 
 

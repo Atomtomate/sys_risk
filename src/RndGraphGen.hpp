@@ -82,7 +82,7 @@ namespace Utils {
     std::pair<double,double> avg_io_deg(Eigen::MatrixXd* M);
 
 
-    void fixed_2d(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
+    void fixed_2d(Eigen::MatrixXd* M, const double vs01, const double vs10, const double vr01, const double vr10);
 
     void gen_ring(Eigen::MatrixXd* M, trng::yarn2& gen_u, const double p, const double val, const int which_to_set);
 

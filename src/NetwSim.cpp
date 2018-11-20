@@ -8,7 +8,7 @@
 
 
 #include "NetwSim.hpp"
-void NetwSim::test_init_network() {
+void NetwSim::reset_network() {
     // ===== Reset Sampler =====
     results.clear();
 
@@ -21,31 +21,33 @@ void NetwSim::test_init_network() {
     LOG(TRACE) << "Initializing random connectivity matrix";
 }
 
-void NetwSim::test_init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
+void NetwSim::init_2D_network(BSParameters& bs_params, const double vs01, const double vs10, const double vr01, const double vr10)
+{
+    N = 2;
+    init_network(2, 0, 0, 1, bs_params.T, bs_params.r, bs_params.S0, bs_params.sigma, bs_params.default_prob_scale, NetworkType::Fixed2D);
+    init_2DFixed_BS(vs01, vs10, vr01, vr10);
+}
+
+void NetwSim::init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
     const double r_, const double S0_, const double sdev, const double default_prob_scale_, const NetworkType net_t_)
 {
-    // ===== Initialization of temporary variables =====
-    T = T_; r = r_; N = N_; p = p_; val = val_; S0scalar = S0_; setM = which_to_set; default_prob_scale = default_prob_scale_;
-    net_t = net_t_;
-    Z.resize(N);
-    iSigma.resize(N, N);
-    var_h.resize(N);
-    S0.resize(N);
-    debt.resize(N);
-    sigma.resize(N);
+    // ========================= Initialization of temporary variables ========================
+    T = T_; r = r_; N = N_; p = p_; val = val_; S0scalar = S0_; setM = which_to_set; default_prob_scale = default_prob_scale_; net_t = net_t_;
+    Z.resize(N); iSigma.resize(N, N); var_h.resize(N); S0.resize(N); debt.resize(N); sigma.resize(N);
 
-    // ===== Preparation of Log Normal Dist. =====
+    // ========================= Preparation of Log Normal Dist. ==============================
     sigma = Eigen::VectorXd::Constant(N,sdev*sdev);
     iSigma = (sigma.asDiagonal()).inverse();
     var_h = T * r - T * sigma.array()/ 2.;
 
+    // ============================== Importance Sampling Setup ===============================
     //Eigen::MatrixXd unitMatrix = Eigen::MatrixXd::Identity(N,N);
     //Eigen::VectorXd zeroVec = Eigen::VectorXd::Zero(N);
     //mvndist = Multivariate_Normal_Dist(unitMatrix, zeroVec);
     //t_dist = Student_t_dist(unitMatrix*4.0, zeroVec, deg_of_freedom);
     //chi_dist = trng::chi_square_dist(deg_of_freedom);
 
-    // ===== creating correlated normal distribution from Eigen Sigma =====
+    // =============== creating correlated normal distribution from Eigen Sigma ===============
     //double *sigma_arr = new double[N * N];
     //double sigma2d_arr[N][N];
     //memcpy(sigma2d_arr[0], sigma_arr, N*N*sizeof(double));
@@ -58,7 +60,6 @@ void NetwSim::test_init_network(const int N_, const double p_, const double val_
     //Z_dist = trng::correlated_normal_dist<>(&sigma2d_arr[0][0], &sigma2d_arr[N - 1][N - 1] + 1);
     Z_dist = trng::correlated_normal_dist<>(&unity2d_arr[0][0], &unity2d_arr[N - 1][N - 1] + 1);
 
-
     delete[] unity_arr;
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -67,12 +68,12 @@ void NetwSim::test_init_network(const int N_, const double p_, const double val_
     gen_chi.seed(dis(gen));
 
 
-    // ===== Generating Black Scholes Network =====
+    // ========================= Generating Black Scholes Network =============================
     S0 = Eigen::VectorXd::Constant(N, S0scalar);
     //debt = (S0.array())*Eigen::VectorXd::Constant(N, default_prob_scale/(1.0-val)).array();
     debt = Eigen::VectorXd::Constant(N, 1.0*default_prob_scale);
 
-    test_init_network();
+    reset_network();
 }
 
 
@@ -80,7 +81,6 @@ void NetwSim::test_init_network(const int N_, const double p_, const double val_
 ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, const bool fixed_M) {
 
     std::map<int, std::unique_ptr<MCUtil::Sampler<AccType> > > SamplerList;
-    test_init_network();
     Num_Samples = N_Samples;
     Num_Networks = N_networks;
     const auto f_dist_lambda = [this]() -> Eigen::MatrixXd { return this->draw_from_dist(); };
@@ -103,12 +103,13 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
     for(int jj = 0; jj < N_networks; jj++) // N_networks
     {
         std::cout << "\r  ---> " << 100.0*static_cast<double>(jj)/N_networks << "% of runs finished" <<std::flush;
-
         try{
             if(net_t == NetworkType::ER)
                 init_BS(Utils::gen_sinkhorn);
             else if( net_t == NetworkType::Fixed2D)
-                init_BS(Utils::fixed_2d);
+            {
+                // nothing to do -- fixed
+            }
             else if( net_t == NetworkType::STAR)
                 init_BS(Utils::gen_star);
             else if( net_t == NetworkType::RING)
@@ -122,6 +123,7 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
             auto it = SamplerList.find(degree);
             if(it == SamplerList.end())
             {
+                LOG(ERROR) << "creating sampler for k = " << degree;
                 std::unique_ptr<MCUtil::Sampler<AccType> > S = std::unique_ptr<MCUtil::Sampler<AccType> >(new MCUtil::Sampler<AccType>(N, bsn));
                 if(S == nullptr) LOG(ERROR) << "Sampler could not be created";
                 f_run(f_dist());
@@ -181,7 +183,6 @@ const Eigen::MatrixXd NetwSim::draw_from_dist()
         Z(d) = Z_dist(gen_z);
     }
     //Z = sw*2.0*Z;
-
     Eigen::VectorXd S_log = var_h.array() + (std::sqrt(T) * sigma.array().sqrt()).array() * Z.array();
     //set_weight();
     return S_log.array().exp();

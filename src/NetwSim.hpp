@@ -46,15 +46,10 @@ typedef typename std::conditional<USE_EIGEN_ACC, Eigen::MatrixXd, double>::type 
 typedef typename std::map<int, std::unordered_map<std::string, Eigen::MatrixXd>> ResultType;
 
 
-struct Parameters
+struct SimulationParameters
 {
-    long N;                 // M.rows()
-    int set_s_d_both;       //
-    double p;               // P(M_ij = 1)
-    double val;             // sum_j M_ij = sum_i M_ij
-    //@TODO: finish, add log-norm params
-
-
+    const long iterations, N_networks;
+    NetworkType net_t;
 };
 
 constexpr int deg_of_freedom = 8;
@@ -109,9 +104,20 @@ private:
 
 
     // last result, returned by observe
-    void test_init_network();
+    void reset_network();
 
     Eigen::MatrixXd in_out_degree(Eigen::MatrixXd* M);
+
+    void init_2DFixed_BS(const double vs01, const double vs10, const double vr01, const double vr10)
+    {
+        connectivity = 1;
+        Eigen::MatrixXd M = Eigen::MatrixXd::Zero(2, 4);
+        Utils::fixed_2d(&M, vs01, vs10, vr01, vr10);
+        io_deg_dist += Utils::in_out_degree(&M);
+        avg_io_deg = Utils::avg_io_deg(&M);
+        avg_rc_sums += Utils::avg_row_col_sums(&M);
+        bsn->re_init(M, S0, debt, sigma);
+    }
 
     template <typename F>
     void init_BS(F gen_function) {
@@ -137,8 +143,10 @@ public:
      * @param which_to_set  Flag to disable connections between parts of the network. Can be 0/1/2. 2: cross debt is 0, 1: cross equity is 0, 0: none is 0
      * @TODO: config struct
      */
-    void test_init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
+    void init_network(const int N_, const double p_, const double val_, const int which_to_set, const double T_,\
         const double r_, const double S0_, const double sigma_, const double default_prob_scale_, const NetworkType net_t_);
+
+    void init_2D_network(BSParameters& bs_params, const double vs01, const double vs10, const double vr01, const double vr10);
 
     virtual ~NetwSim(){
         if(bsn != nullptr)
@@ -189,10 +197,14 @@ public:
     {
         gen_u.seed();
         bsn = nullptr;
-        test_init_network(N_, p_, val, which_to_set, T_, r_, S0_, sigma_, default_scale_, net_t_);
+        init_network(N_, p_, val, which_to_set, T_, r_, S0_, sigma_, default_scale_, net_t_);
     }
 
 
+    inline ResultType run_valuation(const SimulationParameters sim_params)
+    {
+        return run_valuation(sim_params.iterations, sim_params.N_networks);
+    }
 
     /*!
      * @brief       Runs a series of example simulations

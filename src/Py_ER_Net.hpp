@@ -54,9 +54,19 @@ public:
         LOG(INFO) << "init. p = " << p << " row sum = " << val_row << ", col sum" << val_col << ", r = " << r << " T = " << T << " it = "  << iterations;
         if(val_row != val_col)
             LOG(WARNING) << "ignoring column sum value! for not val_col == val_row is required";
-        er_net.test_init_network(N, p, val_row, which_to_set, T, r, S0, sigma, default_prob_scale, nt);
+        er_net.init_network(N, p, val_row, which_to_set, T, r, S0, sigma, default_prob_scale, nt);
         LOG(TRACE) << "Network initialized";
         er_net.run_valuation(iterations, N_networks);
+    }
+
+    void run_2DFixed_valuation(const double vs01, const double vs10, const double vr01, const double vr10,
+            const double T, const double r, const double S0, const double sigma,
+            const long iterations, const double default_prob_scale)
+    {
+        struct BSParameters bs_params = {T, r, sigma, S0, default_prob_scale};
+        struct SimulationParameters sim_params = {iterations, 1, NetworkType::Fixed2D};
+        er_net.init_2D_network(bs_params, vs01, vs10, vr01, vr10);
+        er_net.run_valuation(sim_params);
     }
 
 

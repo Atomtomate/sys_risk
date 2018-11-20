@@ -98,14 +98,12 @@ namespace MCUtil {
         template<class Func, class DistT, typename... ArgTypes>
         void draw_samples(Func&& f, DistT&& draw_from_dist, unsigned int n, ArgTypes &&... f_args) {
             count += n;
-            std::cout << "Sampler before draw" << std::endl;
             for (unsigned int i = 0; i < n; i++) {
                 //@TODO: use curry for f with f_args. see: https://stackoverflow.com/questions/152005/how-can-currying-be-done-in-c
                 auto Z = draw_from_dist();
                 call_f(std::forward<Func>(f), Z, std::forward<ArgTypes>(f_args)...);
                 res_obj.new_sample(Z);
             }
-            std::cout << "Sampler after draw" << std::endl;
         }
 
         //@TODO: draw sample using some variance reduction scheme. e.g.: Controll variate, imp. sampl

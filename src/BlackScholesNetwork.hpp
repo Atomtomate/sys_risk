@@ -37,17 +37,15 @@
 #include "StatAcc.hpp"
 #include "RndGraphGen.hpp"
 
-struct simulationParameters
+struct BSParameters
 {
-    int N;
-    double T;
-    double r;
-    double sigma;
-    double S0;
-    double conn;
-    double colSums;
-    double defaultScale;
-    int which_to_set;
+    double T, r, sigma, S0, default_prob_scale;
+};
+
+struct NetworkParameters
+{
+    int N, which_to_set;
+    double conn, colSums;
 };
 
 
@@ -56,20 +54,12 @@ class BlackScholesNetwork
     using Mat = Eigen::MatrixXd;
     using Vec = Eigen::VectorXd;
 private:
-    double T;
-    double r;
+    double T, r, exprt;
     int N;
     bool initialized;
-    Vec x;
-    Vec S0;
-    Vec St;
-    Vec St_full;
-    Vec debt;
-    Vec solvent;
-    Vec sigma;
-    double exprt;
-    //Mat sigma_diag;
+    Vec x, S0, St, St_full, debt, solvent, sigma;
     bool jacobian_set;
+    //Mat sigma_diag;
 #if USE_SPARSE_INTERNAL
     Eigen::SparseLU<Eigen::SparseMatrix<double, Eigen::ColMajor>> lu;
     Eigen::SparseMatrix<double, Eigen::ColMajor> Id;

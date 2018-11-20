@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     /*std::vector<double> plist { 0.7, 0.9, 1.0}; //0.0,0.1,0.2, 0.3, 0.4,0.5, 0.6,0.8,
     for(auto p : plist) {
         LOG(INFO) << "Generating for p " << p;
-        nNN.test_init_network(5, 1.0, 0.7, 2, 1.0, 0.0, 1.0, 0.15, 1.0);
+        nNN.init_network(5, 1.0, 0.7, 2, 1.0, 0.0, 1.0, 0.15, 1.0);
 
         Eigen::MatrixXd M = Eigen::MatrixXd::Random(3,6);
         Eigen::MatrixXd test = M;
@@ -140,14 +140,19 @@ int main(int argc, char* argv[])
     }
     exit(0);
     */
+    BSParameters bsp = {T_, r_, sigma_, S0_, ds};
+
 
     for (int N : {N_})
     { //, 8, 16, 32}) {
-        nNN.test_init_network(N, conn_/static_cast<double>(N) , val, setM, T_, r_, S0_, sigma_, ds, net_t);
+        if(netType_i != 1)
+            nNN.init_network(N, conn_/static_cast<double>(N) , val, setM, T_, r_, S0_, sigma_, ds, net_t);
+        else
+            nNN.init_2D_network(bsp, 0.9, 0.9, 0.9, 0.9);
         auto res = nNN.run_valuation(N_MC, N_nets);//10000, 500);
         std::cout << "results: " << std::endl;
         for(auto res_el: res ) {
-            std::cout << "-=-=-=-=-=-=-=-=-=-=-=- <k> = " << res_el.first/COARSE_CONN << " -=-=-=-=-=-=-=-=-=-=-=-" << std::endl;
+            std::cout << "-=-=-=-=-=-=-=-=-=-=-=- <k> = " << res_el.first/static_cast<double>(COARSE_CONN) << " -=-=-=-=-=-=-=-=-=-=-=-" << std::endl;
             for (const auto &el : res_el.second)
             {
 #if USE_EIGEN_ACC

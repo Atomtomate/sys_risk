@@ -70,7 +70,7 @@ public:
         accs.insert( std::make_pair(solvent_str, new AccT(N,1)) );
         accs.insert( std::make_pair(rs_str, new AccT(2*N,1)) );
         accs.insert( std::make_pair(val_str, new AccT(N,1)) );
-        accs.insert( std::make_pair(M_str, new AccT(2*N,N)) );
+        accs.insert( std::make_pair(M_str, new AccT(N,2*N)) );
         accs.insert( std::make_pair(pi_str, new AccT(N,1)) );
     }
 
