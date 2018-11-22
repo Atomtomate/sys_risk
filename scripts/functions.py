@@ -178,7 +178,7 @@ def combine_2_results(dict1, dict2):
             res.pop(k)
     index_ok = True
     if dict1['Network Type'] == 1:
-        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
+    	indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
     for ind in indices_internal:
         if dict1[ind] != dict2[ind]:
             index_ok = False
@@ -201,7 +201,7 @@ def results_to_df(results, netType = 0):
     candidates = {}
     df_list = []
     if netType == 1:
-        indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
+    	indices_internal = ['S0','T', 'r', 'N', 'default scale', 'sigma', 'vs01', 'vs10', 'vr01', 'vr10']
     for r_list in results:
         for res in r_list:
             key = tuple([res[ind] for ind in indices_internal])
