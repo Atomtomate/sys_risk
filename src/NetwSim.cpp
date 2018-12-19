@@ -97,7 +97,8 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
     std::cout << "Running Valuation for N = " << N <<  ", p =" << p << ", sum_j M_ij = " << val  << "\n";
     std::cout << "Preparing to run"<< std::flush ;
 
-
+    io_deg_dist = Eigen::MatrixXd::Zero(2,2*N);
+    avg_rc_sums =  Eigen::MatrixXd::Zero(2,2*N);
 
 
     for(int jj = 0; jj < N_networks; jj++) // N_networks
@@ -118,12 +119,11 @@ ResultType NetwSim::run_valuation(const long N_Samples, const long N_networks, c
                 init_BS(Utils::gen_ring);
             else if( net_t == NetworkType::UNIFORM)
                 init_BS(Utils::gen_uniform);
-
             int degree = (int)std::round(COARSE_CONN*(avg_io_deg.first + avg_io_deg.second)/2.);
             auto it = SamplerList.find(degree);
             if(it == SamplerList.end())
             {
-                LOG(ERROR) << "creating sampler for k = " << degree;
+                //LOG(ERROR) << "creating sampler for k = " << degree;
                 std::unique_ptr<MCUtil::Sampler<AccType> > S = std::unique_ptr<MCUtil::Sampler<AccType> >(new MCUtil::Sampler<AccType>(N, bsn));
                 if(S == nullptr) LOG(ERROR) << "Sampler could not be created";
                 f_run(f_dist());
@@ -192,4 +192,3 @@ const Eigen::MatrixXd NetwSim::transformZ(const Eigen::Ref<const Eigen::MatrixXd
     //set_weight();
     return S_log.array().exp();
 }
-

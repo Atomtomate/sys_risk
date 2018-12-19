@@ -1,5 +1,4 @@
 build/
-build_bak/
 latex/
 html/
 cmake-build-debug/
@@ -18,4 +17,3 @@ logs/
 *.log
 *.profdata
 *.csv
-*checkpoint.ipynb

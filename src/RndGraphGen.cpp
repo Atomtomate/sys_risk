@@ -368,8 +368,8 @@ namespace Utils {
     Eigen::MatrixXd avg_row_col_sums(Eigen::MatrixXd* M)
     {
         Eigen::MatrixXd res = Eigen::MatrixXd::Zero(2, M->cols());
-        res.leftCols(M->rows()).topRows(1) = M->rowwise().sum();
-        res.bottomRows(1) = M->colwise().sum();
+        res.leftCols(M->rows()).topRows(1) = M->rowwise().sum().transpose();
+        res.bottomRows(1).array() = M->colwise().sum().array();
         return res;
     }
 

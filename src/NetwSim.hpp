@@ -113,9 +113,9 @@ private:
         connectivity = 1;
         Eigen::MatrixXd M = Eigen::MatrixXd::Zero(2, 4);
         Utils::fixed_2d(&M, vs01, vs10, vr01, vr10);
-        io_deg_dist += Utils::in_out_degree(&M);
+        io_deg_dist = Utils::in_out_degree(&M);
         avg_io_deg = Utils::avg_io_deg(&M);
-        avg_rc_sums += Utils::avg_row_col_sums(&M);
+        avg_rc_sums = Utils::avg_row_col_sums(&M);
         bsn->re_init(M, S0, debt, sigma);
     }
 
@@ -160,7 +160,7 @@ public:
      * @param isGenerator   Flag for generator/consumer ranks
      */
 #ifdef USE_MPI
-    ER_Network(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
+    NetwSim(const boost::mpi::communicator local, const boost::mpi::communicator world, const bool isGenerator):
             local(local), world(world), isGenerator(isGenerator), Z_dist(&tmp[0][0], &tmp[1][1]), chi_dist(deg_of_freedom), t_dist(deg_of_freedom)
 #else
     NetwSim():
